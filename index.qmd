@@ -1,0 +1,22 @@
+---
+title: "Augmentum - Artic Carbon — Combined 16S & 18S Report"
+author: "Nathan Hubot"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    theme: cosmo
+    code-fold: true
+    code-block-bg: true
+editor: source
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+```{r, child="context.qmd"}
+```
+
+```{r, child="16S_analysis.qmd"}
+```
