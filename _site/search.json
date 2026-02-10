@@ -1,0 +1,30 @@
+[
+  {
+    "objectID": "index.html#sequencing-summary",
+    "href": "index.html#sequencing-summary",
+    "title": "Augmentum - Artic Carbon — Combined 16S & 18S Report",
+    "section": "📊 Sequencing Summary",
+    "text": "📊 Sequencing Summary\n\n\n\nFeature\n18S rRNA V9\nCOI (metazoans)\n\n\n\n\nSSP ID\nSSP202877\nSSP200993\n\n\nPurchase order\n203631529\nP10817-5\n\n\nSequencing platform\nIllumina MiSeq v2 (2×150 bp)\nIllumina MiSeq v2 (2×250 bp)\n\n\nTarget region\n18S V9 (1389F–1510R)\nCOI Leray fragment (m1COIintF–jgHCO2198)\n\n\nExpected amplicon size\n~121 bp\n~313 bp\n\n\nRaw read depth (mean)\n~150k\n~200k\n\n\nPre-trimming QC\nCutadapt v4.5\nCutadapt v1.2.1 + Sickle v1.200\n\n\nDownstream processing\nCutadapt → DADA2 → MZG 18S\nCutadapt → DADA2 → MZG COI"
+  },
+  {
+    "objectID": "index.html#s-v9-primers",
+    "href": "index.html#s-v9-primers",
+    "title": "Augmentum - Artic Carbon — Combined 16S & 18S Report",
+    "section": "16S V9 Primers",
+    "text": "16S V9 Primers\n\nForward:\n5′ ACACTCTTTCCCTACACGACGCTCTTCCGATCTNNNNN\nTTGTACACACCGCCC 3′\n(CGR overhang + spacer in blue; 18S primer in red)\nReverse:\n5′ GTGACTGGAGTTCAGACGTGTGCTCTTCCGATCT\nCCTTCYGCAGGTTCACCTAC 3′"
+  },
+  {
+    "objectID": "index.html#s-v9-primers-1",
+    "href": "index.html#s-v9-primers-1",
+    "title": "Augmentum - Artic Carbon — Combined 16S & 18S Report",
+    "section": "16S V9 Primers",
+    "text": "16S V9 Primers\n\nForward:\n5′ ACACTCTTTCCCTACACGACGCTCTTCCGATCTNNNNN\nTTGTACACACCGCCC 3′\n(CGR overhang + spacer in blue; 18S primer in red)\nReverse:\n5′ GTGACTGGAGTTCAGACGTGTGCTCTTCCGATCT\nCCTTCYGCAGGTTCACCTAC 3′"
+  },
+  {
+    "objectID": "index.html#next-steps",
+    "href": "index.html#next-steps",
+    "title": "Augmentum - Artic Carbon — Combined 16S & 18S Report",
+    "section": "🧮 Next Steps",
+    "text": "🧮 Next Steps\nAt this stage, for each of the datasets/molecular markers, we have:\n\nAn OTU abundance table (seqtab.nochim)\n\nA taxonomy table (taxa)\n\nThese files (provided) can be imported into R using the phyloseq package downstream analysis and visualization."
+  }
+]

@@ -127,6 +127,12 @@ Where <OV> and <ERROR> differ between markers (see table above).
 source: https://metazoogene.org/mzgdb/atlas/html-src/data__T4000000__o00.html
 :::
 
+::: {.callout-note title="Note"}
+The results of cutadapt of the 18S reads show small reads that match the primers but that are too short to pass the size filter (200bp). These are primer dimmers from the PCR amplification. They can be safely removed.
+
+Read retention after primer trimming and filtering was generally high across samples, ranging from 59.4% to 100.0%. Most samples showed very high retention (≥95%), with many reaching 100%. A small subset of samples formed a lower-retention cluster (~59–63%), which reduced the overall range but did not represent the dominant pattern. The negative control showed substantially lower retention (10.9%), as expected in the absence of a true amplicon signal.
+:::
+
 ### 🔹 Unified DADA2 description
 
 Both datasets were processed with the standard DADA2 workflow:
@@ -193,22 +199,22 @@ library(readr)
 library(knitr)
 library(kableExtra)
 
-# Load the data
-df <- read_csv("data/DADA2_counts_table.csv")
-
-# Rename columns to avoid ...2 suffix
-colnames(df) <- c("sample",
-                  "input", "filtered", "nonchim", "reads_retained (%)",
-                  "input", "filtered", "nonchim", "reads_retained (%)")
-
-# Create a styled table with group headers and scrolable
-kable(df, format = "html", caption = "DADA2 Counts for 18S and COI") %>%
-  add_header_above(c(" " = 1, "18S" = 4, "COI" = 4)) %>%
-  kable_styling(
-    full_width = FALSE,
-    bootstrap_options = c("striped", "hover", "condensed")
-  ) %>%
-  scroll_box(height = "400px", width = "100%")
+# # Load the data
+# df <- read_csv("data/DADA2_counts_table.csv")
+# 
+# # Rename columns to avoid ...2 suffix
+# colnames(df) <- c("sample",
+#                   "input", "filtered", "nonchim", "reads_retained (%)",
+#                   "input", "filtered", "nonchim", "reads_retained (%)")
+# 
+# # Create a styled table with group headers and scrolable
+# kable(df, format = "html", caption = "DADA2 Counts for 18S and COI") %>%
+#   add_header_above(c(" " = 1, "18S" = 4, "COI" = 4)) %>%
+#   kable_styling(
+#     full_width = FALSE,
+#     bootstrap_options = c("striped", "hover", "condensed")
+#   ) %>%
+#   scroll_box(height = "400px", width = "100%")
 ```
 
 ::: {.callout-note title="Negative Controls"}

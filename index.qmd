@@ -18,5 +18,5 @@ execute:
 ```{r, child="context.qmd"}
 ```
 
-```{r, child="16S_analysis.qmd"}
+```{r, child="Combined_analysis.qmd"}
 ```
