@@ -18,7 +18,7 @@ Both datasets were sequenced at the\
 | **Sequencing platform** | Illumina MiSeq i100 (2×300 bp) | Illumina MiSeq i100 (2×300 bp) |
 | **Target region** | 16S V4 (515F_mod – 806R_mod) | 18S v4 (TAReuk454FWD1 - TAReukREV3) |
 | **Expected amplicon size** | \~300 bp | \~400 bp |
-| **Raw read depth (mean)** | \~150k | \~200k |
+| **Raw read depth (mean)** | \~350k | \~350k |
 | **Pre-trimming QC** | Cutadapt v4.5 | Cutadapt v4.5 |
 
 ------------------------------------------------------------------------

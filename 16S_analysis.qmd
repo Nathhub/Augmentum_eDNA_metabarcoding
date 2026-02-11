@@ -159,71 +159,249 @@ The most divergent samples in the ordination correspond exclusively to surface (
 
 ### Phylum composition
 
-```{r echo=FALSE, message=FALSE, warning=FALSE}
-# my_colors <- c("#FF6666", "#8DD3C7", "#377EB8", "#4DAF4A",  
-#                "#984EA3", "#A6D854", "#FFFF33", "#FF7F00", "#F781BF", "#999999",                  "#66C2A5", "#FC8D62", "#8DA0CB", "#E78AC3", "#FFD92F", 
-#                "#E5C494", "#B3B3B3", "#A65628","#FFFFB3", "#BEBADA", 
-#                "#FB8072", "#80B1D3", "#FDB462")
-# 
-# library(microbiome)
-# 
-# # 1) Agglomerate to Phylum
-# ps_phylum <- tax_glom(ps_16s, taxrank = "Phylum")
-# 
-# # 2) Transform to relative abundance (compositional)
-# ps_rel <- microbiome::transform(ps_phylum, "compositional")
-# 
-# # 3) Top 20 taxa by mean relative abundance (returns taxa_names / OTU IDs)
-# top20 <- microbiome::top_taxa(ps_rel, n = 20)
-# 
-# # 4) Melt full object
-# df <- psmelt(ps_rel)
-# 
-# # Ensure Phylum label exists and is character (handles NAs)
-# df <- df %>%
-#   mutate(
-#     Phylum = as.character(Phylum),
-#     Phylum = if_else(is.na(Phylum) | Phylum == "", "Unassigned", Phylum),
-#     Phylum_plot = if_else(OTU %in% top20, Phylum, "Other")
-#   ) %>%
-#   group_by(Sample, Number, Phylum_plot) %>%
-#   summarise(Abundance = sum(Abundance), .groups = "drop")
-# 
-# # Put "Other" at the end of the legend
-# df$Phylum_plot <- factor(
-#   df$Phylum_plot,
-#   levels = c(setdiff(unique(df$Phylum_plot), "Other"), "Other")
-# )
-# 
-# # 5) Colors: 20 phyla + Other
-# other_color <- "#C0C0C0"
-# plot_colors <- c(my_colors[1:20], other_color)
-# 
-# # Optional: make sure color vector matches factor levels exactly
-# levels_phyla <- levels(df$Phylum_plot)
-# names(plot_colors) <- levels_phyla  # map colors to labels
-# 
-# # 6) Plot
-# ggplot(df, aes(x = Number, y = Abundance, fill = Phylum_plot)) +
-#   geom_col(width = 0.8) +
-#   scale_fill_manual(values = plot_colors) +
-#   scale_y_continuous(labels = scales::percent) +
-#   labs(
-#     title = "Bacteria/Archaea Phyla (Top 20 + Other)",
-#     x = "Sample Number",
-#     y = "Relative abundance (%)",
-#     fill = "Phylum"
-#   ) +
-#   theme_classic() +
-#   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-#   scale_x_discrete(
-#     labels = function(x) substr(x, 1, 5),
-#     breaks = function(x) x[seq(1, length(x), by = 4)]
-#   )
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
+my_colors <- c("#FF6666", "#8DD3C7", "#377EB8", "#4DAF4A",
+               "#984EA3", "#A6D854", "#FFFF33", "#FF7F00", "#F781BF", "#999999",                  "#66C2A5", "#FC8D62", "#8DA0CB", "#E78AC3", "#FFD92F",
+               "#E5C494", "#B3B3B3", "#A65628","#FFFFB3", "#BEBADA",
+               "#FB8072", "#80B1D3", "#FDB462")
+
+library(microbiome)
+
+# 1) Agglomerate to Phylum
+ps_phylum <- tax_glom(ps_16s, taxrank = "Phylum")
+
+# 2) Transform to relative abundance (compositional)
+ps_rel <- microbiome::transform(ps_phylum, "compositional")
+
+# 3) Top 20 taxa by mean relative abundance (returns taxa_names / OTU IDs)
+top20 <- microbiome::top_taxa(ps_rel, n = 20)
+
+# 4) Melt full object
+df <- psmelt(ps_rel)
+
+# Ensure Phylum label exists and is character (handles NAs)
+df <- df %>%
+  mutate(
+    Phylum = as.character(Phylum),
+    Phylum = if_else(is.na(Phylum) | Phylum == "", "Unassigned", Phylum),
+    Phylum_plot = if_else(OTU %in% top20, Phylum, "Other")
+  ) %>%
+  group_by(Sample, Number, Phylum_plot) %>%
+  summarise(Abundance = sum(Abundance), .groups = "drop")
+
+# Put "Other" at the end of the legend
+df$Phylum_plot <- factor(
+  df$Phylum_plot,
+  levels = c(setdiff(unique(df$Phylum_plot), "Other"), "Other")
+)
+
+# 5) Colors: 20 phyla + Other
+other_color <- "#C0C0C0"
+plot_colors <- c(my_colors[1:20], other_color)
+
+# Optional: make sure color vector matches factor levels exactly
+levels_phyla <- levels(df$Phylum_plot)
+names(plot_colors) <- levels_phyla  # map colors to labels
+
+# 6) Plot
+ggplot(df, aes(x = Number, y = Abundance, fill = Phylum_plot)) +
+  geom_col(width = 0.8) +
+  scale_fill_manual(values = plot_colors) +
+  scale_y_continuous(labels = scales::percent) +
+  labs(
+    title = "Bacteria/Archaea Phyla (Top 20 + Other)",
+    x = "Sample Number",
+    y = "Relative abundance (%)",
+    fill = "Phylum"
+  ) +
+  theme_classic() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    legend.position = "bottom",
+    legend.direction = "horizontal"
+  ) +
+  guides(fill = guide_legend(nrow = 5))   # increase if still crowded
+
 
 ```
 
 ::: {.callout-note}
-### 💬 Discussion — 
+### 💬 Discussion — Phyla composition
+
+The bacterial community across samples is dominated by **Pseudomonadota**, with consistent contributions from **Bacteroidota** and **Cyanobacteriota**. Minor but **detectable archaeal phyla** were present at low relative abundance. Overall community structure is broadly similar across samples.
 :::
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
+
+# 1️⃣ Collapse to Class level
+ps_class <- tax_glom(ps_16s, taxrank = "Class")
+
+# 2️⃣ Transform to relative abundance
+ps_rel <- transform(ps_class, "compositional")
+
+# 3️⃣ Get top 10 classes (by mean relative abundance)
+top10 <- top_taxa(ps_rel, n = 10)
+
+# 4️⃣ Melt full dataset
+df <- psmelt(ps_rel)
+df$Number <- as.factor(df$Number)
+
+# 5️⃣ Create Class_plot column (Top 10 + Other)
+df <- df %>%
+  mutate(
+    Class = as.character(Class),
+    Class = if_else(is.na(Class) | Class == "", "Unclassified", Class),
+    Class_plot = if_else(OTU %in% top10, Class, "Other")
+  ) %>%
+  group_by(Sample, Number, Class_plot) %>%
+  summarise(Abundance = sum(Abundance), .groups = "drop")
+
+# 6️⃣ Put "Other" at the end of legend
+df$Class_plot <- factor(
+  df$Class_plot,
+  levels = c(setdiff(sort(unique(df$Class_plot)), "Other"), "Other")
+)
+
+# 7️⃣ Use your my_colors (first 10) + grey for Other
+other_color <- "#C0C0C0"
+plot_colors <- c(my_colors[1:10], other_color)
+names(plot_colors) <- levels(df$Class_plot)
+
+# 8️⃣ Plot
+ggplot(df, aes(x = Number, y = Abundance, fill = Class_plot)) +
+  geom_bar(stat = "identity", position = "stack") +
+  scale_fill_manual(values = plot_colors) + 
+  scale_y_continuous(labels = scales::percent) +
+  labs(
+    title = "Top 10 Classes + Other",
+    x = "Sample Number",
+    y = "Relative Abundance (%)",
+    fill = "Class"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    legend.position = "bottom"
+  ) +
+  guides(fill = guide_legend(nrow = 2, byrow = TRUE)) +
+  scale_x_discrete(
+    labels = function(x) substr(x, 1, 5),
+    breaks  = function(x) x[seq(1, length(x), by = 4)]
+  )
+```
+::: {.callout-note}
+### 💬 Discussion — Class composition
+
+
+:::
+
+
+### Plotting by fjords and depth
+#### Sermilik
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
+
+# Collapse + compositional
+ps_class <- tax_glom(ps_16s, taxrank = "Class")
+ps_rel   <- transform(ps_class, "compositional")
+
+# Top 10 taxa (OTU/ASV IDs after glomming)
+top10 <- top_taxa(ps_rel, n = 10)
+
+# Melt full object
+df <- psmelt(ps_rel)
+
+# Make Depth nice (adapt if your Depth column differs)
+df <- df %>%
+  mutate(
+    Depth = as.character(Depth),
+    Depth = if_else(Depth %in% c("1","01","surface","Surface"), "surface",
+             if_else(Depth %in% c("15","15m","15 m"), "15m",
+             if_else(Depth %in% c("45","45m","45 m"), "45m", Depth))),
+    Depth = factor(Depth, levels = c("surface", "15m", "45m")),
+    Fjord = as.factor(Fjord)
+  )
+
+# Top10 + Other
+df <- df %>%
+  mutate(
+    Class = as.character(Class),
+    Class = if_else(is.na(Class) | Class == "", "Unclassified", Class),
+    Class_plot = if_else(OTU %in% top10, Class, "Other")
+  ) %>%
+  group_by(Fjord, Depth, Sample, Number, Station, Class_plot) %>%
+  summarise(Abundance = sum(Abundance), .groups = "drop")
+
+# Legend order: Other last
+df$Class_plot <- factor(
+  df$Class_plot,
+  levels = c(setdiff(sort(unique(df$Class_plot)), "Other"), "Other")
+)
+
+# Colors: use your palette (first 10) + Other
+other_color <- "#C0C0C0"
+plot_colors <- c(my_colors[1:10], other_color)
+names(plot_colors) <- levels(df$Class_plot)
+
+plot_fjord <- function(df, fjord_name){
+  dff <- df %>% filter(Fjord == fjord_name)
+
+  ggplot(dff, aes(x = Station, y = Abundance, fill = Class_plot)) +
+    geom_col(width = 0.85) +
+    facet_wrap(~Depth, nrow = 1) +
+    scale_fill_manual(values = plot_colors) +
+    scale_y_continuous(labels = scales::percent) +
+    labs(
+      title = paste0(fjord_name, " — Top 10 Classes + Other"),
+      x = "Station Number",
+      y = "Relative abundance",
+      fill = "Class"
+    ) +
+    theme_classic() +
+    theme(
+      legend.position = "bottom",
+      axis.text.x = element_text(angle = 45, hjust = 1),
+      strip.background = element_rect(fill = "white"),
+      strip.text = element_text(face = "bold")
+    ) +
+    guides(fill = guide_legend(nrow = 2, byrow = TRUE)) +
+    scale_x_discrete(
+      labels = function(x) substr(x, 1, 5),
+      breaks = function(x) x[seq(1, length(x), by = 2)]
+    )
+}
+
+fjords <- sort(unique(df$Fjord))
+
+plots <- lapply(fjords, function(fj) plot_fjord(df, fj))
+names(plots) <- as.character(fjords)
+
+# Print one (e.g., Sermilik)
+plots[["Sermilik"]]
+
+
+```
+
+#### Iterdalk
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
+plots[["Iterdalk"]]
+
+```
+
+#### Tunulliarfik
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
+plots[["Tunulliarfik"]]
+
+```
+
+
+#### Ocean
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
+plots[["Ocean"]]
+
+```
+
 
