@@ -4,7 +4,7 @@
     "href": "index.html#sequencing-summary",
     "title": "Augmentum - Artic Carbon — Combined 16S & 18S Report",
     "section": "📊 Sequencing Summary",
-    "text": "📊 Sequencing Summary\n\n\n\nFeature\n18S rRNA V9\nCOI (metazoans)\n\n\n\n\nSSP ID\nSSP202877\nSSP200993\n\n\nPurchase order\n203631529\nP10817-5\n\n\nSequencing platform\nIllumina MiSeq v2 (2×150 bp)\nIllumina MiSeq v2 (2×250 bp)\n\n\nTarget region\n18S V9 (1389F–1510R)\nCOI Leray fragment (m1COIintF–jgHCO2198)\n\n\nExpected amplicon size\n~121 bp\n~313 bp\n\n\nRaw read depth (mean)\n~150k\n~200k\n\n\nPre-trimming QC\nCutadapt v4.5\nCutadapt v1.2.1 + Sickle v1.200\n\n\nDownstream processing\nCutadapt → DADA2 → MZG 18S\nCutadapt → DADA2 → MZG COI"
+    "text": "📊 Sequencing Summary\n\n\n\nFeature\n16S rRNA\n18S rRNA\n\n\n\n\nSSP ID\nSSP204011\nSSP204019\n\n\nPurchase order\n203645351\n203645352\n\n\nSequencing platform\nIllumina MiSeq i100 (2×300 bp)\nIllumina MiSeq i100 (2×300 bp)\n\n\nTarget region\n16S V4 (515F_mod – 806R_mod)\n18S v4 (TAReuk454FWD1 - TAReukREV3)\n\n\nExpected amplicon size\n~300 bp\n~400 bp\n\n\nRaw read depth (mean)\n~150k\n~200k\n\n\nPre-trimming QC\nCutadapt v4.5\nCutadapt v4.5"
   },
   {
     "objectID": "index.html#s-v9-primers",
@@ -26,5 +26,82 @@
     "title": "Augmentum - Artic Carbon — Combined 16S & 18S Report",
     "section": "🧮 Next Steps",
     "text": "🧮 Next Steps\nAt this stage, for each of the datasets/molecular markers, we have:\n\nAn OTU abundance table (seqtab.nochim)\n\nA taxonomy table (taxa)\n\nThese files (provided) can be imported into R using the phyloseq package downstream analysis and visualization."
+  },
+  {
+    "objectID": "index.html#s-v4-primers",
+    "href": "index.html#s-v4-primers",
+    "title": "Augmentum - Artic Carbon — Combined 16S & 18S Report",
+    "section": "16S V4 Primers",
+    "text": "16S V4 Primers\n\nForward: (Parada et al., 2016)\n5′ ACACTCTTTCCCTACACGACGCTCTTCCGATCTNNNNN\nGTGYCAGCMGCCGCGGTAA 3′\n(CGR overhang + spacer in blue; 16S primer in red)\nReverse: (Apprill et al., 2015)\n5′ GTGACTGGAGTTCAGACGTGTGCTCTTCCGATCT\nGGACTACNVGGGTWTCTAAT 3′"
+  },
+  {
+    "objectID": "index.html#s-v4-primers-1",
+    "href": "index.html#s-v4-primers-1",
+    "title": "Augmentum - Artic Carbon — Combined 16S & 18S Report",
+    "section": "18S V4 Primers",
+    "text": "18S V4 Primers\n\nForward: (Stoeck et al., 2010)\n5′ ACACTCTTTCCCTACACGACGCTCTTCCGATCTNNNNN\nCCAGCASCYGCGGTAATTCC 3′\n(CGR overhang + spacer in blue; 18S primer in red)\nReverse: (Stoeck et al., 2010)\n5′ GTGACTGGAGTTCAGACGTGTGCTCTTCCGATCT\nACTTTCGTTCTTGATYRA 3′"
+  },
+  {
+    "objectID": "index.html#build-the-phyloseq-object-16s",
+    "href": "index.html#build-the-phyloseq-object-16s",
+    "title": "Augmentum - Artic Carbon — Combined 16S & 18S Report",
+    "section": "📦 Build the phyloseq object (16S)",
+    "text": "📦 Build the phyloseq object (16S)\n\n\n🔹 A summary of the phyloseq object \n\n\nphyloseq-class experiment-level object\notu_table()   OTU Table:         [ 3633 taxa and 66 samples ]\nsample_data() Sample Data:       [ 66 samples by 9 sample variables ]\ntax_table()   Taxonomy Table:    [ 3633 taxa by 7 taxonomic ranks ]\n\n\n\n\n🔹 These are the metadata variables:\n\n\n[1] \"Name\"    \"Number\"  \"Station\" \"Depth\"   \"Date\"    \"Time\"    \"Lat\"    \n[8] \"Lon\"     \"Fjord\""
+  },
+  {
+    "objectID": "index.html#data-visualisation",
+    "href": "index.html#data-visualisation",
+    "title": "Augmentum - Artic Carbon — Combined 16S & 18S Report",
+    "section": "📊 Data visualisation",
+    "text": "📊 Data visualisation\nIn this section, we explore the community structure of the RoCSI 16S dataset using the phyloseq object (ps_16s) generated above. We start by visualising read depth per sample, followed by basic taxonomic composition summaries.\n\nRead depth per sample\n\n\n\n\n\n\n\n\n\n\n\nAlpha diversity\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nNote💬 Discussion — Alpha diversity patterns\n\n\n\nObserved richness (number of ASVs), Shannon and Simpson diversity are fairly similar across fjords and the ocean samples.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nNote💬 Discussion — Alpha diversity patterns\n\n\n\nObserved richness (number of ASVs) tend to be increasing with depth.\n\n\n\n\nOrdination\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nNote💬 Discussion — Beta diversity\n\n\n\nThe ordination shows clustering of samples by fjord, indicating fjord-level structuring of bacterial communities. Sermilik forms a relatively distinct and tightly clustered group, whereas Tunulliarfik exhibits greater within-fjord variability. Notably, there is considerable overlap between Itterdalk and Tunulliarfik, suggesting partial similarity in community composition and potentially shared environmental controls. Ocean samples occupy an intermediate position, consistent with coastal waters acting as a regional microbial source pool. Overall, fjord identity contributes to community differentiation, although separation is not absolute among all systems.\nNext: check if dispersion differs significantly? betadisper(…) permutest(…)\nNOTE: some samples are pretty distant from the othesr. Who are they?\n\n\n\n\n             SampleID     Axis.1      Axis.2\n04_St2_D1   04_St2_D1 -0.5863910 -0.11333972\n01_St1_D1   01_St1_D1 -0.5518673 -0.13476738\n07_St3_D1   07_St3_D1 -0.4965739 -0.14562415\n10_St4_D1   10_St4_D1 -0.4512137 -0.12949510\n56_St20_D1 56_St20_D1 -0.4203203  0.01151985\n\n\n\n\n\n\n\n\nNote\n\n\n\nThe most divergent samples in the ordination correspond exclusively to surface (D1) samples. These stations were influenced by meltwater and low salinity conditions, suggesting that surface stratification and freshwater input may exert a strong effect on microbial community composition. This pattern indicates that vertical position and freshwater influence may be key drivers of community differentiation in these fjord systems.\n\n\n\n\nPhylum composition\n\n\n\n\n\n\nNote💬 Discussion —"
+  },
+  {
+    "objectID": "Combined_analysis.html",
+    "href": "Combined_analysis.html",
+    "title": "🧬 Overview of Sequencing & Experimental Design",
+    "section": "",
+    "text": "This section summarises the two metabarcoding workflows applied to the Augmentum eDNA samples:\n\n16S rRNA region (targeting prokaryotes)\n18S rRNA V9 region (targeting phytoplankton)\n\nBoth datasets were sequenced at the\nCentre for Genomic Research (CGR), University of Liverpool.\n\n\n\n\n\nFeature\n16S rRNA\n18S rRNA\n\n\n\n\nSSP ID\nSSP204011\nSSP204019\n\n\nPurchase order\n203645351\n203645352\n\n\nSequencing platform\nIllumina MiSeq i100 (2×300 bp)\nIllumina MiSeq i100 (2×300 bp)\n\n\nTarget region\n16S V4 (515F_mod – 806R_mod)\n18S v4 (TAReuk454FWD1 - TAReukREV3)\n\n\nExpected amplicon size\n~300 bp\n~400 bp\n\n\nRaw read depth (mean)\n~150k\n~200k\n\n\nPre-trimming QC\nCutadapt v4.5\nCutadapt v4.5"
+  },
+  {
+    "objectID": "Combined_analysis.html#sequencing-summary",
+    "href": "Combined_analysis.html#sequencing-summary",
+    "title": "🧬 Overview of Sequencing & Experimental Design",
+    "section": "",
+    "text": "Feature\n16S rRNA\n18S rRNA\n\n\n\n\nSSP ID\nSSP204011\nSSP204019\n\n\nPurchase order\n203645351\n203645352\n\n\nSequencing platform\nIllumina MiSeq i100 (2×300 bp)\nIllumina MiSeq i100 (2×300 bp)\n\n\nTarget region\n16S V4 (515F_mod – 806R_mod)\n18S v4 (TAReuk454FWD1 - TAReukREV3)\n\n\nExpected amplicon size\n~300 bp\n~400 bp\n\n\nRaw read depth (mean)\n~150k\n~200k\n\n\nPre-trimming QC\nCutadapt v4.5\nCutadapt v4.5"
+  },
+  {
+    "objectID": "Combined_analysis.html#s-v4-primers",
+    "href": "Combined_analysis.html#s-v4-primers",
+    "title": "🧬 Overview of Sequencing & Experimental Design",
+    "section": "16S V4 Primers",
+    "text": "16S V4 Primers\n\nForward: (Parada et al., 2016)\n5′ ACACTCTTTCCCTACACGACGCTCTTCCGATCTNNNNN\nGTGYCAGCMGCCGCGGTAA 3′\n(CGR overhang + spacer in blue; 16S primer in red)\nReverse: (Apprill et al., 2015)\n5′ GTGACTGGAGTTCAGACGTGTGCTCTTCCGATCT\nGGACTACNVGGGTWTCTAAT 3′"
+  },
+  {
+    "objectID": "Combined_analysis.html#s-v4-primers-1",
+    "href": "Combined_analysis.html#s-v4-primers-1",
+    "title": "🧬 Overview of Sequencing & Experimental Design",
+    "section": "18S V4 Primers",
+    "text": "18S V4 Primers\n\nForward: (Stoeck et al., 2010)\n5′ ACACTCTTTCCCTACACGACGCTCTTCCGATCTNNNNN\nCCAGCASCYGCGGTAATTCC 3′\n(CGR overhang + spacer in blue; 18S primer in red)\nReverse: (Stoeck et al., 2010)\n5′ GTGACTGGAGTTCAGACGTGTGCTCTTCCGATCT\nACTTTCGTTCTTGATYRA 3′"
+  },
+  {
+    "objectID": "16S_analysis.html",
+    "href": "16S_analysis.html",
+    "title": "16S Dataset",
+    "section": "",
+    "text": "library(tidyverse)\nlibrary(phyloseq)\n\n# ---- paths ----\ndatadir &lt;- \"data/16S\"\n\n# ---- load DADA2 outputs ----\nseqtab.nochim &lt;- readRDS(file.path(datadir, \"seqtab_nochim.rds\"))\ntaxa          &lt;- readRDS(file.path(datadir, \"taxa.rds\"))\n\n# Load metadata\nmetadat &lt;- readxl::read_xlsx(file.path(datadir, \"metadata_16S.xlsx\")) %&gt;%\n  mutate(\n    Date = as.Date(as.numeric(Date), origin = \"1899-12-30\"),\n    Time = as.POSIXct(as.numeric(Time) * 86400, origin = \"1970-01-01\", tz = \"UTC\"),\n    Time = format(Time, \"%H:%M:%S\")\n  ) %&gt;% as.data.frame()\n\nrownames(metadat) &lt;- rownames(seqtab.nochim)\n\n# Create a Phyloseq object\n\nps_16s &lt;- phyloseq(otu_table(seqtab.nochim, taxa_are_rows = F), \n               sample_data(metadat), \n               tax_table(taxa))\nsaveRDS(ps_16s, \"data/ps_16s.rds\")\n  \ncat(\"🔹 A summary of the phyloseq object \\n\")\n\n🔹 A summary of the phyloseq object \n\nps_16s\n\nphyloseq-class experiment-level object\notu_table()   OTU Table:         [ 3633 taxa and 66 samples ]\nsample_data() Sample Data:       [ 66 samples by 9 sample variables ]\ntax_table()   Taxonomy Table:    [ 3633 taxa by 7 taxonomic ranks ]\n\n# storing the ASV sequences and assigning them with a name and then renaming the taxa object\ndna &lt;- Biostrings::DNAStringSet(taxa_names(ps_16s))\nnames(dna) &lt;- taxa_names(ps_16s)\nps_16s &lt;- merge_phyloseq(ps_16s, dna)\ntaxa_names(ps_16s) &lt;- paste0(\"ASV\", seq(ntaxa(ps_16s)))\n\n\n\n🔹 These are the metadata variables:\n\n\n[1] \"Name\"    \"Number\"  \"Station\" \"Depth\"   \"Date\"    \"Time\"    \"Lat\"    \n[8] \"Lon\"     \"Fjord\"  \n\n\n\n\n\nIn this section, we explore the community structure of the RoCSI 16S dataset using the phyloseq object (ps_16s) generated above. We start by visualising read depth per sample, followed by basic taxonomic composition summaries.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nNote💬 Discussion — Alpha diversity patterns\n\n\n\nObserved richness (number of ASVs), Shannon and Simpson diversity are fairly similar across fjords and the ocean samples.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nNote💬 Discussion — Alpha diversity patterns\n\n\n\nObserved richness (number of ASVs) tend to be increasing with depth.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nNote💬 Discussion — Beta diversity\n\n\n\nThe ordination shows clustering of samples by fjord, indicating fjord-level structuring of bacterial communities. Sermilik forms a relatively distinct and tightly clustered group, whereas Tunulliarfik exhibits greater within-fjord variability. Notably, there is considerable overlap between Itterdalk and Tunulliarfik, suggesting partial similarity in community composition and potentially shared environmental controls. Ocean samples occupy an intermediate position, consistent with coastal waters acting as a regional microbial source pool. Overall, fjord identity contributes to community differentiation, although separation is not absolute among all systems.\nNext: check if dispersion differs significantly? betadisper(…) permutest(…)\nNOTE: some samples are pretty distant from the othesr. Who are they?\n\n\n\n\n             SampleID     Axis.1      Axis.2\n04_St2_D1   04_St2_D1 -0.5863910 -0.11333972\n01_St1_D1   01_St1_D1 -0.5518673 -0.13476738\n07_St3_D1   07_St3_D1 -0.4965739 -0.14562415\n10_St4_D1   10_St4_D1 -0.4512137 -0.12949510\n56_St20_D1 56_St20_D1 -0.4203203  0.01151985\n\n\n\n\n\n\n\n\nNote\n\n\n\nThe most divergent samples in the ordination correspond exclusively to surface (D1) samples. These stations were influenced by meltwater and low salinity conditions, suggesting that surface stratification and freshwater input may exert a strong effect on microbial community composition. This pattern indicates that vertical position and freshwater influence may be key drivers of community differentiation in these fjord systems.\n\n\n\n\n\n\n\n\n\n\n\nNote💬 Discussion —"
+  },
+  {
+    "objectID": "16S_analysis.html#build-the-phyloseq-object-16s",
+    "href": "16S_analysis.html#build-the-phyloseq-object-16s",
+    "title": "16S Dataset",
+    "section": "",
+    "text": "library(tidyverse)\nlibrary(phyloseq)\n\n# ---- paths ----\ndatadir &lt;- \"data/16S\"\n\n# ---- load DADA2 outputs ----\nseqtab.nochim &lt;- readRDS(file.path(datadir, \"seqtab_nochim.rds\"))\ntaxa          &lt;- readRDS(file.path(datadir, \"taxa.rds\"))\n\n# Load metadata\nmetadat &lt;- readxl::read_xlsx(file.path(datadir, \"metadata_16S.xlsx\")) %&gt;%\n  mutate(\n    Date = as.Date(as.numeric(Date), origin = \"1899-12-30\"),\n    Time = as.POSIXct(as.numeric(Time) * 86400, origin = \"1970-01-01\", tz = \"UTC\"),\n    Time = format(Time, \"%H:%M:%S\")\n  ) %&gt;% as.data.frame()\n\nrownames(metadat) &lt;- rownames(seqtab.nochim)\n\n# Create a Phyloseq object\n\nps_16s &lt;- phyloseq(otu_table(seqtab.nochim, taxa_are_rows = F), \n               sample_data(metadat), \n               tax_table(taxa))\nsaveRDS(ps_16s, \"data/ps_16s.rds\")\n  \ncat(\"🔹 A summary of the phyloseq object \\n\")\n\n🔹 A summary of the phyloseq object \n\nps_16s\n\nphyloseq-class experiment-level object\notu_table()   OTU Table:         [ 3633 taxa and 66 samples ]\nsample_data() Sample Data:       [ 66 samples by 9 sample variables ]\ntax_table()   Taxonomy Table:    [ 3633 taxa by 7 taxonomic ranks ]\n\n# storing the ASV sequences and assigning them with a name and then renaming the taxa object\ndna &lt;- Biostrings::DNAStringSet(taxa_names(ps_16s))\nnames(dna) &lt;- taxa_names(ps_16s)\nps_16s &lt;- merge_phyloseq(ps_16s, dna)\ntaxa_names(ps_16s) &lt;- paste0(\"ASV\", seq(ntaxa(ps_16s)))\n\n\n\n🔹 These are the metadata variables:\n\n\n[1] \"Name\"    \"Number\"  \"Station\" \"Depth\"   \"Date\"    \"Time\"    \"Lat\"    \n[8] \"Lon\"     \"Fjord\""
+  },
+  {
+    "objectID": "16S_analysis.html#data-visualisation",
+    "href": "16S_analysis.html#data-visualisation",
+    "title": "16S Dataset",
+    "section": "",
+    "text": "In this section, we explore the community structure of the RoCSI 16S dataset using the phyloseq object (ps_16s) generated above. We start by visualising read depth per sample, followed by basic taxonomic composition summaries.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nNote💬 Discussion — Alpha diversity patterns\n\n\n\nObserved richness (number of ASVs), Shannon and Simpson diversity are fairly similar across fjords and the ocean samples.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nNote💬 Discussion — Alpha diversity patterns\n\n\n\nObserved richness (number of ASVs) tend to be increasing with depth.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nNote💬 Discussion — Beta diversity\n\n\n\nThe ordination shows clustering of samples by fjord, indicating fjord-level structuring of bacterial communities. Sermilik forms a relatively distinct and tightly clustered group, whereas Tunulliarfik exhibits greater within-fjord variability. Notably, there is considerable overlap between Itterdalk and Tunulliarfik, suggesting partial similarity in community composition and potentially shared environmental controls. Ocean samples occupy an intermediate position, consistent with coastal waters acting as a regional microbial source pool. Overall, fjord identity contributes to community differentiation, although separation is not absolute among all systems.\nNext: check if dispersion differs significantly? betadisper(…) permutest(…)\nNOTE: some samples are pretty distant from the othesr. Who are they?\n\n\n\n\n             SampleID     Axis.1      Axis.2\n04_St2_D1   04_St2_D1 -0.5863910 -0.11333972\n01_St1_D1   01_St1_D1 -0.5518673 -0.13476738\n07_St3_D1   07_St3_D1 -0.4965739 -0.14562415\n10_St4_D1   10_St4_D1 -0.4512137 -0.12949510\n56_St20_D1 56_St20_D1 -0.4203203  0.01151985\n\n\n\n\n\n\n\n\nNote\n\n\n\nThe most divergent samples in the ordination correspond exclusively to surface (D1) samples. These stations were influenced by meltwater and low salinity conditions, suggesting that surface stratification and freshwater input may exert a strong effect on microbial community composition. This pattern indicates that vertical position and freshwater influence may be key drivers of community differentiation in these fjord systems.\n\n\n\n\n\n\n\n\n\n\n\nNote💬 Discussion —"
   }
 ]

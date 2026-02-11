@@ -6,9 +6,8 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Nathan Hubot">
 
-<title>Augmentum - Artic Carbon — Combined 16S &amp; 18S Report – Augmentum_eDNA_metabarcoding</title>
+<title>combined_analysis – Augmentum_eDNA_metabarcoding</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -75,7 +74,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-e31584831b205ffbb2d98406f31c2a5b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-1d4f84655f446305ac42a8f1abcf7405.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -111,93 +110,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </head>
 
-<body class="quarto-light">
+<body class="fullcontent quarto-light">
 
 <div id="quarto-search-results"></div>
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">On this page</h2>
-   
-  <ul>
-  <li><a href="#cruise-and-maps" id="toc-cruise-and-maps" class="nav-link active" data-scroll-target="#cruise-and-maps">Cruise and maps</a></li>
-  <li><a href="#overview-of-sequencing-experimental-design" id="toc-overview-of-sequencing-experimental-design" class="nav-link" data-scroll-target="#overview-of-sequencing-experimental-design">🧬 Overview of Sequencing &amp; Experimental Design</a>
-  <ul class="collapse">
-  <li><a href="#sequencing-summary" id="toc-sequencing-summary" class="nav-link" data-scroll-target="#sequencing-summary">📊 Sequencing Summary</a></li>
-  </ul></li>
-  <li><a href="#primer-sets-with-cgr-overhangs" id="toc-primer-sets-with-cgr-overhangs" class="nav-link" data-scroll-target="#primer-sets-with-cgr-overhangs">🧬 Primer Sets (with CGR Overhangs)</a>
-  <ul class="collapse">
-  <li><a href="#s-v4-primers" id="toc-s-v4-primers" class="nav-link" data-scroll-target="#s-v4-primers">16S V4 Primers</a></li>
-  <li><a href="#s-v4-primers-1" id="toc-s-v4-primers-1" class="nav-link" data-scroll-target="#s-v4-primers-1">18S V4 Primers</a></li>
-  </ul></li>
-  <li><a href="#bioinformatic-workflow-overview" id="toc-bioinformatic-workflow-overview" class="nav-link" data-scroll-target="#bioinformatic-workflow-overview">🔧 Bioinformatic Workflow Overview</a></li>
-  <li><a href="#primer-removal-with-cutadapt" id="toc-primer-removal-with-cutadapt" class="nav-link" data-scroll-target="#primer-removal-with-cutadapt">1️⃣ Primer Removal with Cutadapt</a>
-  <ul class="collapse">
-  <li><a href="#summary-of-cutadapt-parameters-used" id="toc-summary-of-cutadapt-parameters-used" class="nav-link" data-scroll-target="#summary-of-cutadapt-parameters-used">🔹 Summary of Cutadapt parameters used</a></li>
-  <li><a href="#unified-cutadapt-description" id="toc-unified-cutadapt-description" class="nav-link" data-scroll-target="#unified-cutadapt-description">🔹 Unified Cutadapt description</a></li>
-  </ul></li>
-  <li><a href="#dada2-processing" id="toc-dada2-processing" class="nav-link" data-scroll-target="#dada2-processing">2️⃣ DADA2 Processing</a>
-  <ul class="collapse">
-  <li><a href="#summary-of-cutadapt-parameters-used-1" id="toc-summary-of-cutadapt-parameters-used-1" class="nav-link" data-scroll-target="#summary-of-cutadapt-parameters-used-1">🔹 Summary of Cutadapt parameters used</a></li>
-  <li><a href="#unified-dada2-description" id="toc-unified-dada2-description" class="nav-link" data-scroll-target="#unified-dada2-description">🔹 Unified DADA2 description</a></li>
-  </ul></li>
-  <li><a href="#read-tracking-summary" id="toc-read-tracking-summary" class="nav-link" data-scroll-target="#read-tracking-summary">🔍 Read Tracking Summary</a></li>
-  <li><a href="#s-dataset" id="toc-s-dataset" class="nav-link" data-scroll-target="#s-dataset">16S Dataset</a>
-  <ul class="collapse">
-  <li><a href="#build-the-phyloseq-object-16s" id="toc-build-the-phyloseq-object-16s" class="nav-link" data-scroll-target="#build-the-phyloseq-object-16s">📦 Build the phyloseq object (16S)</a></li>
-  <li><a href="#data-visualisation" id="toc-data-visualisation" class="nav-link" data-scroll-target="#data-visualisation">📊 Data visualisation</a>
-  <ul class="collapse">
-  <li><a href="#read-depth-per-sample" id="toc-read-depth-per-sample" class="nav-link" data-scroll-target="#read-depth-per-sample">Read depth per sample</a></li>
-  <li><a href="#alpha-diversity" id="toc-alpha-diversity" class="nav-link" data-scroll-target="#alpha-diversity">Alpha diversity</a></li>
-  <li><a href="#ordination" id="toc-ordination" class="nav-link" data-scroll-target="#ordination">Ordination</a></li>
-  <li><a href="#phylum-composition" id="toc-phylum-composition" class="nav-link" data-scroll-target="#phylum-composition">Phylum composition</a></li>
-  </ul></li>
-  </ul></li>
-  </ul>
-</nav>
-    </div>
+    
 <!-- main -->
-<main class="content" id="quarto-document-content">
-
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
-<h1 class="title">Augmentum - Artic Carbon — Combined 16S &amp; 18S Report</h1>
-</div>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
 
 
 
-<div class="quarto-title-meta">
 
-    <div>
-    <div class="quarto-title-meta-heading">Author</div>
-    <div class="quarto-title-meta-contents">
-             <p>Nathan Hubot </p>
-          </div>
-  </div>
-    
-  
-    
-  </div>
-  
-
-
-</header>
-
-
-<section id="cruise-and-maps" class="level2">
-<h2 class="anchored" data-anchor-id="cruise-and-maps">Cruise and maps</h2>
-<p><img src="Figures/AKULA.jpg" class="img-fluid" style="width:50.0%" data-fig-cap="MY Akula provided by Augmentum"></p>
-<div class="columns" style="display:flex; gap: 3rem; align-items:flex-start;">
-<div class="column" style="flex: 0 0 35%; max-width: 35%;">
-<p><img src="Figures/Sermilik_fjord.png" class="img-fluid" style="width:100%; height:auto;" data-fig-cap="Sermilik Fjord showing sampling stations"></p>
-</div><div class="column" style="flex: 0 0 65%; max-width: 65%;">
-<p><img src="Figures/Fjord_Iterdalk_Tunulliarfik_Ocean_station_map_large.png" class="img-fluid" style="width:100%; height:auto;" data-fig-cap="Fjords Iterdalk and Tunulliarfik with oceanographic stations"></p>
-</div>
-</div>
-</section>
 <section id="overview-of-sequencing-experimental-design" class="level1">
 <h1>🧬 Overview of Sequencing &amp; Experimental Design</h1>
 <p>This section summarises the <strong>two metabarcoding workflows</strong> applied to the Augmentum eDNA samples:</p>
@@ -1344,163 +1270,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>The proportion of reads that were kept following the DADA2 pipeline is good: <strong>92%</strong> and <strong>94%</strong> for <strong>16S</strong> and <strong>18S</strong>, respectively. This leaves an average of <strong>320K</strong> and <strong>330K</strong> reads for <strong>16S</strong> and <strong>18S</strong>, respectively.</p>
 </div>
 </div>
-</section>
-<section id="s-dataset" class="level1">
-<h1>16S Dataset</h1>
-<section id="build-the-phyloseq-object-16s" class="level2">
-<h2 class="anchored" data-anchor-id="build-the-phyloseq-object-16s">📦 Build the phyloseq object (16S)</h2>
-<div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>🔹 A summary of the phyloseq object </code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>phyloseq-class experiment-level object
-otu_table()   OTU Table:         [ 3633 taxa and 66 samples ]
-sample_data() Sample Data:       [ 66 samples by 9 sample variables ]
-tax_table()   Taxonomy Table:    [ 3633 taxa by 7 taxonomic ranks ]</code></pre>
-</div>
-</div>
-<div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>🔹 These are the metadata variables:</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] "Name"    "Number"  "Station" "Depth"   "Date"    "Time"    "Lat"    
-[8] "Lon"     "Fjord"  </code></pre>
-</div>
-</div>
-</section>
-<section id="data-visualisation" class="level2">
-<h2 class="anchored" data-anchor-id="data-visualisation">📊 Data visualisation</h2>
-<p>In this section, we explore the community structure of the RoCSI 16S dataset using the <code>phyloseq</code> object (<code>ps_16s</code>) generated above. We start by visualising read depth per sample, followed by basic taxonomic composition summaries.</p>
-<section id="read-depth-per-sample" class="level3">
-<h3 class="anchored" data-anchor-id="read-depth-per-sample">Read depth per sample</h3>
-<div class="cell">
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-</section>
-<section id="alpha-diversity" class="level3">
-<h3 class="anchored" data-anchor-id="alpha-diversity">Alpha diversity</h3>
-<div class="cell">
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>💬 Discussion — Alpha diversity patterns
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Observed richness (number of ASVs), Shannon and Simpson diversity are fairly similar across fjords and the ocean samples.</p>
-</div>
-</div>
-<div class="cell">
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>💬 Discussion — Alpha diversity patterns
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Observed richness (number of ASVs) tend to be increasing with depth.</p>
-</div>
-</div>
-</section>
-<section id="ordination" class="level3">
-<h3 class="anchored" data-anchor-id="ordination">Ordination</h3>
-<div class="cell">
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>💬 Discussion — Beta diversity
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>The ordination shows <strong>clustering of samples by fjord</strong>, indicating fjord-level structuring of bacterial communities. Sermilik forms a relatively distinct and tightly clustered group, whereas Tunulliarfik exhibits greater within-fjord variability. Notably, there is considerable overlap between Itterdalk and Tunulliarfik, suggesting partial similarity in community composition and potentially shared environmental controls. Ocean samples occupy an intermediate position, consistent with coastal waters acting as a regional microbial source pool. Overall, <strong>fjord identity contributes to community differentiation</strong>, although separation is not absolute among all systems.</p>
-<p>Next: check if dispersion differs significantly? betadisper(…) permutest(…)</p>
-<p><strong>NOTE</strong>: some samples are pretty distant from the othesr. Who are they?</p>
-</div>
-</div>
-<div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>             SampleID     Axis.1      Axis.2
-04_St2_D1   04_St2_D1 -0.5863910 -0.11333972
-01_St1_D1   01_St1_D1 -0.5518673 -0.13476738
-07_St3_D1   07_St3_D1 -0.4965739 -0.14562415
-10_St4_D1   10_St4_D1 -0.4512137 -0.12949510
-56_St20_D1 56_St20_D1 -0.4203203  0.01151985</code></pre>
-</div>
-</div>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Note
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>The most divergent samples in the ordination correspond exclusively to surface (D1) samples. These stations were influenced by meltwater and low salinity conditions, suggesting that surface stratification and freshwater input may exert a strong effect on microbial community composition. This pattern indicates that vertical position and freshwater influence may be key drivers of community differentiation in these fjord systems.</p>
-</div>
-</div>
-</section>
-<section id="phylum-composition" class="level3">
-<h3 class="anchored" data-anchor-id="phylum-composition">Phylum composition</h3>
-<div class="callout callout-style-default callout-note callout-empty-content callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>💬 Discussion —
-</div>
-</div>
-<div class="callout-body-container callout-body">
-
-</div>
-</div>
 
 
-</section>
-</section>
 </section>
 
 </main> <!-- /main -->

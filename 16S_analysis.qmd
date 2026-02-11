@@ -7,66 +7,62 @@ library(tidyverse)
 library(phyloseq)
 
 # ---- paths ----
-datadir <- "data/18S"
+datadir <- "data/16S"
 
 # ---- load DADA2 outputs ----
 seqtab.nochim <- readRDS(file.path(datadir, "seqtab_nochim.rds"))
 taxa          <- readRDS(file.path(datadir, "taxa.rds"))
 
-# Make sure taxonomy is a proper matrix and has consistent column names
-taxa <- as.matrix(taxa)
-target_cols <- c(
-  "Kingdom","Subkingdom_1","Subkingdom_2","Phylum","Subphylum","Subphylum_1","Superclass",
-  "Class","Subclass","Infraclass","Superorder","Order","Suborder_1","Suborder_2","Suborder_3",
-  "Family","Subfamily","Genus","Subgenus","Species"
-)
-colnames(taxa) <- target_cols[seq_len(ncol(taxa))]
-
 # Load metadata
-metadat <- readRDS(file.path(datadir, "metadata_18S.rds")) 
+metadat <- readxl::read_xlsx(file.path(datadir, "metadata_16S.xlsx")) %>%
+  mutate(
+    Date = as.Date(as.numeric(Date), origin = "1899-12-30"),
+    Time = as.POSIXct(as.numeric(Time) * 86400, origin = "1970-01-01", tz = "UTC"),
+    Time = format(Time, "%H:%M:%S")
+  ) %>% as.data.frame()
+
+rownames(metadat) <- rownames(seqtab.nochim)
 
 # Create a Phyloseq object
 
-rownames(seqtab.nochim) <- sub("_$", "", rownames(seqtab.nochim))
-
-ps_18s <- phyloseq(otu_table(seqtab.nochim, taxa_are_rows = F), 
+ps_16s <- phyloseq(otu_table(seqtab.nochim, taxa_are_rows = F), 
                sample_data(metadat), 
                tax_table(taxa))
-saveRDS(ps_18s, "data/ps_18s.rds")
+saveRDS(ps_16s, "data/ps_16s.rds")
   
 cat("🔹 A summary of the phyloseq object \n")
-ps_18s
+ps_16s
 
 # storing the ASV sequences and assigning them with a name and then renaming the taxa object
-dna <- Biostrings::DNAStringSet(taxa_names(ps_18s))
-names(dna) <- taxa_names(ps_18s)
-ps_18s <- merge_phyloseq(ps_18s, dna)
-taxa_names(ps_18s) <- paste0("ASV", seq(ntaxa(ps_18s)))
+dna <- Biostrings::DNAStringSet(taxa_names(ps_16s))
+names(dna) <- taxa_names(ps_16s)
+ps_16s <- merge_phyloseq(ps_16s, dna)
+taxa_names(ps_16s) <- paste0("ASV", seq(ntaxa(ps_16s)))
 
 ```
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 # Print sample names, taxonomy ranks, and metadata fields — with explanations
 cat("🔹 These are the metadata variables:\n")
-print(sample_variables(ps_18s))
+print(sample_variables(ps_16s))
 ```
 
 ## 📊 Data visualisation
 
-In this section, we explore the community structure of the RoCSI 18S dataset using the
-`phyloseq` object (`ps_18s`) generated above. We start by visualising read depth
+In this section, we explore the community structure of the RoCSI 16S dataset using the
+`phyloseq` object (`ps_16s`) generated above. We start by visualising read depth
 per sample, followed by basic taxonomic composition summaries.
 
 ### Read depth per sample
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 read_depth <- data.frame(
-Sample = sample_names(ps_18s),
-Reads = sample_sums(ps_18s),
+Sample = sample_names(ps_16s),
+Reads = sample_sums(ps_16s),
 check.names = FALSE
 )
 
 ggplot(read_depth, aes(x = Sample, y = Reads)) +
 geom_col() +
-theme_minimal() +
+theme_minimal() + scale_y_continuous(labels = scales::label_number()) +
 theme(axis.text.x = element_text(angle = 45, hjust = 1)) + # Rotate x-axis labels for better readability
 scale_x_discrete(
     labels = function(x) substr(x, 1, 6), # Show only the first 5 characters of each label
@@ -82,59 +78,68 @@ y = "Number of non-chimeric reads"
 ### Alpha diversity
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
-sample_data(ps_18s)$Water_masses <- ifelse(sample_data(ps_18s)$lon < -10,
-                                       "Open Ocean", "Shelf")
+
 
 # Make sure Water_masses is a factor (optional, but useful for consistent plotting)
-sample_data(ps_18s)$Water_masses <- factor(sample_data(ps_18s)$Water_masses, levels = c("Open Ocean", "Shelf"))
+sample_data(ps_16s)$Fjord <- as.factor(sample_data(ps_16s)$Fjord)
 
 plot_richness(
-  ps_18s,
-  x = "lon",
+  ps_16s,
+  x = "Number",
   measures = c("Observed", "Shannon", "Simpson"),
-  color = "Water_masses",
-  title = "RoCSI (18S, MZGdb)"
-) +
-  scale_color_manual(
-    values = c(
-      "Open Ocean" = "#2E86C1",
-      "Shelf" = "#C0392B"
-    )
-  )
+  color = "Fjord", title = "16S Alpha diversity")
 
 ```
 ::: {.callout-note}
 ### 💬 Discussion — Alpha diversity patterns
 
-Both Observed richness (number of ASVs) and Simpson diversity differ between water masses, although the contrasts are not very large.
+Observed richness (number of ASVs), Shannon and Simpson diversity are fairly similar across fjords and the ocean samples.
+  
+:::
 
-The Open Ocean samples exhibit higher richness and slightly higher evenness, likely reflecting a more stable and stratified offshore environment that supports a broader range of protist niches.
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
 
-Shelf samples have lower richness and evenness, consistent with a more turbulent, nutrient-rich system dominated by a few fast-growing taxa.  
+
+# Make sure Water_masses is a factor (optional, but useful for consistent plotting)
+sample_data(ps_16s)$Fjord <- as.factor(sample_data(ps_16s)$Fjord)
+sample_data(ps_16s)$Depth <- as.factor(sample_data(ps_16s)$Depth)
+
+plot_richness(
+  ps_16s,
+  x = "Number",
+  measures = c("Observed", "Shannon", "Simpson"),
+  color = "Depth", title = "16S Alpha diversity")
+
+```
+
+::: {.callout-note}
+### 💬 Discussion — Alpha diversity patterns
+
+Observed richness (number of ASVs) tend to be increasing with depth.
 :::
 
 ### Ordination
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
-ord <- ordinate(ps_18s, method = "PCoA", distance = "bray")
+ord <- ordinate(ps_16s, method = "PCoA", distance = "bray")
 
 # Create the ordination plot with ellipses
-plot_ordination(ps_18s, ord, color = "Water_masses") +
+plot_ordination(ps_16s, ord, color = "Fjord") +
   geom_point(size = 3) +
-  ggtitle("Ordination – RoCSI (18S, MZGdb)") +
-  stat_ellipse(aes(group = Water_masses), type = "norm", linetype = "dashed", size = 1) +
-  scale_color_manual(values = c("Open Ocean" = "#2E86C1","Shelf" = "#C0392B")) +
+  ggtitle("Ordination – 16S") +
+  stat_ellipse(aes(group = Fjord), type = "norm", linetype = "dashed", size = 1) +
   theme_minimal()
 ```
 ::: {.callout-note}
-### 💬 Discussion — Community Differences Between Water Masses
+### 💬 Discussion — Beta diversity
 
-The ordination shows clear but not absolute separation between Shelf and Open Ocean communities. Offshore samples cluster tightly, indicating more homogeneous conditions, while shelf samples are more dispersed, reflecting greater environmental variability. Overall, the pattern suggests that water-mass structure shapes protist community composition along the RoCSI–CPR transect.
+The ordination shows **clustering of samples by fjord**, indicating fjord-level structuring of bacterial communities. Sermilik forms a relatively distinct and tightly clustered group, whereas Tunulliarfik exhibits greater within-fjord variability. Notably, there is considerable overlap between Itterdalk and Tunulliarfik, suggesting partial similarity in community composition and potentially shared environmental controls. Ocean samples occupy an intermediate position, consistent with coastal waters acting as a regional microbial source pool. Overall, **fjord identity contributes to community differentiation**, although separation is not absolute among all systems.
 
-Although Open Ocean samples show slightly higher within-sample diversity (richness, Shannon), the ordination reveals that Shelf samples are more heterogeneous in composition.
-This indicates that while offshore communities are individually more diverse and compositionally similar, shelf communities are shaped by more variable environmental conditions, leading to greater between-sample variation.
+Next: check if dispersion differs significantly? 
+betadisper(...)
+permutest(...)
 
-**NOTE**: the 5 samples clustered together in the lower part of the plot are the first 5 samples taken in first transect (close to Southampton). These samples occupy an extreme position in ordination space, suggesting strong compositional differences, which may be associated with dominance effects.
+**NOTE**: some samples are pretty distant from the othesr. Who are they?
 :::
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
@@ -142,256 +147,83 @@ This indicates that while offshore communities are individually more diverse and
 site <- as.data.frame(ord$vectors)
 site$SampleID <- rownames(site)
 
-# Get the 5 lowest values on Axis.2 (bottom of plot)
-bottom5 <- site[order(site$Axis.2), ][1:5, c("SampleID", "Axis.1", "Axis.2")]
+# Get the 5 lowest values on Axis.1 (side of plot)
+bottom5 <- site[order(site$Axis.1), ][1:5, c("SampleID", "Axis.1", "Axis.2")]
 bottom5
 ```
 
-#### coloured by transect
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-sample_data(ps_18s)$cpr <- factor(sample_data(ps_18s)$cpr)
-
-plot_ordination(ps_18s, ord, color = "cpr") +
-  geom_point(size = 3) +
-  stat_ellipse(aes(group = cpr),
-               type = "norm",
-               linetype = "dashed",
-               size = 1) +
-  scale_color_manual(values = c("#1B9E77", "#D95F02", "#7570B3", "#E7298A")) +
-  ggtitle("Ordination – RoCSI (18S, MZGdb)") +
-  theme_minimal()
-```
-
 ::: {.callout-note}
-### 💬 Discussion
-
+The most divergent samples in the ordination correspond exclusively to surface (D1) samples. These stations were influenced by meltwater and low salinity conditions, suggesting that surface stratification and freshwater input may exert a strong effect on microbial community composition. This pattern indicates that vertical position and freshwater influence may be key drivers of community differentiation in these fjord systems.
 :::
+
 
 ### Phylum composition
 
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-my_colors <- c("#FF6666", "#8DD3C7", "#377EB8", "#4DAF4A",  
-               "#984EA3", "#A6D854", "#FFFF33", "#FF7F00", "#F781BF", "#999999",                  "#66C2A5", "#FC8D62", "#8DA0CB", "#E78AC3", "#FFD92F", 
-               "#E5C494", "#B3B3B3", "#A65628","#FFFFB3", "#BEBADA", 
-               "#FB8072", "#80B1D3", "#FDB462")
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# my_colors <- c("#FF6666", "#8DD3C7", "#377EB8", "#4DAF4A",  
+#                "#984EA3", "#A6D854", "#FFFF33", "#FF7F00", "#F781BF", "#999999",                  "#66C2A5", "#FC8D62", "#8DA0CB", "#E78AC3", "#FFD92F", 
+#                "#E5C494", "#B3B3B3", "#A65628","#FFFFB3", "#BEBADA", 
+#                "#FB8072", "#80B1D3", "#FDB462")
+# 
+# library(microbiome)
+# 
+# # 1) Agglomerate to Phylum
+# ps_phylum <- tax_glom(ps_16s, taxrank = "Phylum")
+# 
+# # 2) Transform to relative abundance (compositional)
+# ps_rel <- microbiome::transform(ps_phylum, "compositional")
+# 
+# # 3) Top 20 taxa by mean relative abundance (returns taxa_names / OTU IDs)
+# top20 <- microbiome::top_taxa(ps_rel, n = 20)
+# 
+# # 4) Melt full object
+# df <- psmelt(ps_rel)
+# 
+# # Ensure Phylum label exists and is character (handles NAs)
+# df <- df %>%
+#   mutate(
+#     Phylum = as.character(Phylum),
+#     Phylum = if_else(is.na(Phylum) | Phylum == "", "Unassigned", Phylum),
+#     Phylum_plot = if_else(OTU %in% top20, Phylum, "Other")
+#   ) %>%
+#   group_by(Sample, Number, Phylum_plot) %>%
+#   summarise(Abundance = sum(Abundance), .groups = "drop")
+# 
+# # Put "Other" at the end of the legend
+# df$Phylum_plot <- factor(
+#   df$Phylum_plot,
+#   levels = c(setdiff(unique(df$Phylum_plot), "Other"), "Other")
+# )
+# 
+# # 5) Colors: 20 phyla + Other
+# other_color <- "#C0C0C0"
+# plot_colors <- c(my_colors[1:20], other_color)
+# 
+# # Optional: make sure color vector matches factor levels exactly
+# levels_phyla <- levels(df$Phylum_plot)
+# names(plot_colors) <- levels_phyla  # map colors to labels
+# 
+# # 6) Plot
+# ggplot(df, aes(x = Number, y = Abundance, fill = Phylum_plot)) +
+#   geom_col(width = 0.8) +
+#   scale_fill_manual(values = plot_colors) +
+#   scale_y_continuous(labels = scales::percent) +
+#   labs(
+#     title = "Bacteria/Archaea Phyla (Top 20 + Other)",
+#     x = "Sample Number",
+#     y = "Relative abundance (%)",
+#     fill = "Phylum"
+#   ) +
+#   theme_classic() +
+#   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+#   scale_x_discrete(
+#     labels = function(x) substr(x, 1, 5),
+#     breaks = function(x) x[seq(1, length(x), by = 4)]
+#   )
 
-classGlommed = tax_glom(ps_18s, "Phylum")
-
-# transform to proportions
-ps_18s_rel <- transform_sample_counts(classGlommed, function(x) x / sum(x))
-# Ensure 'lon' is a factor
-ps_18s_rel@sam_data$lon <- as.factor(ps_18s_rel@sam_data$lon)
-
-plot_bar(ps_18s_rel, fill = "Phylum", x = "lon") + 
-  scale_fill_manual(values = my_colors) + theme_classic() +
-  geom_bar(stat = "identity", width = 0.8) +
-  scale_y_continuous(labels = scales::percent) +
-  labs(y = "Relative abundance (%)", x = "Longitude") +
-  ggtitle("Protist Phyla – RoCSI (18S, MZGdb)")+
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) + # Rotate x-axis labels for better readability
-  scale_x_discrete(
-    labels = function(x) substr(x, 1, 5), # Show only the first 5 characters of each label
-    breaks = function(x) x[seq(1, length(x), by = 4)] # Show every 4th label
-  )
 ```
 
 ::: {.callout-note}
-### 💬 Discussion — Protist Community Structure
-
-The 18S protist communities along the RoCSI transect are dominated by **Cercozoans** (Heterotrophic protists/grazers) and **Myzozoans** (subphylum Dinoflagellata). **Radiolarians** (unicellular eukaryotes) are abundant in the open-water section of the transect, while **Bacillariophyta** (Diatoms) are abundant at the beginning of the cruise.
-
-Is this phyla composition ecologically coherent with expected shelf/open-ocean plankton dynamics during early spring in the English channel/Celtic Sea?
+### 💬 Discussion — 
 :::
-
-### Phylum composition - including NAs
-
-```{r,echo=FALSE, message=FALSE, warning=FALSE}
-classGlommed = tax_glom(ps_18s, "Phylum", NArm = FALSE)
-
-# transform to proportions
-ps_18s_rel <- transform_sample_counts(classGlommed, function(x) x / sum(x))
-# Ensure 'lon' is a factor
-ps_18s_rel@sam_data$lon <- as.factor(ps_18s_rel@sam_data$lon)
-
-plot_bar(ps_18s_rel, fill = "Phylum", x = "lon") + 
-  scale_fill_manual(values = my_colors) + theme_classic() +
-  geom_bar(stat = "identity", width = 0.8) +
-  scale_y_continuous(labels = scales::percent) +
-  labs(y = "Relative abundance (%)", x = "Longitude") +
-  ggtitle("Protist Phyla – RoCSI (18S, MZGdb) - including NAs")+
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) + # Rotate x-axis labels for better readability
-  scale_x_discrete(
-    labels = function(x) substr(x, 1, 5), # Show only the first 5 characters of each label
-    breaks = function(x) x[seq(1, length(x), by = 4)] # Show every 4th label
-  )
-```
-
-### Top 10 genera 
-
-```{r,echo=FALSE, message=FALSE, warning=FALSE}
-### --------------- Using the microbiome package ----------------
-#BiocManager::install("microbiome")
-library(microbiome)
-
-# Collapse to genus level
-ps_genus <- tax_glom(ps_18s, taxrank = "Genus")
-
-# Transform to relative abundance
-ps_rel <- transform(ps_genus, "compositional")
-
-# Get top 10 genera by mean relative abundance
-top10 <- top_taxa(ps_rel, n = 10)  # this returns taxa_names, not Genus strings
-
-# Melt *full* ps_rel, not pruned
-df <- psmelt(ps_rel)
-df$lon <- as.factor(df$lon)
-
-# Create a new genus column where everything not in top10 becomes "Other"
-df <- df %>%
-  mutate(
-    Genus_plot = as.character(Genus),
-    Genus_plot = if_else(OTU %in% top10, Genus_plot, "Other")
-  ) %>%
-  group_by(Sample, lon, Genus_plot) %>%
-  summarise(Abundance = sum(Abundance), .groups = "drop")
-
-# Optional: put "Other" at the end of the legend
-df$Genus_plot <- factor(
-  df$Genus_plot,
-  levels = c(setdiff(sort(unique(df$Genus_plot)), "Other"), "Other")
-)
-
-# Pick a clear neutral colour for "Other"
-other_color <- "#C0C0C0"
-
-# Fit your colours + "Other" at the end
-plot_colors <- c(my_colors[1:10], other_color)
-
-# Plot
-ggplot(df, aes(x = lon, y = Abundance, fill = Genus_plot)) +
-  geom_bar(stat = "identity", position = "stack") +
-  scale_fill_manual(values = plot_colors) + 
-  labs(
-    title = "Top 10 Genera + Other",
-    x = "Longitude",
-    y = "Relative Abundance"
-  ) +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  scale_x_discrete(
-    labels = function(x) substr(x, 1, 5),
-    breaks  = function(x) x[seq(1, length(x), by = 4)]
-  )
-
-```
-::: {.callout-note}
-### 💬 Discussion — Dominant protist genera
-
-Breaking down the 18S community at the genus level reveals a mixture of **picophytoplankton (Bathycoccus), mixotrophic and autotrophic dinoflagellates (Karlodinium, Karenia, Prorocentrum and Lepidodinium), and heterotrophic grazers (Goniomonas, Protoperidinium)**.
-
-The high abundance of dinoflagellates **Karlodinium, Karenia and Lepidodinium** at the transition between shelp to open-ocean might be linked to the observed phytoplankton blooms seen from the satelite data and chlorophll index of the CPR (see below).
-
-Let's note the high abundance of **Goniomonas** (Phagotrophic micrograzer) in the open-ocean!
-
-Probably: shelf --> well mixed, Open-ocean --> more stratified...
-
-**Note**: The "other" genius (including all the less abundant genera) is large, especially at low longitudes...
-**IMPORTANT**: "other" also includes **NAs** which can be not-assigned ASVs such as zooplankton. For example, ASV2 is the most abundant ASV in 01-CPR_1_ID_1 but has only Kingdom = Chromista as taxonomy. BLasting the sequence shows that it is the 18S sequence of **Centropages sp.**
-ASV3 = Oithona sp.
-:::
-
-### Main Phytoplankton genera
-
-```{r,echo=FALSE, message=FALSE, warning=FALSE}
-## 1) Keep only phytoplankton phyla
-phyto_phyla <- c(
-  "Bacillariophyta",
-  "Haptophyta",
-  "Chlorophyta",
-  "Cryptophyta",
-  "Rhodophyta",
-  "Ochrophyta",
-  "Myzozoa"
-)
-
-ps_phyto <- subset_taxa(ps_18s, Phylum %in% phyto_phyla)
-ps_phyto <- prune_taxa(taxa_sums(ps_phyto) > 0, ps_phyto)
-
-## 2) Collapse to genus + drop unassigned genera
-ps_genus <- tax_glom(ps_phyto, taxrank = "Genus", NArm = FALSE)
-ps_genus <- subset_taxa(ps_genus, !is.na(Genus) & Genus != "" & Genus != "NA")
-ps_genus <- prune_taxa(taxa_sums(ps_genus) > 0, ps_genus)
-
-## 3) Relative abundance (within phytoplankton genera)
-ps_rel <- transform(ps_genus, "compositional")
-
-## 4) Keep only top 10 phytoplankton genera
-top10 <- top_taxa(ps_rel, n = 10)
-ps_top10 <- prune_taxa(top10, ps_rel)
-
-## OPTIONAL: re-normalise so top10 sum to 1
-ps_top10 <- transform(ps_top10, "compositional")
-
-## 5) Melt for plotting
-df <- psmelt(ps_top10)
-df$lon <- as.factor(df$lon)
-
-## Order genera by mean abundance
-gen_order <- df %>%
-  group_by(Genus) %>%
-  summarise(m = mean(Abundance), .groups = "drop") %>%
-  arrange(desc(m)) %>%
-  pull(Genus)
-
-df$Genus <- factor(df$Genus, levels = gen_order)
-
-## 6) Match colours to genera (IMPORTANT)
-plot_colors <- my_colors[1:length(gen_order)]
-names(plot_colors) <- gen_order
-
-## 7) Plot
-ggplot(df, aes(x = lon, y = Abundance, fill = Genus)) +
-  geom_bar(stat = "identity", position = "stack") +
-  scale_fill_manual(values = plot_colors) +
-  labs(
-    title = "Top 10 phytoplankton genera",
-    x = "Longitude",
-    y = "Relative Abundance",
-    fill = "Genus"
-  ) +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  scale_x_discrete(
-    labels = function(x) substr(x, 1, 5),
-    breaks  = function(x) x[seq(1, length(x), by = 4)]
-  )
-```
-Surprisingly the CPR dataset has many occurences of Emiliania huxleyi but none in the 18S dataset...
-Let's look for Gephyrocapsa sp. (other accepted genus)
-
-```{r,echo=FALSE, message=FALSE, warning=FALSE}
-ps_geo <- subset_taxa(ps_18s, Genus == "Gephyrocapsa")
-ps_geo <- prune_taxa(taxa_sums(ps_geo) > 0, ps_geo)
-
-df <- psmelt(ps_geo)
-df$lon <- as.numeric(as.character(df$lon))  # if lon is factor
-
-df_sum <- df %>%
-  group_by(Sample, lon) %>%
-  summarise(Count = sum(Abundance), .groups = "drop")
-
-ggplot(df_sum, aes(x = lon, y = Count)) +
-  geom_line() +
-  geom_point(size = 2) +
-  labs(
-    title = "Gephyrocapsa read counts along transect",
-    x = "Longitude",
-    y = "Read count"
-  ) +
-  theme_minimal()
-
-
-
-
-```
 

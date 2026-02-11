@@ -20,3 +20,6 @@ execute:
 
 ```{r, child="Combined_analysis.qmd"}
 ```
+
+```{r, child="16S_analysis.qmd"}
+```

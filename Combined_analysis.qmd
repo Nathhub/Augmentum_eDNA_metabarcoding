@@ -1,7 +1,7 @@
 
 # 🧬 Overview of Sequencing & Experimental Design
 
-This report summarises the **two metabarcoding workflows** applied to the Augmentum eDNA samples:
+This section summarises the **two metabarcoding workflows** applied to the Augmentum eDNA samples:
 
 -   **16S rRNA region** (targeting prokaryotes)
 -   **18S rRNA V9 region** (targeting phytoplankton)
@@ -11,44 +11,43 @@ Both datasets were sequenced at the\
 
 ## 📊 Sequencing Summary
 
-| Feature | **18S rRNA V9** | **COI (metazoans)** |
+| Feature | **16S rRNA** | **18S rRNA** |
 |-----------------|-------------------------|-------------------------------|
-| **SSP ID** | [SSP202877](https://cgr.liv.ac.uk/illum/SSP202877_b388934ddf413642/) | [SSP200993](https://cgr.liv.ac.uk/illum/SSP200993_bbba6061877a5e12) |
-| **Purchase order** | 203631529 | P10817-5 |
-| **Sequencing platform** | Illumina MiSeq v2 (2×150 bp) | Illumina MiSeq v2 (2×250 bp) |
-| **Target region** | 18S V9 (1389F–1510R) | COI Leray fragment (m1COIintF–jgHCO2198) |
-| **Expected amplicon size** | \~121 bp | \~313 bp |
+| **SSP ID** | [SSP204011](https://cgr.liv.ac.uk/illum/SSP204011_f6bb23b2067d8887/) | [SSP204019](https://cgr.liv.ac.uk/illum/SSP204019_ab47c0e24301bb22/) |
+| **Purchase order** | 203645351 | 203645352 |
+| **Sequencing platform** | Illumina MiSeq i100 (2×300 bp) | Illumina MiSeq i100 (2×300 bp) |
+| **Target region** | 16S V4 (515F_mod – 806R_mod) | 18S v4 (TAReuk454FWD1 - TAReukREV3) |
+| **Expected amplicon size** | \~300 bp | \~400 bp |
 | **Raw read depth (mean)** | \~150k | \~200k |
-| **Pre-trimming QC** | Cutadapt v4.5 | Cutadapt v1.2.1 + Sickle v1.200 |
-| **Downstream processing** | Cutadapt → DADA2 → MZG 18S | Cutadapt → DADA2 → MZG COI |
+| **Pre-trimming QC** | Cutadapt v4.5 | Cutadapt v4.5 |
 
 ------------------------------------------------------------------------
 
 # 🧬 Primer Sets (with CGR Overhangs)
 
-## 16S V9 Primers
+## 16S V4 Primers
 
--   **Forward:**\
+-   **Forward:** (Parada et al., 2016)\
     5′ [ACACTCTTTCCCTACACGACGCTCTTCCGATCTNNNNN]{style="color:#2E86C1;font-weight:bold;"}\
-    [TTGTACACACCGCCC]{style="color:#C0392B;font-weight:bold;"} 3′\
-    *(CGR overhang + spacer in blue; 18S primer in red)*
+    [GTGYCAGCMGCCGCGGTAA]{style="color:#C0392B;font-weight:bold;"} 3′\
+    *(CGR overhang + spacer in blue; 16S primer in red)*
 
--   **Reverse:**\
+-   **Reverse:** (Apprill et al., 2015)\
     5′ [GTGACTGGAGTTCAGACGTGTGCTCTTCCGATCT]{style="color:#2E86C1;font-weight:bold;"}\
-    [CCTTCYGCAGGTTCACCTAC]{style="color:#C0392B;font-weight:bold;"} 3′
+    [GGACTACNVGGGTWTCTAAT]{style="color:#C0392B;font-weight:bold;"} 3′
 
 ------------------------------------------------------------------------
 
-## 16S V9 Primers
+## 18S V4 Primers
 
--   **Forward:**\
+-   **Forward:** (Stoeck et al., 2010)\
     5′ [ACACTCTTTCCCTACACGACGCTCTTCCGATCTNNNNN]{style="color:#2E86C1;font-weight:bold;"}\
-    [TTGTACACACCGCCC]{style="color:#C0392B;font-weight:bold;"} 3′\
+    [CCAGCASCYGCGGTAATTCC]{style="color:#C0392B;font-weight:bold;"} 3′\
     *(CGR overhang + spacer in blue; 18S primer in red)*
 
--   **Reverse:**\
+-   **Reverse:** (Stoeck et al., 2010)\
     5′ [GTGACTGGAGTTCAGACGTGTGCTCTTCCGATCT]{style="color:#2E86C1;font-weight:bold;"}\
-    [CCTTCYGCAGGTTCACCTAC]{style="color:#C0392B;font-weight:bold;"} 3′
+    [ACTTTCGTTCTTGATYRA]{style="color:#C0392B;font-weight:bold;"} 3′
 
 ------------------------------------------------------------------------
 
@@ -62,7 +61,7 @@ Both markers follow the same general pipeline:
 4.  **Read merging** (DADA2)\
 5.  **Chimera removal** (DADA2)\
 6.  **Taxonomic assignment: ** (DADA2)
-    -   16S → *MZG 16S “All prokaryotes???* reference database\
+    -   16S → *SILVA nr99 v138.2* reference database\
     -   18S → *MZG 18S “All Microbes + Protists”, Mode-A* reference database\
 
 For each step, differences between the two pipelines are shown.
@@ -75,14 +74,13 @@ For each step, differences between the two pipelines are shown.
 
 | Parameter | **16S** | **18S** |
 |--------------------------|-----------------------|-----------------------|
-| Forward primer (`-g`) | TTGTACACACCGCCC | GGWACWGGWTGAACWGTWTAYCCYCC |
-| Reverse primer (`-G`) | CCTTCYGCAGGTTCACCTAC | TANACYTCNGGRTGNCCRAARAAYCA |
+| Forward primer (`-g`) | GTGYCAGCMGCCGCGGTAA | CCAGCASCYGCGGTAATTCC |
+| Reverse primer (`-G`) | GGACTACNVGGGTWTCTAAT | ACTTTCGTTCTTGATYRA |
 | `--match-read-wildcards` | ✔️ | ✔️ |
-| Minimum overlap | **10** | **20** |
-| Max error rate (`-e`) | **0.15** | **0.20** |
+| Minimum overlap | **10** | **10** |
+| Max error rate (`-e`) | **0.20** | **0.20** |
 | `--discard-untrimmed` | ✔️ | ✔️ |
-| `--minimum-length` | 80 bp | 200 bp |
-| Pre-processing by CGR | Adapters trimmed via Cutadapt 4.5 | Adapters trimmed (Cutadapt v1.2.1) + Sickle quality filtering |
+| `--minimum-length` | 200 bp | 200 bp |
 
 ------------------------------------------------------------------------
 
@@ -111,20 +109,20 @@ Where <OV> and <ERROR> differ between markers (see table above).
 
 ### 🔹 Summary of Cutadapt parameters used
 
-| Parameters                | **18S**    | **COI**                             |
+| Parameters                | **16S**    | **18S**                             |
 | ------------------------- | ---------- | ----------------------------------- |
-| `truncLen`                | c(130,120) | c(210,210)                          |
+| `truncLen`                | c(270,260) | c(270,260)                          |
 | `maxEE`                   | c(2,3)     | c(2,3)                              |
-| `minLen`                  | 80         | 200                                 |
-| `minOverlap` (mergePairs) | 30         | 90                                  |
-| Ref database              | MZG 18S    | MZG COI                             |
+| `minLen`                  | 200         | 200                                |
+| `minOverlap` (mergePairs) | 90         | 90                                  |
+| Ref database              |  SILVA nr99 v138.2   | MZG 18S                   |
 
 ::: {.callout-note title="MZG Reference databases"}
 | Marker  | Database                               | Notes                                        |
 | ------- | -------------------------------------- | -------------------------------------------- |
-| **18S** | `MZGdada2-18s__T2000000__o00__A.fastq` | phytoplankton --> "All Microbes + Protists", mode-A    |
-| **COI** | `MZGdada2-coi__T4000000__o00__A.fastq` | zooplankton --> “All invertebrates”, mode-A          |
-source: https://metazoogene.org/mzgdb/atlas/html-src/data__T4000000__o00.html
+| **16SS** | `silva_nr99_v138.2_toGenus_trainset.fa.gz` | bacteria/archaea down to the Genus level    | source: https://www.arb-silva.de/current-release/DADA2/1.36.0/SSU |
+| **18S** | `MZGdada2-18s__MZGdbALL__o00__A.fastq` | "All Plankton Combo (All-World-Oceans) Mode-A" data |
+source: https://metazoogene.org/mzgdb/atlas/html-src/data__MZGdbALL__o00.html
 :::
 
 ::: {.callout-note title="Note"}
@@ -177,11 +175,8 @@ seqtab <- makeSequenceTable(merged)
 seqtab.nochim <- removeBimeraDenovo(seqtab, method="consensus")
 
 # Taxonomic Assignment
-taxa <- assignTaxonomy(
-  seqtab.nochim,
-  refFasta = <REF_FASTA>,
-  multithread = TRUE
-)
+taxa <- assignTaxonomy(seqtab.nochim, refFasta = <REF_FASTA>, multithread = TRUE)
+taxa <- addSpecies(taxa, "/home/ndh1n17/ote_db/SILVA/silva_nr99_v138.2_assignSpecies.fa.gz")
 
 ```
 
@@ -199,44 +194,31 @@ library(readr)
 library(knitr)
 library(kableExtra)
 
-# # Load the data
-# df <- read_csv("data/DADA2_counts_table.csv")
-# 
-# # Rename columns to avoid ...2 suffix
-# colnames(df) <- c("sample",
-#                   "input", "filtered", "nonchim", "reads_retained (%)",
-#                   "input", "filtered", "nonchim", "reads_retained (%)")
-# 
-# # Create a styled table with group headers and scrolable
-# kable(df, format = "html", caption = "DADA2 Counts for 18S and COI") %>%
-#   add_header_above(c(" " = 1, "18S" = 4, "COI" = 4)) %>%
-#   kable_styling(
-#     full_width = FALSE,
-#     bootstrap_options = c("striped", "hover", "condensed")
-#   ) %>%
-#   scroll_box(height = "400px", width = "100%")
+# Load the data
+df <- read_csv("data/DADA2_counts_table.csv")
+
+# Rename columns to avoid ...2 suffix
+colnames(df) <- c("sample",
+                  "input", "filtered", "nonchim", "reads_retained (%)",
+                  "input", "filtered", "nonchim", "reads_retained (%)")
+
+# Create a styled table with group headers and scrolable
+kable(df, format = "html", caption = "DADA2 Counts for 16S and 18S") %>%
+  add_header_above(c(" " = 1, "16S" = 4, "18S" = 4)) %>%
+  kable_styling(
+    full_width = FALSE,
+    bootstrap_options = c("striped", "hover", "condensed")
+  ) %>%
+  scroll_box(height = "400px", width = "100%")
 ```
 
 ::: {.callout-note title="Negative Controls"}
-The **No-Template Control (NTC)** and **Extraction Blank** samples in the 18S dataset did not pass the initial **DADA2 filtering step**, resulting in zero retained reads after quality filtering.\
-Consequently, these controls were **excluded from downstream analysis** (denoising, merging, and taxonomy assignment).
-
-Their exclusion is consistent with expectations for negative controls, indicating the absence of detectable contamination above sequencing background levels.
+The **66_Extraction_negative** sample in the 16S and 18S datasets contained 4 and 24 reads, respectively, after the dada2 pipeline.
 :::
 
 ::: {.callout-note}
 ### 💬 Discussion — reads retained
 
-The proportion of reads that were kept following the DADA2 pipeline is good: **84%** and **91%** for **18S** and **COI**, respectively. This leaves an average of **136K** and **142K** reads for **18S** and **COI**, respectively.
-Let's note that for 18S, samples 12 and 13 lost more then the rest: **53%** and **60%**, respectively.
+The proportion of reads that were kept following the DADA2 pipeline is good: **92%** and **94%** for **16S** and **18S**, respectively. This leaves an average of **320K** and **330K** reads for **16S** and **18S**, respectively.
 :::
-
-## 🧮 Next Steps
-
-At this stage, for each of the datasets/molecular markers, we have:
-
-  - An **OTU abundance table** (`seqtab.nochim`)  
-  - A **taxonomy table** (`taxa`)  
-
-These files (provided) can be imported into **R** using the  **[phyloseq](https://www.bioconductor.org/packages/release/bioc/html/phyloseq.html)** package downstream analysis and visualization.
 
