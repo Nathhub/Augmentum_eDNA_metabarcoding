@@ -1,4 +1,4 @@
-# 16S Dataset
+# 18S Dataset
 
 ## 📦 Build the phyloseq object (16S)
 
@@ -7,14 +7,23 @@ library(tidyverse)
 library(phyloseq)
 
 # ---- paths ----
-datadir <- "data/16S"
+datadir <- "data/18S"
 
 # ---- load DADA2 outputs ----
 seqtab.nochim <- readRDS(file.path(datadir, "seqtab_nochim.rds"))
 taxa          <- readRDS(file.path(datadir, "taxa.rds"))
 
+# Make sure taxonomy is a proper matrix and has consistent column names
+taxa <- as.matrix(taxa)
+target_cols <- c(
+  "Kingdom","Subkingdom_1","Subkingdom_2","Phylum","Subphylum","Subphylum_1","Superclass",
+  "Class","Subclass","Infraclass","Superorder","Order","Suborder_1","Suborder_2","Suborder_3",
+  "Family","Subfamily","Genus","Subgenus","Species"
+)
+colnames(taxa) <- target_cols[seq_len(ncol(taxa))]
+
 # Load metadata
-metadat <- readxl::read_xlsx(file.path(datadir, "metadata_16S.xlsx")) %>%
+metadat <- readxl::read_xlsx(file.path(datadir, "metadata_18S.xlsx")) %>%
   mutate(
     Date = as.Date(as.numeric(Date), origin = "1899-12-30"),
     Time = as.POSIXct(as.numeric(Time) * 86400, origin = "1970-01-01", tz = "UTC"),
@@ -25,38 +34,38 @@ rownames(metadat) <- rownames(seqtab.nochim)
 
 # Create a Phyloseq object
 
-ps_16s <- phyloseq(otu_table(seqtab.nochim, taxa_are_rows = F), 
+ps_18s <- phyloseq(otu_table(seqtab.nochim, taxa_are_rows = F), 
                sample_data(metadat), 
                tax_table(taxa))
-saveRDS(ps_16s, "data/ps_16s.rds")
+saveRDS(ps_18s, "data/ps_18s.rds")
   
 cat("🔹 A summary of the phyloseq object \n")
-ps_16s
+ps_18s
 
 # storing the ASV sequences and assigning them with a name and then renaming the taxa object
-dna <- Biostrings::DNAStringSet(taxa_names(ps_16s))
-names(dna) <- taxa_names(ps_16s)
-ps_16s <- merge_phyloseq(ps_16s, dna)
-taxa_names(ps_16s) <- paste0("ASV", seq(ntaxa(ps_16s)))
+dna <- Biostrings::DNAStringSet(taxa_names(ps_18s))
+names(dna) <- taxa_names(ps_18s)
+ps_18s <- merge_phyloseq(ps_18s, dna)
+taxa_names(ps_18s) <- paste0("ASV", seq(ntaxa(ps_18s)))
 
 ```
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 # Print sample names, taxonomy ranks, and metadata fields — with explanations
 cat("🔹 These are the metadata variables:\n")
-print(sample_variables(ps_16s))
+print(sample_variables(ps_18s))
 ```
 
 ## 📊 Data visualisation
 
-In this section, we explore the community structure of the RoCSI 16S dataset using the
-`phyloseq` object (`ps_16s`) generated above. We start by visualising read depth
+In this section, we explore the community structure of the RoCSI 18S dataset using the
+`phyloseq` object (`ps_18s`) generated above. We start by visualising read depth
 per sample, followed by basic taxonomic composition summaries.
 
 ### Read depth per sample
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
 read_depth <- data.frame(
-Sample = sample_names(ps_16s),
-Reads = sample_sums(ps_16s),
+Sample = sample_names(ps_18s),
+Reads = sample_sums(ps_18s),
 check.names = FALSE
 )
 
@@ -81,65 +90,57 @@ y = "Number of non-chimeric reads"
 
 
 # Make sure Water_masses is a factor (optional, but useful for consistent plotting)
-sample_data(ps_16s)$Fjord <- as.factor(sample_data(ps_16s)$Fjord)
+sample_data(ps_18s)$Fjord <- as.factor(sample_data(ps_18s)$Fjord)
 
 plot_richness(
-  ps_16s,
+  ps_18s,
   x = "Number",
   measures = c("Observed", "Shannon", "Simpson"),
-  color = "Fjord", title = "16S Alpha diversity")
+  color = "Fjord", title = "18S Alpha diversity")
 
 ```
 ::: {.callout-note}
 ### 💬 Discussion — Alpha diversity patterns
 
-Observed richness (number of ASVs), Shannon and Simpson diversity are fairly similar across fjords and the ocean samples.
-  
+Alpha diversity of 18S eukaryotic communities varied among fjords, with Ocean and Tunulliarfik samples generally exhibiting higher richness compared to Sermilik. Shannon and Simpson indices indicate relatively high evenness across most samples, although occasional dominance events were observed (diversity drops), particularly in Sermilik and Tunulliarfik. Compared to 16S prokaryotic diversity, 18S communities displayed greater variability among fjords, suggesting that eukaryotic plankton communities may be more sensitive to local environmental gradients such as stratification and meltwater influence.  
 :::
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
 
 
 # Make sure Water_masses is a factor (optional, but useful for consistent plotting)
-sample_data(ps_16s)$Fjord <- as.factor(sample_data(ps_16s)$Fjord)
-sample_data(ps_16s)$Depth <- as.factor(sample_data(ps_16s)$Depth)
+sample_data(ps_18s)$Fjord <- as.factor(sample_data(ps_18s)$Fjord)
+sample_data(ps_18s)$Depth <- as.factor(sample_data(ps_18s)$Depth)
 
 plot_richness(
-  ps_16s,
+  ps_18s,
   x = "Number",
   measures = c("Observed", "Shannon", "Simpson"),
-  color = "Depth", title = "16S Alpha diversity")
+  color = "Depth", title = "18S Alpha diversity")
 
 ```
 
 ::: {.callout-note}
 ### 💬 Discussion — Alpha diversity patterns
-
-Observed richness (number of ASVs) tend to be increasing with depth.
+No obvious trends with depth... Maybe surface water tend to exhibit lower diversity...
 :::
 
 ### Ordination
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
-ord <- ordinate(ps_16s, method = "PCoA", distance = "bray")
+ord <- ordinate(ps_18s, method = "PCoA", distance = "bray")
 
 # Create the ordination plot with ellipses
-plot_ordination(ps_16s, ord, color = "Fjord") +
+plot_ordination(ps_18s, ord, color = "Fjord") +
   geom_point(size = 3) +
-  ggtitle("Ordination – 16S") +
+  ggtitle("Ordination – 18S") +
   stat_ellipse(aes(group = Fjord), type = "norm", linetype = "dashed", size = 1) +
   theme_minimal()
 ```
 ::: {.callout-note}
 ### 💬 Discussion — Beta diversity
 
-The ordination shows **clustering of samples by fjord**, indicating fjord-level structuring of bacterial communities. Sermilik forms a relatively distinct and tightly clustered group, whereas Tunulliarfik exhibits greater within-fjord variability. Notably, there is considerable overlap between Itterdalk and Tunulliarfik, suggesting partial similarity in community composition and potentially shared environmental controls. Ocean samples occupy an intermediate position, consistent with coastal waters acting as a regional microbial source pool. Overall, **fjord identity contributes to community differentiation**, although separation is not absolute among all systems.
-
-Next: check if dispersion differs significantly? 
-betadisper(...)
-permutest(...)
-
-**NOTE**: some samples are pretty distant from the othesr. Who are they?
+The 18S ordination reveals partial clustering by fjord but with substantial overlap among systems. Compared to the 16S bacterial communities, eukaryotic assemblages show greater within-fjord variability and weaker separation among fjords. Tunulliarfik displays the highest dispersion, consistent with elevated alpha diversity and environmental heterogeneity. Overall, these results suggest that while fjord identity influences eukaryotic community structure, planktonic assemblages may be shaped more strongly by shared regional drivers such as stratification and bloom dynamics than by fjord-specific environmental filtering alone.
 :::
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
@@ -153,7 +154,7 @@ bottom5
 ```
 
 ::: {.callout-note}
-The most divergent samples in the ordination correspond exclusively to surface (D1) samples. These stations were influenced by meltwater and low salinity conditions, suggesting that surface stratification and freshwater input may exert a strong effect on microbial community composition. This pattern indicates that vertical position and freshwater influence may be key drivers of community differentiation in these fjord systems.
+Again, the most divergent samples in the ordination correspond exclusively to surface (D1) samples. Particularly they are the stations surrounded by icebergs (Fjord Sermilik and Tunulliarfik). These stations were influenced by meltwater and low salinity conditions, suggesting that surface stratification and freshwater input may exert a strong effect on eukaryotic community composition.
 :::
 
 
@@ -168,7 +169,7 @@ my_colors <- c("#FF6666", "#8DD3C7", "#377EB8", "#4DAF4A",
 library(microbiome)
 
 # 1) Agglomerate to Phylum
-ps_phylum <- tax_glom(ps_16s, taxrank = "Phylum")
+ps_phylum <- tax_glom(ps_18s, taxrank = "Phylum")
 
 # 2) Transform to relative abundance (compositional)
 ps_rel <- microbiome::transform(ps_phylum, "compositional")
@@ -200,8 +201,8 @@ other_color <- "#C0C0C0"
 plot_colors <- c(my_colors[1:20], other_color)
 
 # Optional: make sure color vector matches factor levels exactly
-levels_phyla <- levels(df$Phylum_plot)
-names(plot_colors) <- levels_phyla  # map colors to labels
+levels_phylum <- levels(df$Phylum_plot)
+names(plot_colors) <- levels_phylum  # map colors to labels
 
 # 6) Plot
 ggplot(df, aes(x = Number, y = Abundance, fill = Phylum_plot)) +
@@ -209,7 +210,7 @@ ggplot(df, aes(x = Number, y = Abundance, fill = Phylum_plot)) +
   scale_fill_manual(values = plot_colors) +
   scale_y_continuous(labels = scales::percent) +
   labs(
-    title = "Bacteria/Archaea Phyla (Top 20 + Other)",
+    title = "Eukaryote Phyla (Top 20 + Other)",
     x = "Sample Number",
     y = "Relative abundance (%)",
     fill = "Phylum"
@@ -220,24 +221,23 @@ ggplot(df, aes(x = Number, y = Abundance, fill = Phylum_plot)) +
     legend.position = "bottom",
     legend.direction = "horizontal"
   ) +
-  guides(fill = guide_legend(nrow = 5))   # increase if still crowded
-
+  guides(fill = guide_legend(nrow = 3))   # increase if still crowded
 
 ```
 
 ::: {.callout-note}
 ### 💬 Discussion — Phyla composition
 
-The bacterial community across samples is dominated by **Pseudomonadota**, with consistent contributions from **Bacteroidota** and **Cyanobacteriota**. Minor but **detectable archaeal phyla** were present at low relative abundance. Overall community structure is broadly similar across samples.
+At the Phylum level, eukaryotic communities are strongly dominated by **Myzozoa**, likely **dinoflagellate lineages**, across most samples. **Bacillariophyta (diatoms)** and **Chlorophyta (green algae)** contribute variably among samples, reflecting potential shifts in primary producer composition.
 :::
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
 
 # 1️⃣ Collapse to Class level
-ps_class <- tax_glom(ps_16s, taxrank = "Class")
+ps_Class <- tax_glom(ps_18s, taxrank = "Class")
 
 # 2️⃣ Transform to relative abundance
-ps_rel <- transform(ps_class, "compositional")
+ps_rel <- transform(ps_Class, "compositional")
 
 # 3️⃣ Get top 10 classes (by mean relative abundance)
 top10 <- top_taxa(ps_rel, n = 10)
@@ -273,7 +273,7 @@ ggplot(df, aes(x = Number, y = Abundance, fill = Class_plot)) +
   scale_fill_manual(values = plot_colors) + 
   scale_y_continuous(labels = scales::percent) +
   labs(
-    title = "Top 10 Classes + Other",
+    title = "Top 10 classes + Other",
     x = "Sample Number",
     y = "Relative Abundance (%)",
     fill = "Class"
@@ -292,7 +292,7 @@ ggplot(df, aes(x = Number, y = Abundance, fill = Class_plot)) +
 ::: {.callout-note}
 ### 💬 Discussion — Class composition
 
-
+At the Class level, eukaryotic communities were strongly dominated by **Dinozoa (dinoflagellates)** across most samples, with episodic increases in **Bacillariophytina (diatoms) and Crustacea**. These patterns suggest that **dinoflagellates** and associated trophic interactions **play a central role** in structuring the planktonic community. Compared to bacterial communities, 18S profiles exhibit stronger dominance patterns and greater patchiness.
 :::
 
 
@@ -302,8 +302,8 @@ ggplot(df, aes(x = Number, y = Abundance, fill = Class_plot)) +
 ```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
 
 # Collapse + compositional
-ps_class <- tax_glom(ps_16s, taxrank = "Class")
-ps_rel   <- transform(ps_class, "compositional")
+ps_Class <- tax_glom(ps_18s, taxrank = "Class")
+ps_rel   <- transform(ps_Class, "compositional")
 
 # Top 10 taxa (OTU/ASV IDs after glomming)
 top10 <- top_taxa(ps_rel, n = 10)
@@ -360,15 +360,10 @@ plot_fjord <- function(df, fjord_name){
     theme_classic() +
     theme(
       legend.position = "bottom",
-      axis.text.x = element_text(angle = 45, hjust = 1),
       strip.background = element_rect(fill = "white"),
       strip.text = element_text(face = "bold")
     ) +
-    guides(fill = guide_legend(nrow = 2, byrow = TRUE)) +
-    scale_x_discrete(
-      labels = function(x) substr(x, 1, 5),
-      breaks = function(x) x[seq(1, length(x), by = 2)]
-    )
+    guides(fill = guide_legend(nrow = 2, byrow = TRUE)) 
 }
 
 fjords <- sort(unique(df$Fjord))
