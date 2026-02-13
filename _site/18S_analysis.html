@@ -197,11 +197,113 @@ tax_table()   Taxonomy Table:    [ 16357 taxa by 20 taxonomic ranks ]</code></pr
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="18S_analysis_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="18S_analysis_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="960"></p>
 </figure>
 </div>
 </div>
 </div>
+</section>
+<section id="positive-and-negative-control" class="level3">
+<h3 class="anchored" data-anchor-id="positive-and-negative-control">Positive and negative control</h3>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>Number of reads in the controls:</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   65_Positive_control 66_Extraction_negative 
+                438884                    243 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>                        Observed
+X65_Positive_control         171
+X66_Extraction_negative        3</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>💬 Discussion — Controls
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Those control are less reassuring than the 16S ones:</p>
+<p><strong>Positive control</strong>: 438k reads, 171 ASVs → 171 ASVs sounds high, but can have different explanations!</p>
+<p><strong>Extraction negative</strong>: Extraction negative: 243 reads, 3 ASVs → This is still very low, but higher than the 16S negative (which had 4 reads).</p>
+<p>Let’s dive into it!</p>
+</div>
+</div>
+<section id="negative-control" class="level4">
+<h4 class="anchored" data-anchor-id="negative-control">Negative control</h4>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 4
+# Groups:   Genus, Family [2]
+  Genus       Family                            Phylum  Reads
+  &lt;chr&gt;       &lt;chr&gt;                             &lt;chr&gt;   &lt;int&gt;
+1 Ansanella   Suessiaceae                       Myzozoa   205
+2 Protodinium Dinoflagellata_incertae_sedis_EXT Myzozoa    38</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>💬 Discussion — Negative control
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The 18S extraction negative control contained 243 reads distributed across <strong>two dinoflagellate genera</strong> that (as we will see later) are also abundant in the environmental samples. Given the low read count (~0.1% of a average sample depth) and taxonomic identity, these sequences likely reflect minimal <strong>index cross-talk</strong> rather than true contamination. No need for decontamination!</p>
+</div>
+</div>
+</section>
+<section id="positive-control" class="level4">
+<h4 class="anchored" data-anchor-id="positive-control">Positive control</h4>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 10 × 2
+   OTU     Reads
+   &lt;chr&gt;   &lt;int&gt;
+ 1 ASV15  272251
+ 2 ASV56   56991
+ 3 ASV327   5966
+ 4 ASV346   5450
+ 5 ASV1     5371
+ 6 ASV423   3887
+ 7 ASV433   3722
+ 8 ASV493   2968
+ 9 ASV587   2320
+10 ASV602   2263</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>💬 Discussion — Positive control
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>From the Zymo standard, we are expecting 2 yeasts:</p>
+<p>🍄 Yeasts:</p>
+<ul>
+<li><em>Saccharomyces cerevisiae</em></li>
+<li><em>Cryptococcus neoformans</em></li>
+</ul>
+<p>The 18S positive control was dominated by the expected yeast taxa (<strong>Saccharomyces cerevisiae</strong> and <strong>Cryptococcus spp.</strong>), confirmed via BLAST analysis (the MZG database is not adapted in this case).</p>
+<p>However, several marine dinoflagellate ASVs were also detected at low relative abundance (~1–2% each). Given the dominance of yeast sequences and the minimal read count in the extraction negative control, these minor marine taxa most likely reflect low-level cross-contamination during PCR or library preparation rather than sample mislabeling or widespread contamination. The overall composition confirms successful amplification of the mock community while indicating minor carryover from environmental samples.</p>
+<p>We can now remove the controls from the phyloseq object and move on with the ecological interpretation.</p>
+</div>
+</div>
+</section>
 </section>
 <section id="alpha-diversity" class="level3">
 <h3 class="anchored" data-anchor-id="alpha-diversity">Alpha diversity</h3>
@@ -209,7 +311,7 @@ tax_table()   Taxonomy Table:    [ 16357 taxa by 20 taxonomic ranks ]</code></pr
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="18S_analysis_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="18S_analysis_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="960"></p>
 </figure>
 </div>
 </div>
@@ -231,7 +333,7 @@ tax_table()   Taxonomy Table:    [ 16357 taxa by 20 taxonomic ranks ]</code></pr
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="18S_analysis_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="18S_analysis_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="960"></p>
 </figure>
 </div>
 </div>
@@ -256,7 +358,7 @@ tax_table()   Taxonomy Table:    [ 16357 taxa by 20 taxonomic ranks ]</code></pr
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="18S_analysis_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="18S_analysis_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="960"></p>
 </figure>
 </div>
 </div>
@@ -277,11 +379,11 @@ tax_table()   Taxonomy Table:    [ 16357 taxa by 20 taxonomic ranks ]</code></pr
 <div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code>             SampleID     Axis.1     Axis.2
-50_St18_D1 50_St18_D1 -0.3834283 -0.2485662
-56_St20_D1 56_St20_D1 -0.3669172 -0.1253199
-04_St2_D1   04_St2_D1 -0.3518660 -0.2265214
-01_St1_D1   01_St1_D1 -0.3389872 -0.2161278
-10_St4_D1   10_St4_D1 -0.3348305 -0.1944975</code></pre>
+50_St18_D1 50_St18_D1 -0.3679453 -0.3018036
+56_St20_D1 56_St20_D1 -0.3628814 -0.1845450
+04_St2_D1   04_St2_D1 -0.3416142 -0.3236995
+10_St4_D1   10_St4_D1 -0.3276851 -0.2928791
+01_St1_D1   01_St1_D1 -0.3265305 -0.2939818</code></pre>
 </div>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
@@ -304,7 +406,7 @@ Note
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="18S_analysis_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="960"></p>
+<p><img src="18S_analysis_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="960"></p>
 </figure>
 </div>
 </div>
@@ -326,7 +428,7 @@ Note
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="18S_analysis_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="960"></p>
+<p><img src="18S_analysis_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="960"></p>
 </figure>
 </div>
 </div>
@@ -353,7 +455,7 @@ Note
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="18S_analysis_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="960"></p>
+<p><img src="18S_analysis_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="960"></p>
 </figure>
 </div>
 </div>
@@ -365,7 +467,7 @@ Note
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="18S_analysis_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="960"></p>
+<p><img src="18S_analysis_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid figure-img" width="960"></p>
 </figure>
 </div>
 </div>
@@ -377,7 +479,7 @@ Note
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="18S_analysis_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="960"></p>
+<p><img src="18S_analysis_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="960"></p>
 </figure>
 </div>
 </div>
@@ -389,7 +491,7 @@ Note
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="18S_analysis_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="960"></p>
+<p><img src="18S_analysis_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid figure-img" width="960"></p>
 </figure>
 </div>
 </div>

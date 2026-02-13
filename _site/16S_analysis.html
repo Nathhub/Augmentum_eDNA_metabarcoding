@@ -188,9 +188,109 @@ tax_table()   Taxonomy Table:    [ 3633 taxa by 7 taxonomic ranks ]</code></pre>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="16S_analysis_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="16S_analysis_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="960"></p>
 </figure>
 </div>
+</div>
+</div>
+</section>
+<section id="positive-and-negative-control" class="level3">
+<h3 class="anchored" data-anchor-id="positive-and-negative-control">Positive and negative control</h3>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>Number of reads in the controls:</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      65_zymo_positive 66_Extraction_negative 
+                733263                      4 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>                        Observed
+X65_zymo_positive             14
+X66_Extraction_negative        4</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>💬 Discussion — Controls
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Excellent! Those control numbers are actually very reassuring:</p>
+<p><strong>Positive control</strong>: 733,263 reads, 14 ASVs → perfectly reasonable (mock community). However, it’s a bit more than expected</p>
+<p><strong>Extraction negative</strong>: 4 reads, 4 ASVs → essentially clean (background noise).</p>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 10 × 3
+# Groups:   Sample [1]
+   Sample           Family             Abundance
+   &lt;chr&gt;            &lt;chr&gt;                  &lt;int&gt;
+ 1 65_zymo_positive Listeriaceae          182566
+ 2 65_zymo_positive Bacillaceae           133228
+ 3 65_zymo_positive Staphylococcaceae     124031
+ 4 65_zymo_positive Enterobacteriaceae     97560
+ 5 65_zymo_positive Lactobacillaceae       96823
+ 6 65_zymo_positive Enterococcaceae        90290
+ 7 65_zymo_positive Pseudomonadaceae        8742
+ 8 65_zymo_positive Paenibacillaceae          17
+ 9 65_zymo_positive Cyclobacteriaceae          2
+10 65_zymo_positive Paracoccaceae              2</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>💬 Discussion — Positive Controls : <strong>ZymoBIOMICS Microbial Standard</strong>
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>From the table above, we can ignore the ASVs that have low abundance (noise). We therefore have ASVs that match 7 families.</p>
+<p>From the Zymo standard, we are expecting 8 bacteria:</p>
+<p>🦠 Bacteria species: - Pseudomonas aeruginosa - Escherichia coli - Salmonella enterica - Lactobacillus fermentum - Enterococcus faecalis - Staphylococcus aureus - Listeria monocytogenes - Bacillus subtilis</p>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 9 × 3
+# Groups:   Sample [1]
+  Sample           Genus                Abundance
+  &lt;chr&gt;            &lt;chr&gt;                    &lt;int&gt;
+1 65_zymo_positive Listeria                182566
+2 65_zymo_positive Bacillus                133228
+3 65_zymo_positive Staphylococcus          124031
+4 65_zymo_positive Limosilactobacillus      96823
+5 65_zymo_positive Enterococcus             90290
+6 65_zymo_positive Escherichia-Shigella     45150
+7 65_zymo_positive Salmonella               45099
+8 65_zymo_positive Pseudomonas               8742
+9 65_zymo_positive &lt;NA&gt;                      7312</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>💬 Discussion — Controls Conclusion
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The ZymoBIOMICS Microbial Community Standard positive control performed as expected. All eight bacterial genera included in the mock community were successfully recovered.The relative abundances of recovered taxa were broadly consistent with expected composition, although minor deviations were observed, likely reflecting known amplification biases associated with 16S rRNA gene primers.</p>
+<p>A small proportion (~1%) of reads were assigned to Enterobacteriaceae without genus-level resolution, likely reflecting limitations of the amplified 16S region or conservative classification thresholds.</p>
+<p>Overall, these results confirm the reliability of amplification, sequencing, and taxonomic assignment in the 16S workflow.</p>
+<p>We can now remove the controls from the phyloseq object and move on with the ecological interpretation.</p>
 </div>
 </div>
 </section>
@@ -200,7 +300,7 @@ tax_table()   Taxonomy Table:    [ 3633 taxa by 7 taxonomic ranks ]</code></pre>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="16S_analysis_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="16S_analysis_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="960"></p>
 </figure>
 </div>
 </div>
@@ -222,7 +322,7 @@ tax_table()   Taxonomy Table:    [ 3633 taxa by 7 taxonomic ranks ]</code></pre>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="16S_analysis_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="16S_analysis_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="960"></p>
 </figure>
 </div>
 </div>
@@ -247,7 +347,7 @@ tax_table()   Taxonomy Table:    [ 3633 taxa by 7 taxonomic ranks ]</code></pre>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="16S_analysis_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="16S_analysis_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="960"></p>
 </figure>
 </div>
 </div>
@@ -270,11 +370,11 @@ tax_table()   Taxonomy Table:    [ 3633 taxa by 7 taxonomic ranks ]</code></pre>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code>             SampleID     Axis.1      Axis.2
-04_St2_D1   04_St2_D1 -0.5863910 -0.11333972
-01_St1_D1   01_St1_D1 -0.5518673 -0.13476738
-07_St3_D1   07_St3_D1 -0.4965739 -0.14562415
-10_St4_D1   10_St4_D1 -0.4512137 -0.12949510
-56_St20_D1 56_St20_D1 -0.4203203  0.01151985</code></pre>
+04_St2_D1   04_St2_D1 -0.5962332 -0.07053332
+01_St1_D1   01_St1_D1 -0.5730710 -0.09099290
+07_St3_D1   07_St3_D1 -0.5275916 -0.10260712
+10_St4_D1   10_St4_D1 -0.4828438 -0.08940618
+56_St20_D1 56_St20_D1 -0.4406480  0.04950692</code></pre>
 </div>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
@@ -297,7 +397,7 @@ Note
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="16S_analysis_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="960"></p>
+<p><img src="16S_analysis_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="960"></p>
 </figure>
 </div>
 </div>
@@ -319,7 +419,7 @@ Note
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="16S_analysis_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="960"></p>
+<p><img src="16S_analysis_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="960"></p>
 </figure>
 </div>
 </div>
@@ -346,7 +446,7 @@ Note
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="16S_analysis_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="960"></p>
+<p><img src="16S_analysis_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="960"></p>
 </figure>
 </div>
 </div>
@@ -358,7 +458,7 @@ Note
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="16S_analysis_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="960"></p>
+<p><img src="16S_analysis_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid figure-img" width="960"></p>
 </figure>
 </div>
 </div>
@@ -370,7 +470,7 @@ Note
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="16S_analysis_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="960"></p>
+<p><img src="16S_analysis_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="960"></p>
 </figure>
 </div>
 </div>
@@ -382,7 +482,7 @@ Note
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="16S_analysis_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="960"></p>
+<p><img src="16S_analysis_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid figure-img" width="960"></p>
 </figure>
 </div>
 </div>

@@ -75,6 +75,98 @@ y = "Number of non-chimeric reads"
 )
 ```
 
+### Positive and negative control
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+
+ps_controls <- subset_samples(
+  ps_16s,
+  Name %in% c("65_zymo_positive", "66_Extraction_negative")
+)
+
+ps_controls <- prune_taxa(taxa_sums(ps_controls) > 0, ps_controls)
+cat("Number of reads in the controls:\n")
+sample_sums(ps_controls)
+```
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+
+estimate_richness(ps_controls, measures = "Observed")
+
+```
+
+::: {.callout-note}
+### 💬 Discussion — Controls
+
+Excellent! Those control numbers are actually very reassuring:
+
+**Positive control**: 733,263 reads, 14 ASVs → perfectly reasonable (mock community). However, it's a bit more than expected
+
+**Extraction negative**: 4 reads, 4 ASVs → essentially clean (background noise).
+  
+:::
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+
+df_controls <- psmelt(ps_controls)
+
+df_controls %>%
+  group_by(Sample, Family) %>%
+  summarise(Abundance = sum(Abundance)) %>%
+  arrange(Sample, desc(Abundance)) %>%
+  head(10)
+
+```
+
+::: {.callout-note}
+### 💬 Discussion — Positive Controls : **ZymoBIOMICS Microbial Standard**
+
+From the table above, we can ignore the ASVs that have low abundance (noise). We therefore have ASVs that match 7 families.
+
+From the Zymo standard, we are expecting 8 bacteria:
+
+🦠 Bacteria species:
+- Pseudomonas aeruginosa
+- Escherichia coli
+- Salmonella enterica
+- Lactobacillus fermentum
+- Enterococcus faecalis
+- Staphylococcus aureus
+- Listeria monocytogenes
+- Bacillus subtilis
+
+:::
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+df_controls %>%
+  group_by(Sample, Genus) %>%
+  summarise(Abundance = sum(Abundance)) %>%
+  arrange(Sample, desc(Abundance)) %>%
+  head(9)
+
+```
+::: {.callout-note}
+### 💬 Discussion — Controls Conclusion
+
+The ZymoBIOMICS Microbial Community Standard positive control performed as expected. All eight bacterial genera included in the mock community were successfully recovered.The relative abundances of recovered taxa were broadly consistent with expected composition, although minor deviations were observed, likely reflecting known amplification biases associated with 16S rRNA gene primers.
+
+A small proportion (~1%) of reads were assigned to Enterobacteriaceae without genus-level resolution, likely reflecting limitations of the amplified 16S region or conservative classification thresholds.
+
+Overall, these results confirm the reliability of amplification, sequencing, and taxonomic assignment in the 16S workflow.
+
+We can now remove the controls from the phyloseq object and move on with the ecological interpretation.
+:::
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+ps_16s <- subset_samples(
+  ps_16s,
+  !Name %in% c("65_zymo_positive", "66_Extraction_negative")
+)
+
+# Prune zero-abundance taxa
+ps_16s <- prune_taxa(taxa_sums(ps_16s) > 0, ps_16s)
+```
+
+
 ### Alpha diversity
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
@@ -87,7 +179,9 @@ plot_richness(
   ps_16s,
   x = "Number",
   measures = c("Observed", "Shannon", "Simpson"),
-  color = "Fjord", title = "16S Alpha diversity")
+  color = "Fjord", title = "16S Alpha diversity") +
+  scale_x_discrete(breaks = function(x) x[seq(1, length(x), by = 4)]) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
 ```
 ::: {.callout-note}
@@ -108,7 +202,10 @@ plot_richness(
   ps_16s,
   x = "Number",
   measures = c("Observed", "Shannon", "Simpson"),
-  color = "Depth", title = "16S Alpha diversity")
+  color = "Depth", title = "16S Alpha diversity") +
+  scale_x_discrete(breaks = function(x) x[seq(1, length(x), by = 4)]) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
 
 ```
 
