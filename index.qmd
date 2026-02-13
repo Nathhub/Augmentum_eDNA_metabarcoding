@@ -18,11 +18,14 @@ execute:
 ```{r, child="context.qmd"}
 ```
 
-```{r, child="Combined_analysis.qmd"}
+```{r, child="Combined_QC.qmd"}
 ```
 
 ```{r, child="16S_analysis.qmd"}
 ```
 
 ```{r, child="18S_analysis.qmd"}
+```
+
+```{r, child="merged_data.qmd"}
 ```

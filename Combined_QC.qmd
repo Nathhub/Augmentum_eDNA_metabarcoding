@@ -1,0 +1,224 @@
+
+# 🧬 Overview of Sequencing & Experimental Design
+
+This section summarises the **two metabarcoding workflows** applied to the Augmentum eDNA samples:
+
+-   **16S rRNA region** (targeting prokaryotes)
+-   **18S rRNA V9 region** (targeting phytoplankton)
+
+Both datasets were sequenced at the\
+**Centre for Genomic Research (CGR), University of Liverpool.**
+
+## 📊 Sequencing Summary
+
+| Feature | **16S rRNA** | **18S rRNA** |
+|-----------------|-------------------------|-------------------------------|
+| **SSP ID** | [SSP204011](https://cgr.liv.ac.uk/illum/SSP204011_f6bb23b2067d8887/) | [SSP204019](https://cgr.liv.ac.uk/illum/SSP204019_ab47c0e24301bb22/) |
+| **Purchase order** | 203645351 | 203645352 |
+| **Sequencing platform** | Illumina MiSeq i100 (2×300 bp) | Illumina MiSeq i100 (2×300 bp) |
+| **Target region** | 16S V4 (515F_mod – 806R_mod) | 18S v4 (TAReuk454FWD1 - TAReukREV3) |
+| **Expected amplicon size** | \~300 bp | \~400 bp |
+| **Raw read depth (mean)** | \~350k | \~350k |
+| **Pre-trimming QC** | Cutadapt v4.5 | Cutadapt v4.5 |
+
+------------------------------------------------------------------------
+
+# 🧬 Primer Sets (with CGR Overhangs)
+
+## 16S V4 Primers
+
+-   **Forward:** (Parada et al., 2016)\
+    5′ [ACACTCTTTCCCTACACGACGCTCTTCCGATCTNNNNN]{style="color:#2E86C1;font-weight:bold;"}\
+    [GTGYCAGCMGCCGCGGTAA]{style="color:#C0392B;font-weight:bold;"} 3′\
+    *(CGR overhang + spacer in blue; 16S primer in red)*
+
+-   **Reverse:** (Apprill et al., 2015)\
+    5′ [GTGACTGGAGTTCAGACGTGTGCTCTTCCGATCT]{style="color:#2E86C1;font-weight:bold;"}\
+    [GGACTACNVGGGTWTCTAAT]{style="color:#C0392B;font-weight:bold;"} 3′
+
+------------------------------------------------------------------------
+
+## 18S V4 Primers
+
+-   **Forward:** (Stoeck et al., 2010)\
+    5′ [ACACTCTTTCCCTACACGACGCTCTTCCGATCTNNNNN]{style="color:#2E86C1;font-weight:bold;"}\
+    [CCAGCASCYGCGGTAATTCC]{style="color:#C0392B;font-weight:bold;"} 3′\
+    *(CGR overhang + spacer in blue; 18S primer in red)*
+
+-   **Reverse:** (Stoeck et al., 2010)\
+    5′ [GTGACTGGAGTTCAGACGTGTGCTCTTCCGATCT]{style="color:#2E86C1;font-weight:bold;"}\
+    [ACTTTCGTTCTTGATYRA]{style="color:#C0392B;font-weight:bold;"} 3′
+
+------------------------------------------------------------------------
+
+# 🔧 Bioinformatic Workflow Overview
+
+Both markers follow the same general pipeline:
+
+1.  **Primer removal** (Cutadapt)\
+2.  **Quality filtering** (DADA2)\
+3.  **Error learning and denoising** (DADA2)\
+4.  **Read merging** (DADA2)\
+5.  **Chimera removal** (DADA2)\
+6.  **Taxonomic assignment: ** (DADA2)
+    -   16S → *SILVA nr99 v138.2* reference database\
+    -   18S → *MZG 18S “All Microbes + Protists”, Mode-A* reference database\
+
+For each step, differences between the two pipelines are shown.
+
+------------------------------------------------------------------------
+
+# 1️⃣ Primer Removal with Cutadapt
+
+### 🔹 Summary of Cutadapt parameters used
+
+| Parameter | **16S** | **18S** |
+|--------------------------|-----------------------|-----------------------|
+| Forward primer (`-g`) | GTGYCAGCMGCCGCGGTAA | CCAGCASCYGCGGTAATTCC |
+| Reverse primer (`-G`) | GGACTACNVGGGTWTCTAAT | ACTTTCGTTCTTGATYRA |
+| `--match-read-wildcards` | ✔️ | ✔️ |
+| Minimum overlap | **10** | **10** |
+| Max error rate (`-e`) | **0.20** | **0.20** |
+| `--discard-untrimmed` | ✔️ | ✔️ |
+| `--minimum-length` | 200 bp | 200 bp |
+
+------------------------------------------------------------------------
+
+### 🔹 Unified Cutadapt description
+
+Both datasets used a looping bash command of the form:
+
+``` bash
+
+cutadapt\
+  -g <forward_primer> \
+  -G <reverse_primer> \
+  --match-read-wildcards \
+  --overlap <OV> \
+  -e <ERROR> \
+  --pair-filter=both \
+  --discard-untrimmed \
+  --cores=0 \
+  -o $out1 -p $out2 \
+  $f $r
+
+```
+Where <OV> and <ERROR> differ between markers (see table above).
+
+# 2️⃣ DADA2 Processing
+
+### 🔹 Summary of Cutadapt parameters used
+
+| Parameters                | **16S**    | **18S**                             |
+| ------------------------- | ---------- | ----------------------------------- |
+| `truncLen`                | c(270,260) | c(270,260)                          |
+| `maxEE`                   | c(2,3)     | c(2,3)                              |
+| `minLen`                  | 200         | 200                                |
+| `minOverlap` (mergePairs) | 90         | 90                                  |
+| Ref database              |  SILVA nr99 v138.2   | MZG 18S                   |
+
+::: {.callout-note title="MZG Reference databases"}
+| Marker  | Database                               | Notes                                        |
+| ------- | -------------------------------------- | -------------------------------------------- |
+| **16SS** | `silva_nr99_v138.2_toGenus_trainset.fa.gz` | bacteria/archaea down to the Genus level    | source: https://www.arb-silva.de/current-release/DADA2/1.36.0/SSU |
+| **18S** | `MZGdada2-18s__MZGdbALL__o00__A.fastq` | "All Plankton Combo (All-World-Oceans) Mode-A" data |
+source: https://metazoogene.org/mzgdb/atlas/html-src/data__MZGdbALL__o00.html
+:::
+
+::: {.callout-note title="Note"}
+The results of cutadapt of the 18S reads show small reads that match the primers but that are too short to pass the size filter (200bp). These are primer dimmers from the PCR amplification. They can be safely removed.
+
+Read retention after primer trimming and filtering was generally high across samples, ranging from 59.4% to 100.0%. Most samples showed very high retention (≥95%), with many reaching 100%. A small subset of samples formed a lower-retention cluster (~59–63%), which reduced the overall range but did not represent the dominant pattern. The negative control showed substantially lower retention (10.9%), as expected in the absence of a true amplicon signal.
+:::
+
+### 🔹 Unified DADA2 description
+
+Both datasets were processed with the standard DADA2 workflow:
+
+``` r
+
+# Filtering and trimming (R1/R2 after cutadapt)
+filtered_out <- filterAndTrim(
+  fwd  = forward_reads,
+  filt = filtered_forward_reads,
+  rev  = reverse_reads,
+  filt.rev = filtered_reverse_reads,
+  truncLen  = <MARKER_SPECIFIC>,   # see table above
+  maxEE     = c(2, 3),             # expected errors (stricter for R1)
+  maxN      = 0,                   # discard reads with Ns
+  rm.phix   = TRUE,                # remove PhiX reads
+  minLen    = <MINLEN>,            # marker-specific minimum length
+  multithread = TRUE
+)
+
+# Error learning
+errF <- learnErrors(filtered_forward_reads, multithread=TRUE)
+errR <- learnErrors(filtered_reverse_reads, multithread=TRUE)
+
+# Dereplication
+derepF <- derepFastq(filtered_forward_reads)
+derepR <- derepFastq(filtered_reverse_reads)
+
+# ASV inference
+dadaF <- dada(derepF, err=errF, pool="pseudo")
+dadaR <- dada(derepR, err=errR, pool="pseudo")
+
+# Merging
+merged <- mergePairs(dadaF, derepF, dadaR, derepR,
+                     minOverlap = <MARKER_SPECIFIC>,
+                     trimOverhang = TRUE)
+
+# ASV table
+seqtab <- makeSequenceTable(merged)
+
+# Chimera removal
+seqtab.nochim <- removeBimeraDenovo(seqtab, method="consensus")
+
+# Taxonomic Assignment
+taxa <- assignTaxonomy(seqtab.nochim, refFasta = <REF_FASTA>, multithread = TRUE)
+taxa <- addSpecies(taxa, "/home/ndh1n17/ote_db/SILVA/silva_nr99_v138.2_assignSpecies.fa.gz")
+
+```
+
+::: {.callout-note title="Note"}
+For 18S, shorter reads (150 bp) and a very short amplicon (~121 bp) justify relatively short truncLen (130, 120) and minLen = 80.
+For COI, the longer amplicon fragment (~313 bp) and 2×250 bp reads allow more aggressive truncation (210, 210) with large overlap (90) and a higher minLen = 200 to remove spurious short fragments.
+:::
+
+# 🔍 Read Tracking Summary
+
+The following table summarizes read counts at each step of the DADA2 pipeline:
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+library(readr)
+library(knitr)
+library(kableExtra)
+
+# Load the data
+df <- read_csv("data/DADA2_counts_table.csv")
+
+# Rename columns to avoid ...2 suffix
+colnames(df) <- c("sample",
+                  "input", "filtered", "nonchim", "reads_retained (%)",
+                  "input", "filtered", "nonchim", "reads_retained (%)")
+
+# Create a styled table with group headers and scrolable
+kable(df, format = "html", caption = "DADA2 Counts for 16S and 18S") %>%
+  add_header_above(c(" " = 1, "16S" = 4, "18S" = 4)) %>%
+  kable_styling(
+    full_width = FALSE,
+    bootstrap_options = c("striped", "hover", "condensed")
+  ) %>%
+  scroll_box(height = "400px", width = "100%")
+```
+
+::: {.callout-note title="Negative Controls"}
+The **66_Extraction_negative** sample in the 16S and 18S datasets contained 4 and 24 reads, respectively, after the dada2 pipeline.
+:::
+
+::: {.callout-note}
+### 💬 Discussion — reads retained
+
+The proportion of reads that were kept following the DADA2 pipeline is good: **92%** and **94%** for **16S** and **18S**, respectively. This leaves an average of **320K** and **330K** reads for **16S** and **18S**, respectively.
+:::
+

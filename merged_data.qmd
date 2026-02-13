@@ -1,0 +1,55 @@
+# Combined 16S, 18S and metadata
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+library(tidyverse)
+
+# ctd <- read_csv("data/CTD_data_Greenland_fjords.csv")
+# 
+# target_depths <- c(1, 15, 45)
+# 
+# ctd_selected <- ctd %>%
+#   tidyr::crossing(target_depth = target_depths) %>%   # make 3 copies per row
+#   group_by(station_idx, station_lab, target_depth) %>% # <-- key fix
+#   slice_min(order_by = abs(pressure - target_depth), n = 1, with_ties = FALSE) %>%
+#   ungroup()
+# 
+# ctd_selected %>% head(10)
+
+metadata <- read_csv("data/Metadata_Augmentum.csv")
+
+```
+
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
+
+meta_long <- metadata %>%
+  select(10:23) %>%
+  pivot_longer(
+    cols = everything(),
+    names_to = "Variable",
+    values_to = "Value"
+  )
+
+ggplot(meta_long, aes(y = Value)) +
+  geom_boxplot() +
+  facet_wrap(~Variable, scales = "free") +
+  theme_minimal()
+
+```
+
+::: {.callout-note}
+### 💬 Discussion — 
+
+
+:::
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
+
+ggplot(metadata, aes(x = Salinity, y = Pot_temperature, color = Depth)) +
+  geom_point() +
+  facet_wrap(~Area) +
+  theme_minimal()
+
+
+```
