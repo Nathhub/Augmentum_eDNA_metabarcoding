@@ -107,6 +107,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
 
+<script src="site_libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+
+<link href="site_libs/vis-9.1.0/vis-network.min.css" rel="stylesheet">
+
+<script src="site_libs/vis-9.1.0/vis-network.min.js"></script>
+
+<script src="site_libs/visNetwork-binding-2.1.4/visNetwork.js"></script>
+
 
 
 </head>
@@ -171,7 +179,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#plotting-by-fjords-and-depth-1" id="toc-plotting-by-fjords-and-depth-1" class="nav-link" data-scroll-target="#plotting-by-fjords-and-depth-1">Plotting by fjords and depth</a></li>
   </ul></li>
   </ul></li>
-  <li><a href="#combined-16s-18s-and-metadata" id="toc-combined-16s-18s-and-metadata" class="nav-link" data-scroll-target="#combined-16s-18s-and-metadata">Combined 16S, 18S and metadata</a></li>
+  <li><a href="#combined-16s-18s-and-metadata" id="toc-combined-16s-18s-and-metadata" class="nav-link" data-scroll-target="#combined-16s-18s-and-metadata">Combined 16S, 18S and metadata</a>
+  <ul class="collapse">
+  <li><a href="#looking-for-associations" id="toc-looking-for-associations" class="nav-link" data-scroll-target="#looking-for-associations">Looking for associations</a>
+  <ul class="collapse">
+  <li><a href="#plotting-the-network-graph-igraph" id="toc-plotting-the-network-graph-igraph" class="nav-link" data-scroll-target="#plotting-the-network-graph-igraph">Plotting the Network graph (iGraph)</a></li>
+  <li><a href="#building-network-graph" id="toc-building-network-graph" class="nav-link" data-scroll-target="#building-network-graph">Building Network graph</a></li>
+  <li><a href="#interactive-plot" id="toc-interactive-plot" class="nav-link" data-scroll-target="#interactive-plot">Interactive plot</a></li>
+  </ul></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -2068,8 +2084,162 @@ Note
 </div>
 </div>
 </div>
+<section id="looking-for-associations" class="level2">
+<h2 class="anchored" data-anchor-id="looking-for-associations">Looking for associations</h2>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 725</code></pre>
+</div>
+</div>
+<section id="plotting-the-network-graph-igraph" class="level3">
+<h3 class="anchored" data-anchor-id="plotting-the-network-graph-igraph">Plotting the Network graph (iGraph)</h3>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>
+ Bacteria Eukaryote 
+      115       123 </code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 725</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 278</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>💬 Note — Cross-domain associations</p>
+<p>A total of <strong>278 cross-domain edges</strong> were identified out of <strong>725 total inferred associations</strong>, representing approximately <strong>38%</strong> of all network connections.</p>
+<p>This substantial proportion indicates that <strong>bacterial and eukaryotic communities are not structured independently</strong>. Instead, the network reveals meaningful cross-domain covariance patterns, suggesting coordinated ecological dynamics. These associations may reflect bloom-driven bacterial responses, shared environmental filtering, or potential trophic and metabolic interactions between microbial eukaryotes and prokaryotes.</p>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>🔹 Overall degre of connectivity:</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  0.000   4.000   6.000   6.092   8.000  19.000 </code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>🔹 Bacteria degre of connectivity:</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  0.000   5.000   6.000   6.974   9.000  19.000 </code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>🔹 Eukaryote degre of connectivity:</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  0.000   3.000   5.000   5.268   7.000  12.000 </code></pre>
+</div>
+</div>
+<p>:: {.callout-note}</p>
+<p>💬 Note — Network connectivity structure</p>
+<p>The inferred cross-domain network comprised 238 taxa connected by 725 edges, with a median node degree of 6. Bacterial genera exhibited slightly higher connectivity (mean degree ≈ 7, maximum = 19) compared to eukaryotic genera (mean degree ≈ 5.3, maximum = 12). This pattern indicates a moderately connected but sparse network structure, without dominance by a few extreme hubs. The higher connectivity observed among bacteria suggests that prokaryotic taxa may act as integrators within the microbial community, associating with multiple eukaryotic groups. Overall, the degree distribution supports the presence of structured cross-domain coupling rather than random co-occurrence. :::</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>        taxon    domain degree            Phylum             Order
+1  Bac_ASV286  Bacteria     19 Verrucomicrobiota        Opitutales
+2   Bac_ASV53  Bacteria     14    Thermoproteota  Nitrosopumilales
+3  Bac_ASV250  Bacteria     14  Bdellovibrionota Bdellovibrionales
+4   Bac_ASV18  Bacteria     13    Pseudomonadota   Pseudomonadales
+5   Bac_ASV38  Bacteria     13    Pseudomonadota   Burkholderiales
+6  Bac_ASV305  Bacteria     13      Bacteroidota   Chitinophagales
+7    Bac_ASV3  Bacteria     12    Pseudomonadota   Pseudomonadales
+8   Bac_ASV58  Bacteria     12      Bacteroidota  Flavobacteriales
+9   Bac_ASV68  Bacteria     12      Bacteroidota  Flavobacteriales
+10  Euk_ASV69 Eukaryote     12           Myzozoa     Dinophysiales
+11 Bac_ASV169  Bacteria     11    Pseudomonadota      Beggiatoales
+12 Bac_ASV377  Bacteria     11   Planctomycetota      Pirellulales
+13   Euk_ASV2 Eukaryote     11           Myzozoa      Peridiniales
+14  Euk_ASV12 Eukaryote     11           Myzozoa      Peridiniales
+15  Euk_ASV71 Eukaryote     11        Ciliophora     Oligotrichida
+16 Euk_ASV192 Eukaryote     11           Myzozoa      Peridiniales
+17   Bac_ASV5  Bacteria     10    Pseudomonadota   Rhodobacterales
+18   Bac_ASV8  Bacteria     10    Pseudomonadota   Pseudomonadales
+19  Bac_ASV71  Bacteria     10      Bacteroidota  Flavobacteriales
+20  Bac_ASV91  Bacteria     10    Pseudomonadota   Rhodobacterales
+                 Genus_final
+1               Diplosphaera
+2  Candidatus Nitrosopumilus
+3                 OM27 clade
+4                SAR92 clade
+5          RS62 marine group
+6                 Aureispira
+7              SUP05 cluster
+8          NS3a marine group
+9               Aurantivirga
+10                Dinophysis
+11             Pelagibaculum
+12             Mariniblastus
+13              Scrippsiella
+14               Heterocapsa
+15             Spirotontonia
+16         Pentapharsodinium
+17             Planktomarina
+18              Kineobactrum
+19          NS4 marine group
+20            Octadecabacter</code></pre>
+</div>
+</div>
+</section>
+<section id="building-network-graph" class="level3">
+<h3 class="anchored" data-anchor-id="building-network-graph">Building Network graph</h3>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-94-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-95-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="interactive-plot" class="level3">
+<h3 class="anchored" data-anchor-id="interactive-plot">Interactive plot</h3>
+<div class="cell">
+<div class="cell-output-display">
+<div id="htmlwidget-83985f1a3eb3805e6412" style="width:100%;height:800px;" class="visNetwork html-widget"></div>
+<script type="application/json" data-for="htmlwidget-83985f1a3eb3805e6412">{"x":{"nodes":{"id":["Bac_ASV3","Bac_ASV4","Bac_ASV5","Bac_ASV6","Bac_ASV8","Bac_ASV9","Bac_ASV11","Bac_ASV12","Bac_ASV18","Bac_ASV26","Bac_ASV38","Bac_ASV44","Bac_ASV48","Bac_ASV53","Bac_ASV58","Bac_ASV60","Bac_ASV62","Bac_ASV68","Bac_ASV71","Bac_ASV83","Bac_ASV88","Bac_ASV90","Bac_ASV91","Bac_ASV93","Bac_ASV94","Bac_ASV95","Bac_ASV108","Bac_ASV111","Bac_ASV116","Bac_ASV119","Bac_ASV122","Bac_ASV131","Bac_ASV138","Bac_ASV152","Bac_ASV157","Bac_ASV169","Bac_ASV170","Bac_ASV173","Bac_ASV174","Bac_ASV177","Bac_ASV178","Bac_ASV180","Bac_ASV186","Bac_ASV197","Bac_ASV198","Bac_ASV203","Bac_ASV222","Bac_ASV234","Bac_ASV250","Bac_ASV252","Bac_ASV253","Bac_ASV257","Bac_ASV263","Bac_ASV272","Bac_ASV274","Bac_ASV276","Bac_ASV284","Bac_ASV286","Bac_ASV289","Bac_ASV305","Bac_ASV311","Bac_ASV323","Bac_ASV328","Bac_ASV332","Bac_ASV334","Bac_ASV355","Bac_ASV370","Bac_ASV377","Bac_ASV389","Bac_ASV393","Bac_ASV394","Bac_ASV400","Bac_ASV430","Bac_ASV434","Bac_ASV435","Bac_ASV442","Bac_ASV445","Bac_ASV461","Bac_ASV486","Bac_ASV494","Bac_ASV496","Bac_ASV527","Bac_ASV532","Bac_ASV534","Bac_ASV535","Bac_ASV545","Bac_ASV565","Bac_ASV592","Bac_ASV608","Bac_ASV612","Bac_ASV613","Bac_ASV648","Bac_ASV663","Bac_ASV676","Bac_ASV677","Bac_ASV727","Bac_ASV738","Bac_ASV750","Bac_ASV770","Bac_ASV772","Bac_ASV807","Bac_ASV1026","Bac_ASV1252","Euk_ASV1","Euk_ASV2","Euk_ASV4","Euk_ASV5","Euk_ASV7","Euk_ASV12","Euk_ASV16","Euk_ASV19","Euk_ASV21","Euk_ASV22","Euk_ASV25","Euk_ASV27","Euk_ASV37","Euk_ASV39","Euk_ASV45","Euk_ASV53","Euk_ASV59","Euk_ASV66","Euk_ASV69","Euk_ASV71","Euk_ASV72","Euk_ASV76","Euk_ASV77","Euk_ASV80","Euk_ASV81","Euk_ASV82","Euk_ASV83","Euk_ASV84","Euk_ASV85","Euk_ASV90","Euk_ASV92","Euk_ASV94","Euk_ASV96","Euk_ASV102","Euk_ASV103","Euk_ASV106","Euk_ASV112","Euk_ASV113","Euk_ASV114","Euk_ASV122","Euk_ASV126","Euk_ASV127","Euk_ASV133","Euk_ASV135","Euk_ASV140","Euk_ASV148","Euk_ASV152","Euk_ASV157","Euk_ASV159","Euk_ASV161","Euk_ASV168","Euk_ASV171","Euk_ASV174","Euk_ASV176","Euk_ASV179","Euk_ASV186","Euk_ASV192","Euk_ASV200","Euk_ASV205","Euk_ASV218","Euk_ASV224","Euk_ASV226","Euk_ASV227","Euk_ASV236","Euk_ASV240","Euk_ASV245","Euk_ASV246","Euk_ASV256","Euk_ASV277","Euk_ASV281","Euk_ASV282","Euk_ASV300","Euk_ASV306","Euk_ASV323","Euk_ASV356","Euk_ASV364","Euk_ASV384","Euk_ASV404","Euk_ASV426","Euk_ASV428","Euk_ASV444","Euk_ASV453","Euk_ASV459","Euk_ASV463","Euk_ASV475","Euk_ASV476","Euk_ASV514","Euk_ASV517","Euk_ASV519","Euk_ASV561","Euk_ASV742","Euk_ASV762","Euk_ASV800","Euk_ASV805","Euk_ASV811","Euk_ASV899","Euk_ASV1011","Euk_ASV1118","Euk_ASV1128","Euk_ASV1259","Euk_ASV1375","Euk_ASV1588","Euk_ASV1625","Euk_ASV1637","Euk_ASV1717","Euk_ASV1799","Euk_ASV1908","Euk_ASV2707"],"label":["SUP05 cluster","Amylibacter","Planktomarina","Gilvibacter","Kineobactrum","Polaribacter","NS5 marine group","Candidatus Aquiluna","SAR92 clade","Pseudohongiella","RS62 marine group","Fluviicola","Ascidiaceihabitans","Candidatus Nitrosopumilus","NS3a marine group","Yoonia","Loktanella","Aurantivirga","NS4 marine group","Magnetospira","OM43 clade","Paraglaciecola","Octadecabacter","Lentibacter","Porticoccus","Glaciecola","Polaromonas","Sva0996 marine group","Lentimonas","NS2b marine group","Marinoscillum","Litoreibacter","Rhodoferax","IS-44","Patiriisocius","Pelagibaculum","Francisella","Oceanicoccus","Nitrosomonas","Litorivicinus","Ilumatobacter","Methylotenera","Colwellia","Luminiphilus","NS10 marine group","Candidatus Thioglobus","Reinekea","Vicingus","OM27 clade","Marimicrobium","Candidatus Puniceispirillum","ML602J-51","Pelagicoccus","Sinobacterium","Shewanella","Candidatus Nitrosoarchaeum","MB11C04 marine group","Diplosphaera","Arcobacter","Aureispira","Woeseia","Clade Ib","Salinirepens","Nonlabens","Roseibacillus","BD1-7 clade","Roseobacter clade NAC11-7 lineage","Mariniblastus","Lacihabitans","Candidatus Nitrosopelagicus","Pseudoalteromonas","Sulfurovum","Synechococcus CC9902","OM60(NOR5) clade","Candidatus Megaira","Arenicella","Pseudofulvibacter","Halioglobus","CL500-3","Cypionkella","MD3-55","Moritella","Pseudomonas","Flavobacterium","Granulosicoccus","Crocinitomix","Rubripirellula","Cm1-21","Marivibrio","MSB-1D1","Dethiosulfatarculus","Allofrancisella","Lentisphaera","CSP1-2","Candidatus Actinomarina","Aliivibrio","Photobacterium","Acinetobacter","Oleispira","Psychrobacter","FS140-16B-02 marine group","Rubritalea","Coxiella","Oithona","Scrippsiella","Micromonas","Lepidodinium","Margalefidinium","Heterocapsa","Teleaulax","Chaetoceros","Pseudocalanus","Coscinodiscus","Thalassiosira","Karenia","Protoperidinium","Karlodinium","Diaphanoeca","Biecheleria","Torodinium","Bathycoccus","Dinophysis","Spirotontonia","Cyclotrichium","Leptocylindrus","Pyramimonas","Skeletonema","Ansanella","Schmidingerella","Dinobryon","Lynnella","Protodinium","Loxophyllum","Alexandrium","Calliacantha","Prorocentrum","Biecheleriopsis","Octactis","Pirsonia","Leucocryptos","Bicosta","Rhodomonas","Strombidium","Gyrodinium","Rhabdamoeba","Gymnodinium","Pleurasiga","Rhizosolenia","Actinocyclus","Solenicola","Paraphysomonas","Apedinella","Pfiesteria","Pseudochattonella","Pseudotontonia","Cosmoeca","Phaeocystis","Tripos","Helicopedinella","Pentapharsodinium","Chrysochromulina","Pseudonitzschia","Quadricilia","Protoceratium","Mantoniella","Mertensia","Protaspa","Dolichomastix","Ebria","Fragilariopsis","Rimostrombidium","Mamiella","Cylindrotheca","Bellerochea","Trachelophyllum","Codonaria","Yihiella","Hemiselmis","Aureococcus","Phalacroma","Katablepharis","Pseudopedinella","Pelagostrobilidium","Nephroselmis","Parafavella","Mataza","Nanomia","Fragilidium","Synchaeta","Gymnoxanthella","Reckertia","Achradina","Savillea","Islandinium","Pterosperma","Haptolina","Ichthyodinium","Amphiacon","Tintinnopsis","Salpingella","Vibrio","Stephanopyxis","Chrysocystis","Porosira","Synedropsis","Paragymnodinium","Pseudopirsonia","Syracosphaera","Amylax","Prymnesium","Plagioselmis"],"group":["Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote"],"value":[12,8,8,8,7,7,5,6,13,9,13,6,5,13,12,5,8,11,10,8,4,8,9,7,4,7,6,8,3,4,4,8,4,8,8,9,9,6,7,4,6,6,7,6,6,8,10,6,14,9,9,5,9,7,7,9,5,19,5,13,8,5,4,7,5,5,9,11,2,6,5,6,5,5,3,3,3,9,6,5,5,8,2,9,4,8,5,8,3,4,3,5,6,4,6,5,5,6,3,5,6,6,3,6,11,7,6,8,10,8,3,2,6,7,6,4,6,5,9,8,8,11,11,5,6,8,4,8,6,7,5,2,4,6,3,3,3,6,7,7,7,7,7,7,7,5,2,4,8,5,8,7,8,10,10,6,5,6,7,11,6,6,6,7,7,3,4,4,5,7,3,6,5,6,5,5,3,9,5,4,6,5,6,4,3,5,3,8,3,1,4,1,3,8,2,3,2,3,6,3,3,3,4,4,4,5,3,1,5,8,4]},"edges":{"from":["Bac_ASV3","Bac_ASV3","Bac_ASV3","Bac_ASV3","Bac_ASV3","Bac_ASV3","Bac_ASV3","Bac_ASV3","Bac_ASV3","Bac_ASV3","Bac_ASV3","Bac_ASV3","Bac_ASV4","Bac_ASV4","Bac_ASV4","Bac_ASV4","Bac_ASV4","Bac_ASV4","Bac_ASV4","Bac_ASV4","Bac_ASV5","Bac_ASV5","Bac_ASV5","Bac_ASV5","Bac_ASV5","Bac_ASV5","Bac_ASV5","Bac_ASV5","Bac_ASV6","Bac_ASV6","Bac_ASV6","Bac_ASV6","Bac_ASV6","Bac_ASV6","Bac_ASV6","Bac_ASV6","Bac_ASV8","Bac_ASV8","Bac_ASV8","Bac_ASV8","Bac_ASV8","Bac_ASV8","Bac_ASV8","Bac_ASV9","Bac_ASV9","Bac_ASV9","Bac_ASV9","Bac_ASV9","Bac_ASV9","Bac_ASV11","Bac_ASV11","Bac_ASV11","Bac_ASV11","Bac_ASV11","Bac_ASV12","Bac_ASV12","Bac_ASV12","Bac_ASV12","Bac_ASV12","Bac_ASV18","Bac_ASV18","Bac_ASV18","Bac_ASV18","Bac_ASV18","Bac_ASV18","Bac_ASV18","Bac_ASV18","Bac_ASV18","Bac_ASV18","Bac_ASV18","Bac_ASV26","Bac_ASV26","Bac_ASV26","Bac_ASV26","Bac_ASV26","Bac_ASV26","Bac_ASV26","Bac_ASV38","Bac_ASV38","Bac_ASV38","Bac_ASV38","Bac_ASV38","Bac_ASV38","Bac_ASV38","Bac_ASV38","Bac_ASV38","Bac_ASV38","Bac_ASV38","Bac_ASV44","Bac_ASV44","Bac_ASV44","Bac_ASV44","Bac_ASV44","Bac_ASV48","Bac_ASV48","Bac_ASV48","Bac_ASV53","Bac_ASV53","Bac_ASV53","Bac_ASV53","Bac_ASV53","Bac_ASV53","Bac_ASV53","Bac_ASV53","Bac_ASV53","Bac_ASV53","Bac_ASV53","Bac_ASV53","Bac_ASV53","Bac_ASV58","Bac_ASV58","Bac_ASV58","Bac_ASV58","Bac_ASV58","Bac_ASV58","Bac_ASV58","Bac_ASV58","Bac_ASV58","Bac_ASV58","Bac_ASV58","Bac_ASV60","Bac_ASV60","Bac_ASV62","Bac_ASV62","Bac_ASV62","Bac_ASV62","Bac_ASV62","Bac_ASV62","Bac_ASV62","Bac_ASV68","Bac_ASV68","Bac_ASV68","Bac_ASV68","Bac_ASV68","Bac_ASV68","Bac_ASV68","Bac_ASV71","Bac_ASV71","Bac_ASV71","Bac_ASV71","Bac_ASV71","Bac_ASV71","Bac_ASV83","Bac_ASV83","Bac_ASV83","Bac_ASV83","Bac_ASV83","Bac_ASV83","Bac_ASV83","Bac_ASV88","Bac_ASV88","Bac_ASV90","Bac_ASV90","Bac_ASV90","Bac_ASV90","Bac_ASV90","Bac_ASV90","Bac_ASV91","Bac_ASV91","Bac_ASV91","Bac_ASV91","Bac_ASV93","Bac_ASV93","Bac_ASV93","Bac_ASV93","Bac_ASV93","Bac_ASV93","Bac_ASV94","Bac_ASV94","Bac_ASV94","Bac_ASV95","Bac_ASV95","Bac_ASV95","Bac_ASV95","Bac_ASV108","Bac_ASV108","Bac_ASV108","Bac_ASV108","Bac_ASV108","Bac_ASV111","Bac_ASV111","Bac_ASV111","Bac_ASV111","Bac_ASV111","Bac_ASV111","Bac_ASV111","Bac_ASV111","Bac_ASV116","Bac_ASV116","Bac_ASV116","Bac_ASV119","Bac_ASV119","Bac_ASV119","Bac_ASV122","Bac_ASV122","Bac_ASV131","Bac_ASV131","Bac_ASV131","Bac_ASV131","Bac_ASV131","Bac_ASV138","Bac_ASV138","Bac_ASV138","Bac_ASV152","Bac_ASV152","Bac_ASV152","Bac_ASV152","Bac_ASV157","Bac_ASV157","Bac_ASV157","Bac_ASV157","Bac_ASV157","Bac_ASV157","Bac_ASV157","Bac_ASV157","Bac_ASV169","Bac_ASV169","Bac_ASV169","Bac_ASV169","Bac_ASV169","Bac_ASV169","Bac_ASV170","Bac_ASV170","Bac_ASV170","Bac_ASV170","Bac_ASV170","Bac_ASV170","Bac_ASV170","Bac_ASV170","Bac_ASV173","Bac_ASV173","Bac_ASV173","Bac_ASV173","Bac_ASV173","Bac_ASV173","Bac_ASV174","Bac_ASV174","Bac_ASV174","Bac_ASV174","Bac_ASV174","Bac_ASV177","Bac_ASV177","Bac_ASV178","Bac_ASV178","Bac_ASV180","Bac_ASV180","Bac_ASV180","Bac_ASV180","Bac_ASV186","Bac_ASV186","Bac_ASV186","Bac_ASV186","Bac_ASV186","Bac_ASV197","Bac_ASV197","Bac_ASV197","Bac_ASV197","Bac_ASV198","Bac_ASV198","Bac_ASV198","Bac_ASV198","Bac_ASV203","Bac_ASV203","Bac_ASV203","Bac_ASV203","Bac_ASV203","Bac_ASV203","Bac_ASV203","Bac_ASV222","Bac_ASV222","Bac_ASV222","Bac_ASV222","Bac_ASV222","Bac_ASV234","Bac_ASV234","Bac_ASV234","Bac_ASV234","Bac_ASV234","Bac_ASV234","Bac_ASV250","Bac_ASV250","Bac_ASV250","Bac_ASV250","Bac_ASV250","Bac_ASV250","Bac_ASV250","Bac_ASV250","Bac_ASV250","Bac_ASV250","Bac_ASV250","Bac_ASV252","Bac_ASV252","Bac_ASV252","Bac_ASV252","Bac_ASV252","Bac_ASV252","Bac_ASV252","Bac_ASV253","Bac_ASV253","Bac_ASV253","Bac_ASV253","Bac_ASV253","Bac_ASV253","Bac_ASV257","Bac_ASV257","Bac_ASV257","Bac_ASV263","Bac_ASV263","Bac_ASV263","Bac_ASV263","Bac_ASV272","Bac_ASV272","Bac_ASV272","Bac_ASV272","Bac_ASV272","Bac_ASV272","Bac_ASV274","Bac_ASV274","Bac_ASV274","Bac_ASV274","Bac_ASV274","Bac_ASV276","Bac_ASV276","Bac_ASV276","Bac_ASV276","Bac_ASV276","Bac_ASV284","Bac_ASV284","Bac_ASV284","Bac_ASV286","Bac_ASV286","Bac_ASV286","Bac_ASV286","Bac_ASV286","Bac_ASV286","Bac_ASV286","Bac_ASV286","Bac_ASV286","Bac_ASV286","Bac_ASV286","Bac_ASV286","Bac_ASV289","Bac_ASV289","Bac_ASV305","Bac_ASV305","Bac_ASV305","Bac_ASV305","Bac_ASV305","Bac_ASV305","Bac_ASV305","Bac_ASV311","Bac_ASV311","Bac_ASV311","Bac_ASV311","Bac_ASV323","Bac_ASV323","Bac_ASV328","Bac_ASV332","Bac_ASV332","Bac_ASV332","Bac_ASV332","Bac_ASV332","Bac_ASV334","Bac_ASV334","Bac_ASV334","Bac_ASV334","Bac_ASV334","Bac_ASV355","Bac_ASV355","Bac_ASV370","Bac_ASV370","Bac_ASV370","Bac_ASV370","Bac_ASV370","Bac_ASV377","Bac_ASV377","Bac_ASV377","Bac_ASV377","Bac_ASV377","Bac_ASV377","Bac_ASV377","Bac_ASV377","Bac_ASV389","Bac_ASV393","Bac_ASV393","Bac_ASV393","Bac_ASV393","Bac_ASV394","Bac_ASV394","Bac_ASV394","Bac_ASV400","Bac_ASV400","Bac_ASV400","Bac_ASV400","Bac_ASV430","Bac_ASV430","Bac_ASV430","Bac_ASV430","Bac_ASV434","Bac_ASV434","Bac_ASV434","Bac_ASV435","Bac_ASV435","Bac_ASV435","Bac_ASV442","Bac_ASV442","Bac_ASV445","Bac_ASV445","Bac_ASV461","Bac_ASV461","Bac_ASV461","Bac_ASV461","Bac_ASV461","Bac_ASV486","Bac_ASV486","Bac_ASV486","Bac_ASV494","Bac_ASV494","Bac_ASV494","Bac_ASV496","Bac_ASV496","Bac_ASV527","Bac_ASV527","Bac_ASV527","Bac_ASV527","Bac_ASV527","Bac_ASV527","Bac_ASV532","Bac_ASV534","Bac_ASV534","Bac_ASV534","Bac_ASV534","Bac_ASV534","Bac_ASV535","Bac_ASV535","Bac_ASV535","Bac_ASV535","Bac_ASV545","Bac_ASV545","Bac_ASV545","Bac_ASV545","Bac_ASV545","Bac_ASV545","Bac_ASV565","Bac_ASV565","Bac_ASV565","Bac_ASV592","Bac_ASV592","Bac_ASV592","Bac_ASV592","Bac_ASV608","Bac_ASV612","Bac_ASV612","Bac_ASV612","Bac_ASV613","Bac_ASV648","Bac_ASV648","Bac_ASV648","Bac_ASV663","Bac_ASV663","Bac_ASV663","Bac_ASV676","Bac_ASV676","Bac_ASV676","Bac_ASV677","Bac_ASV677","Bac_ASV677","Bac_ASV727","Bac_ASV727","Bac_ASV727","Bac_ASV727","Bac_ASV738","Bac_ASV738","Bac_ASV738","Bac_ASV738","Bac_ASV750","Bac_ASV750","Bac_ASV770","Bac_ASV772","Bac_ASV772","Bac_ASV807","Bac_ASV807","Bac_ASV807","Bac_ASV1026","Bac_ASV1026","Bac_ASV1026","Bac_ASV1252","Bac_ASV1252","Euk_ASV1","Euk_ASV1","Euk_ASV2","Euk_ASV2","Euk_ASV2","Euk_ASV2","Euk_ASV2","Euk_ASV2","Euk_ASV2","Euk_ASV2","Euk_ASV2","Euk_ASV4","Euk_ASV4","Euk_ASV4","Euk_ASV4","Euk_ASV4","Euk_ASV4","Euk_ASV5","Euk_ASV5","Euk_ASV7","Euk_ASV7","Euk_ASV7","Euk_ASV7","Euk_ASV7","Euk_ASV7","Euk_ASV12","Euk_ASV12","Euk_ASV12","Euk_ASV12","Euk_ASV16","Euk_ASV16","Euk_ASV16","Euk_ASV16","Euk_ASV16","Euk_ASV16","Euk_ASV19","Euk_ASV21","Euk_ASV22","Euk_ASV22","Euk_ASV25","Euk_ASV25","Euk_ASV25","Euk_ASV25","Euk_ASV27","Euk_ASV27","Euk_ASV27","Euk_ASV37","Euk_ASV39","Euk_ASV39","Euk_ASV39","Euk_ASV39","Euk_ASV45","Euk_ASV45","Euk_ASV53","Euk_ASV53","Euk_ASV53","Euk_ASV53","Euk_ASV53","Euk_ASV59","Euk_ASV59","Euk_ASV59","Euk_ASV66","Euk_ASV66","Euk_ASV66","Euk_ASV69","Euk_ASV69","Euk_ASV69","Euk_ASV69","Euk_ASV71","Euk_ASV71","Euk_ASV71","Euk_ASV71","Euk_ASV71","Euk_ASV71","Euk_ASV72","Euk_ASV72","Euk_ASV72","Euk_ASV76","Euk_ASV76","Euk_ASV76","Euk_ASV77","Euk_ASV77","Euk_ASV81","Euk_ASV82","Euk_ASV83","Euk_ASV83","Euk_ASV84","Euk_ASV85","Euk_ASV90","Euk_ASV90","Euk_ASV94","Euk_ASV102","Euk_ASV103","Euk_ASV103","Euk_ASV103","Euk_ASV106","Euk_ASV106","Euk_ASV106","Euk_ASV112","Euk_ASV112","Euk_ASV113","Euk_ASV122","Euk_ASV122","Euk_ASV127","Euk_ASV127","Euk_ASV133","Euk_ASV148","Euk_ASV148","Euk_ASV152","Euk_ASV157","Euk_ASV159","Euk_ASV159","Euk_ASV159","Euk_ASV161","Euk_ASV161","Euk_ASV168","Euk_ASV171","Euk_ASV171","Euk_ASV171","Euk_ASV171","Euk_ASV174","Euk_ASV179","Euk_ASV179","Euk_ASV179","Euk_ASV186","Euk_ASV192","Euk_ASV192","Euk_ASV192","Euk_ASV192","Euk_ASV200","Euk_ASV218","Euk_ASV224","Euk_ASV224","Euk_ASV224","Euk_ASV226","Euk_ASV227","Euk_ASV240","Euk_ASV246","Euk_ASV246","Euk_ASV256","Euk_ASV277","Euk_ASV281","Euk_ASV282","Euk_ASV306","Euk_ASV306","Euk_ASV356","Euk_ASV356","Euk_ASV356","Euk_ASV384","Euk_ASV404","Euk_ASV426","Euk_ASV428","Euk_ASV475","Euk_ASV475","Euk_ASV561","Euk_ASV742","Euk_ASV762","Euk_ASV800","Euk_ASV1625","Euk_ASV1908"],"to":["Bac_ASV83","Bac_ASV91","Bac_ASV122","Bac_ASV169","Bac_ASV203","Bac_ASV276","Bac_ASV323","Euk_ASV27","Euk_ASV81","Euk_ASV224","Euk_ASV236","Euk_ASV476","Bac_ASV71","Bac_ASV90","Bac_ASV253","Bac_ASV274","Bac_ASV286","Bac_ASV394","Euk_ASV205","Euk_ASV246","Bac_ASV26","Bac_ASV48","Bac_ASV60","Bac_ASV68","Bac_ASV88","Bac_ASV152","Bac_ASV178","Euk_ASV404","Bac_ASV9","Bac_ASV68","Bac_ASV250","Bac_ASV355","Bac_ASV648","Euk_ASV25","Euk_ASV27","Euk_ASV135","Bac_ASV44","Bac_ASV48","Bac_ASV178","Bac_ASV252","Bac_ASV442","Bac_ASV532","Euk_ASV899","Bac_ASV12","Bac_ASV18","Bac_ASV62","Bac_ASV95","Bac_ASV332","Euk_ASV126","Bac_ASV71","Bac_ASV169","Bac_ASV178","Euk_ASV236","Euk_ASV459","Bac_ASV18","Bac_ASV38","Bac_ASV91","Bac_ASV177","Euk_ASV140","Bac_ASV26","Bac_ASV38","Bac_ASV68","Bac_ASV108","Bac_ASV122","Bac_ASV272","Euk_ASV1","Euk_ASV106","Euk_ASV126","Euk_ASV463","Euk_ASV2707","Bac_ASV60","Bac_ASV88","Bac_ASV152","Bac_ASV180","Bac_ASV592","Euk_ASV127","Euk_ASV174","Bac_ASV58","Bac_ASV60","Bac_ASV91","Bac_ASV494","Bac_ASV534","Euk_ASV1","Euk_ASV59","Euk_ASV171","Euk_ASV226","Euk_ASV811","Euk_ASV899","Bac_ASV68","Bac_ASV71","Bac_ASV198","Bac_ASV400","Euk_ASV12","Bac_ASV486","Euk_ASV227","Euk_ASV282","Bac_ASV91","Bac_ASV131","Bac_ASV174","Bac_ASV186","Bac_ASV276","Bac_ASV305","Bac_ASV311","Bac_ASV393","Euk_ASV12","Euk_ASV53","Euk_ASV81","Euk_ASV192","Euk_ASV475","Bac_ASV91","Bac_ASV180","Bac_ASV197","Bac_ASV323","Euk_ASV59","Euk_ASV126","Euk_ASV148","Euk_ASV161","Euk_ASV205","Euk_ASV245","Euk_ASV1011","Bac_ASV170","Euk_ASV76","Bac_ASV90","Bac_ASV95","Bac_ASV222","Euk_ASV226","Euk_ASV246","Euk_ASV899","Euk_ASV1588","Bac_ASV71","Euk_ASV45","Euk_ASV112","Euk_ASV114","Euk_ASV140","Euk_ASV168","Euk_ASV428","Bac_ASV93","Bac_ASV119","Bac_ASV152","Bac_ASV198","Euk_ASV186","Euk_ASV1375","Bac_ASV152","Bac_ASV263","Bac_ASV284","Bac_ASV461","Euk_ASV102","Euk_ASV133","Euk_ASV245","Bac_ASV94","Euk_ASV76","Bac_ASV95","Bac_ASV186","Bac_ASV222","Bac_ASV355","Bac_ASV370","Euk_ASV281","Euk_ASV81","Euk_ASV96","Euk_ASV126","Euk_ASV152","Bac_ASV131","Bac_ASV250","Bac_ASV284","Euk_ASV159","Euk_ASV236","Euk_ASV742","Bac_ASV177","Euk_ASV4","Euk_ASV281","Bac_ASV332","Euk_ASV246","Euk_ASV1375","Euk_ASV1588","Bac_ASV138","Bac_ASV222","Bac_ASV494","Bac_ASV534","Euk_ASV82","Bac_ASV131","Bac_ASV174","Bac_ASV178","Bac_ASV250","Bac_ASV263","Bac_ASV276","Bac_ASV377","Euk_ASV159","Bac_ASV328","Euk_ASV218","Euk_ASV1908","Bac_ASV169","Euk_ASV1128","Euk_ASV1375","Euk_ASV179","Euk_ASV364","Bac_ASV276","Bac_ASV311","Euk_ASV81","Euk_ASV192","Euk_ASV300","Bac_ASV389","Bac_ASV592","Euk_ASV82","Bac_ASV274","Euk_ASV102","Euk_ASV133","Euk_ASV742","Bac_ASV257","Bac_ASV286","Bac_ASV289","Bac_ASV370","Euk_ASV161","Euk_ASV282","Euk_ASV475","Euk_ASV742","Bac_ASV252","Bac_ASV323","Bac_ASV328","Euk_ASV1","Euk_ASV226","Euk_ASV476","Bac_ASV222","Bac_ASV289","Bac_ASV496","Bac_ASV592","Euk_ASV5","Euk_ASV25","Euk_ASV83","Euk_ASV176","Bac_ASV197","Euk_ASV66","Euk_ASV85","Euk_ASV148","Euk_ASV282","Euk_ASV1908","Bac_ASV263","Bac_ASV305","Bac_ASV311","Bac_ASV461","Euk_ASV1625","Bac_ASV770","Euk_ASV113","Euk_ASV122","Euk_ASV404","Bac_ASV286","Bac_ASV461","Bac_ASV534","Euk_ASV1011","Bac_ASV222","Bac_ASV545","Euk_ASV69","Euk_ASV84","Euk_ASV92","Bac_ASV253","Euk_ASV92","Euk_ASV224","Euk_ASV356","Euk_ASV1","Euk_ASV22","Euk_ASV186","Euk_ASV742","Bac_ASV263","Bac_ASV400","Bac_ASV527","Euk_ASV112","Euk_ASV236","Euk_ASV426","Euk_ASV459","Bac_ASV496","Bac_ASV592","Euk_ASV148","Euk_ASV174","Euk_ASV384","Bac_ASV253","Bac_ASV257","Bac_ASV370","Euk_ASV22","Euk_ASV152","Euk_ASV161","Bac_ASV263","Bac_ASV286","Bac_ASV305","Bac_ASV377","Bac_ASV648","Euk_ASV72","Euk_ASV81","Euk_ASV277","Euk_ASV300","Euk_ASV800","Euk_ASV1908","Bac_ASV328","Bac_ASV486","Euk_ASV77","Euk_ASV114","Euk_ASV122","Euk_ASV159","Euk_ASV356","Euk_ASV2","Euk_ASV90","Euk_ASV103","Euk_ASV127","Euk_ASV218","Euk_ASV356","Bac_ASV286","Euk_ASV39","Euk_ASV112","Bac_ASV305","Euk_ASV53","Euk_ASV71","Euk_ASV240","Bac_ASV286","Bac_ASV289","Bac_ASV370","Euk_ASV126","Euk_ASV161","Euk_ASV475","Bac_ASV286","Bac_ASV394","Bac_ASV750","Euk_ASV246","Euk_ASV514","Bac_ASV305","Bac_ASV311","Bac_ASV677","Euk_ASV81","Euk_ASV1259","Bac_ASV305","Euk_ASV245","Euk_ASV426","Bac_ASV355","Bac_ASV461","Euk_ASV21","Euk_ASV82","Euk_ASV103","Euk_ASV112","Euk_ASV127","Euk_ASV148","Euk_ASV168","Euk_ASV200","Euk_ASV205","Euk_ASV1908","Euk_ASV140","Euk_ASV176","Bac_ASV377","Bac_ASV393","Bac_ASV677","Bac_ASV770","Euk_ASV122","Euk_ASV444","Euk_ASV805","Bac_ASV565","Euk_ASV69","Euk_ASV71","Euk_ASV133","Bac_ASV613","Euk_ASV205","Euk_ASV218","Bac_ASV534","Euk_ASV96","Euk_ASV256","Euk_ASV742","Euk_ASV1588","Bac_ASV430","Bac_ASV434","Bac_ASV445","Bac_ASV663","Euk_ASV140","Euk_ASV517","Euk_ASV1637","Euk_ASV22","Euk_ASV161","Euk_ASV364","Euk_ASV1637","Euk_ASV1799","Bac_ASV527","Bac_ASV565","Bac_ASV608","Bac_ASV750","Euk_ASV71","Euk_ASV77","Euk_ASV171","Euk_ASV561","Euk_ASV19","Bac_ASV613","Euk_ASV12","Euk_ASV444","Euk_ASV561","Bac_ASV772","Euk_ASV103","Euk_ASV227","Bac_ASV676","Bac_ASV1252","Euk_ASV94","Euk_ASV1118","Bac_ASV434","Euk_ASV463","Euk_ASV1011","Euk_ASV2707","Bac_ASV486","Euk_ASV80","Euk_ASV463","Bac_ASV496","Euk_ASV45","Euk_ASV152","Euk_ASV2","Euk_ASV200","Bac_ASV545","Euk_ASV5","Bac_ASV750","Euk_ASV66","Euk_ASV82","Euk_ASV127","Euk_ASV168","Bac_ASV663","Bac_ASV807","Euk_ASV83","Euk_ASV59","Euk_ASV226","Euk_ASV811","Euk_ASV69","Euk_ASV157","Bac_ASV608","Euk_ASV77","Euk_ASV114","Euk_ASV176","Euk_ASV428","Euk_ASV517","Euk_ASV762","Euk_ASV66","Euk_ASV82","Euk_ASV168","Euk_ASV171","Euk_ASV519","Bac_ASV727","Bac_ASV1026","Euk_ASV27","Euk_ASV45","Bac_ASV663","Euk_ASV5","Euk_ASV77","Euk_ASV81","Euk_ASV122","Euk_ASV133","Euk_ASV66","Euk_ASV69","Euk_ASV428","Bac_ASV612","Euk_ASV179","Euk_ASV306","Euk_ASV384","Euk_ASV171","Euk_ASV7","Euk_ASV53","Euk_ASV1717","Euk_ASV84","Euk_ASV323","Euk_ASV453","Euk_ASV742","Bac_ASV677","Bac_ASV807","Euk_ASV77","Euk_ASV12","Euk_ASV92","Euk_ASV122","Bac_ASV807","Euk_ASV12","Euk_ASV805","Bac_ASV738","Bac_ASV1026","Euk_ASV157","Euk_ASV281","Bac_ASV750","Bac_ASV772","Bac_ASV1026","Euk_ASV5","Bac_ASV772","Euk_ASV7","Euk_ASV80","Euk_ASV37","Euk_ASV168","Euk_ASV12","Euk_ASV77","Euk_ASV114","Euk_ASV16","Euk_ASV83","Euk_ASV114","Euk_ASV66","Euk_ASV176","Euk_ASV22","Euk_ASV226","Euk_ASV19","Euk_ASV39","Euk_ASV59","Euk_ASV80","Euk_ASV106","Euk_ASV126","Euk_ASV192","Euk_ASV200","Euk_ASV899","Euk_ASV76","Euk_ASV157","Euk_ASV161","Euk_ASV176","Euk_ASV200","Euk_ASV475","Euk_ASV16","Euk_ASV37","Euk_ASV69","Euk_ASV71","Euk_ASV80","Euk_ASV84","Euk_ASV240","Euk_ASV1128","Euk_ASV53","Euk_ASV69","Euk_ASV92","Euk_ASV256","Euk_ASV25","Euk_ASV37","Euk_ASV83","Euk_ASV96","Euk_ASV114","Euk_ASV186","Euk_ASV245","Euk_ASV148","Euk_ASV174","Euk_ASV246","Euk_ASV106","Euk_ASV113","Euk_ASV135","Euk_ASV1625","Euk_ASV113","Euk_ASV152","Euk_ASV157","Euk_ASV168","Euk_ASV94","Euk_ASV106","Euk_ASV113","Euk_ASV356","Euk_ASV59","Euk_ASV83","Euk_ASV69","Euk_ASV90","Euk_ASV113","Euk_ASV157","Euk_ASV306","Euk_ASV192","Euk_ASV226","Euk_ASV245","Euk_ASV112","Euk_ASV168","Euk_ASV428","Euk_ASV71","Euk_ASV84","Euk_ASV404","Euk_ASV475","Euk_ASV72","Euk_ASV171","Euk_ASV240","Euk_ASV277","Euk_ASV453","Euk_ASV800","Euk_ASV171","Euk_ASV300","Euk_ASV404","Euk_ASV174","Euk_ASV281","Euk_ASV517","Euk_ASV277","Euk_ASV300","Euk_ASV277","Euk_ASV168","Euk_ASV157","Euk_ASV186","Euk_ASV92","Euk_ASV323","Euk_ASV92","Euk_ASV192","Euk_ASV113","Euk_ASV323","Euk_ASV127","Euk_ASV186","Euk_ASV517","Euk_ASV126","Euk_ASV192","Euk_ASV475","Euk_ASV114","Euk_ASV186","Euk_ASV224","Euk_ASV159","Euk_ASV218","Euk_ASV148","Euk_ASV168","Euk_ASV742","Euk_ASV205","Euk_ASV1908","Euk_ASV157","Euk_ASV174","Euk_ASV192","Euk_ASV277","Euk_ASV459","Euk_ASV282","Euk_ASV364","Euk_ASV205","Euk_ASV179","Euk_ASV428","Euk_ASV453","Euk_ASV1625","Euk_ASV356","Euk_ASV218","Euk_ASV384","Euk_ASV2707","Euk_ASV200","Euk_ASV224","Euk_ASV404","Euk_ASV1259","Euk_ASV1799","Euk_ASV426","Euk_ASV364","Euk_ASV356","Euk_ASV476","Euk_ASV811","Euk_ASV899","Euk_ASV306","Euk_ASV1908","Euk_ASV300","Euk_ASV1588","Euk_ASV282","Euk_ASV426","Euk_ASV1799","Euk_ASV364","Euk_ASV444","Euk_ASV1118","Euk_ASV459","Euk_ASV899","Euk_ASV1259","Euk_ASV1118","Euk_ASV1637","Euk_ASV459","Euk_ASV444","Euk_ASV1625","Euk_ASV1799","Euk_ASV1128","Euk_ASV1375","Euk_ASV1259","Euk_ASV1908","Euk_ASV1799","Euk_ASV2707"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot"},"manipulation":{"enabled":false},"interaction":{"navigationButtons":true,"zoomView":true,"zoomSpeed":1},"physics":{"stabilization":true}},"groups":["Bacteria","Eukaryote"],"width":"100%","height":"800px","idselection":{"enabled":true,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":null,"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":true,"hoverNearest":false,"degree":1,"algorithm":"all","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":false,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"tooltipStay":300,"tooltipStyle":"position: fixed;visibility:hidden;padding: 5px;white-space: nowrap;font-family: verdana;font-size:14px;font-color:#000000;background-color: #f5f4ed;-moz-border-radius: 3px;-webkit-border-radius: 3px;border-radius: 3px;border: 1px solid #808074;box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);"},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-empty-content callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+
+</div>
+</div>
 
 
+</section>
+</section>
 </section>
 
 </main> <!-- /main -->

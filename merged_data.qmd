@@ -16,10 +16,10 @@ library(tidyverse)
 # ctd_selected %>% head(10)
 
 metadata <- read_csv("data/Metadata_Augmentum.csv")
+ps_16s <- readRDS("data/ps_16s.rds")
+ps_18s <- readRDS("data/ps_18s.rds")
 
 ```
-
-
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
 
@@ -53,3 +53,329 @@ ggplot(metadata, aes(x = Salinity, y = Pot_temperature, color = Depth)) +
 
 
 ```
+
+
+
+## Looking for associations
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+
+# options(repos = c(
+#      bioc = "https://bioc.r-universe.dev",
+#      CRAN = "https://cloud.r-project.org"))
+# install.packages("SpiecEasi")
+
+library(phyloseq)
+
+# Collapse taxonomic rank
+ps16_genus <- tax_glom(ps_16s, taxrank = "Genus")
+ps18_genus <- tax_glom(ps_18s, taxrank = "Genus")
+
+# Filter out rare taxa
+prev_filter <- function(ps, threshold = 0.2){
+  otu <- as(otu_table(ps), "matrix")
+  if(!taxa_are_rows(ps)){
+    otu <- t(otu)
+  }
+  
+  prevalence <- rowSums(otu > 0) / ncol(otu)
+  keep <- prevalence >= threshold
+  
+  prune_taxa(keep, ps)
+}
+
+ps16_filt <- prev_filter(ps16_genus, threshold = 0.2)
+ps18_filt <- prev_filter(ps18_genus, threshold = 0.2)
+
+taxa_names(ps16_filt) <- paste0("Bac_", taxa_names(ps16_filt))
+taxa_names(ps18_filt) <- paste0("Euk_", taxa_names(ps18_filt))
+
+# Combine matrices
+
+mat16 <- as(otu_table(ps16_filt), "matrix")
+mat18 <- as(otu_table(ps18_filt), "matrix")
+
+if(!taxa_are_rows(ps16_filt)) mat16 <- t(mat16)
+if(!taxa_are_rows(ps18_filt)) mat18 <- t(mat18)
+
+combined_matrix <- rbind(mat16, mat18)
+combined_matrix <- t(combined_matrix)
+taxa_names_combined <- colnames(combined_matrix)
+
+library(SpiecEasi)
+
+se <- spiec.easi(
+  combined_matrix,
+  method = "mb",
+  lambda.min.ratio = 1e-2,
+  nlambda = 20,
+  sel.criterion = "stars",
+  pulsar.params = list(rep.num = 50)
+)
+
+adj <- getRefit(se)
+sum(adj) / 2   # number of edges
+rownames(adj) <- taxa_names_combined
+colnames(adj) <- taxa_names_combined
+
+```
+
+### Plotting the Network graph (iGraph)
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+
+library(igraph)
+
+graph <- graph_from_adjacency_matrix(
+  adj,
+  mode = "undirected",
+  diag = FALSE
+)
+
+# Label nodes by domain
+
+V(graph)$domain <- ifelse(
+  grepl("^Bac_", V(graph)$name),
+  "Bacteria",
+  "Eukaryote"
+)
+
+table(V(graph)$domain)
+
+# Get cross-domain edges
+
+edges <- as_data_frame(graph, what = "edges")
+
+nodes <- tibble(
+  name = V(graph)$name,
+  domain = V(graph)$domain
+)
+
+edges2 <- edges %>%
+  left_join(nodes, by = c("from" = "name")) %>%
+  rename(domain_from = domain) %>%
+  left_join(nodes, by = c("to" = "name")) %>%
+  rename(domain_to = domain)
+
+cross_edges <- edges2 %>% filter(domain_from != domain_to)
+
+nrow(edges2)        # total edges (should match ~725)
+nrow(cross_edges)   # cross-domain edges
+
+```
+
+::: {.callout-note}
+
+💬 Note — Cross-domain associations
+
+A total of **278 cross-domain edges** were identified out of **725 total inferred associations**, representing approximately **38%** of all network connections.
+
+This substantial proportion indicates that **bacterial and eukaryotic communities are not structured independently**. Instead, the network reveals meaningful cross-domain covariance patterns, suggesting coordinated ecological dynamics. These associations may reflect bloom-driven bacterial responses, shared environmental filtering, or potential trophic and metabolic interactions between microbial eukaryotes and prokaryotes.
+:::
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+deg <- degree(graph)
+cat("🔹 Overall degre of connectivity:\n")
+summary(deg)
+cat("🔹 Bacteria degre of connectivity:\n")
+deg_cross <- degree(graph, v = V(graph)[V(graph)$domain == "Bacteria"])
+summary(deg_cross)
+cat("🔹 Eukaryote degre of connectivity:\n")
+deg_cross <- degree(graph, v = V(graph)[V(graph)$domain == "Eukaryote"])
+summary(deg_cross)
+
+```
+
+:: {.callout-note}
+
+💬 Note — Network connectivity structure
+
+The inferred cross-domain network comprised 238 taxa connected by 725 edges, with a median node degree of 6. Bacterial genera exhibited slightly higher connectivity (mean degree ≈ 7, maximum = 19) compared to eukaryotic genera (mean degree ≈ 5.3, maximum = 12). This pattern indicates a moderately connected but sparse network structure, without dominance by a few extreme hubs. The higher connectivity observed among bacteria suggests that prokaryotic taxa may act as integrators within the microbial community, associating with multiple eukaryotic groups. Overall, the degree distribution supports the presence of structured cross-domain coupling rather than random co-occurrence.
+:::
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# Which taxa are the hubs?
+deg_df <- data.frame(
+  taxon = V(graph)$name,
+  domain = V(graph)$domain,
+  degree = degree(graph)
+)
+
+```
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+
+# 1) Extract taxonomy with correct keys (rownames are the taxa_names)
+tax16 <- as.data.frame(tax_table(ps16_filt))
+tax16$taxon <- rownames(tax16)
+
+tax18 <- as.data.frame(tax_table(ps18_filt))
+tax18$taxon <- rownames(tax18)
+
+tax_all <- bind_rows(tax16, tax18)
+
+# 2) Join taxonomy onto your degree table by 'taxon'
+deg_tax <- deg_df %>%
+  left_join(tax_all, by = "taxon")
+
+# 3) Fallback if Genus is missing
+deg_tax <- deg_tax %>%
+  mutate(
+    Genus_final = case_when(
+      !is.na(Genus) & Genus != "" ~ Genus,
+      !is.na(Family) & Family != "" ~ paste0("Unclassified_", Family),
+      !is.na(Order) & Order != "" ~ paste0("Unclassified_", Order),
+      TRUE ~ "Unclassified"
+    )
+  )
+
+# 4) View top hubs with taxonomy
+deg_tax %>%
+  arrange(desc(degree)) %>%
+  select(taxon, domain, degree, Phylum, Order, Genus_final) %>%
+  head(20)
+
+```
+
+### Building Network graph
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+library(igraph)
+library(tidygraph)
+library(ggraph)
+
+# Ensure graph has domain attribute
+V(graph)$domain <- ifelse(grepl("^Bac_", V(graph)$name), "Bacteria", "Eukaryote")
+
+# Edge list with endpoints
+ed <- as_data_frame(graph, what = "edges")
+
+# Domains per endpoint
+nodes_df <- tibble(name = V(graph)$name, domain = V(graph)$domain)
+
+ed2 <- ed %>%
+  left_join(nodes_df, by = c("from" = "name")) %>% rename(domain_from = domain) %>%
+  left_join(nodes_df, by = c("to" = "name")) %>% rename(domain_to   = domain)
+
+# Keep only cross-domain edges
+cross_ed <- ed2 %>% filter(domain_from != domain_to)
+
+# Keep only nodes involved in cross-domain edges
+cross_nodes <- unique(c(cross_ed$from, cross_ed$to))
+
+graph_cross <- induced_subgraph(graph, vids = cross_nodes)
+
+# Remove isolates just in case
+graph_cross <- delete_vertices(graph_cross, degree(graph_cross) == 0)
+
+# Compute degrees in the cross network
+deg_cross <- degree(graph_cross)
+
+# Label top hubs (adjust n if needed)
+top_n <- 12
+top_nodes <- names(sort(deg_cross, decreasing = TRUE))[1:top_n]
+
+V(graph_cross)$label <- ifelse(V(graph_cross)$name %in% top_nodes, V(graph_cross)$name, NA)
+V(graph_cross)$size  <- scales::rescale(deg_cross, to = c(2, 8))  # node size by degree
+
+set.seed(1)
+
+ggraph(as_tbl_graph(graph_cross), layout = "fr") +
+  geom_edge_link(alpha = 0.25, linewidth = 0.3) +
+  geom_node_point(aes(size = size, color = domain), alpha = 0.9) +
+  geom_node_text(aes(label = label), repel = TRUE, size = 3) +
+  scale_size_identity() +
+  theme_void() +
+  labs(title = "Cross-domain association network (16S–18S)") +
+  theme(legend.position = "bottom")
+
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# Create lookup table
+genus_lookup <- deg_tax %>%
+  select(taxon, Genus_final) %>%
+  distinct()
+
+# Convert to dataframe
+nodes_df <- data.frame(name = V(graph_cross)$name)
+
+# Join genus info
+nodes_df <- nodes_df %>%
+  left_join(genus_lookup, by = c("name" = "taxon"))
+
+# Assign genus label to graph
+V(graph_cross)$genus <- nodes_df$Genus_final
+
+V(graph_cross)$genus_clean <- gsub("^Unclassified_", "", V(graph_cross)$genus)
+
+deg_cross <- degree(graph_cross)
+
+top_n <- 12
+top_nodes <- names(sort(deg_cross, decreasing = TRUE))[1:top_n]
+
+V(graph_cross)$label <- ifelse(
+  V(graph_cross)$name %in% top_nodes,
+  V(graph_cross)$genus_clean,
+  NA
+)
+
+library(ggraph)
+library(tidygraph)
+
+set.seed(1)
+
+ggraph(as_tbl_graph(graph_cross), layout = "fr") +
+  geom_edge_link(alpha = 0.25, linewidth = 0.3) +
+  geom_node_point(aes(color = domain, size = deg_cross), alpha = 0.9) +
+  geom_node_text(aes(label = label), repel = TRUE, size = 3) +
+  scale_size(range = c(2, 8)) +
+  theme_void() +
+  labs(
+    title = "Cross-domain association network (Genus level)",
+    color = "Domain"
+  ) +
+  theme(legend.position = "bottom")
+
+```
+
+### Interactive plot
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+
+library(visNetwork)
+
+# Choose which graph to explore:
+g <- graph_cross   # or use graph for full network
+
+# Node table
+nodes <- data.frame(
+  id    = V(g)$name,
+  label = ifelse(!is.na(V(g)$genus_clean), V(g)$genus_clean, V(g)$name),
+  group = V(g)$domain,
+  value = degree(g)  # node size in visNetwork
+)
+
+# Edge table
+edges <- as_data_frame(g, what = "edges") %>%
+  transmute(from = from, to = to)
+
+
+visNetwork(nodes, edges, height = "800px", width = "100%") %>%
+  visOptions(
+    highlightNearest = TRUE,
+    nodesIdSelection = TRUE
+  ) %>%
+  visInteraction(
+    navigationButtons = TRUE,
+    zoomView = TRUE
+  ) %>%
+  visPhysics(stabilization = TRUE)
+
+```
+
+
+::: {.callout-note}
+
+::: 

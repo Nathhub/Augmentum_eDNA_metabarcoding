@@ -28,7 +28,6 @@ rownames(metadat) <- rownames(seqtab.nochim)
 ps_16s <- phyloseq(otu_table(seqtab.nochim, taxa_are_rows = F), 
                sample_data(metadat), 
                tax_table(taxa))
-saveRDS(ps_16s, "data/ps_16s.rds")
   
 cat("🔹 A summary of the phyloseq object \n")
 ps_16s
@@ -164,6 +163,9 @@ ps_16s <- subset_samples(
 
 # Prune zero-abundance taxa
 ps_16s <- prune_taxa(taxa_sums(ps_16s) > 0, ps_16s)
+
+saveRDS(ps_16s, "data/ps_16s.rds")
+
 ```
 
 
