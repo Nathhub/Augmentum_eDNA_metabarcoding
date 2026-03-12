@@ -53,6 +53,101 @@ taxa_names(ps_18s) <- paste0("ASV", seq(ntaxa(ps_18s)))
 cat("🔹 These are the metadata variables:\n")
 print(sample_variables(ps_18s))
 ```
+### Positive and negative control
+
+:::: {.columns}
+
+::: {.column width="40%"}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+library(knitr)
+library(kableExtra)
+
+ps_controls <- subset_samples(
+  ps_18s,
+  Name %in% c("65_Positive_control", "66_Extraction_negative")
+)
+
+ps_controls <- prune_taxa(taxa_sums(ps_controls) > 0, ps_controls)
+
+kable(sample_sums(ps_controls), caption = "Number of reads in the controls") %>% kable_styling(full_width = FALSE, position = "center")
+```
+:::
+
+::: {.column width="20%"}
+:::
+
+::: {.column width="40%"}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+
+kable(estimate_richness(ps_controls, measures = "Observed"), caption = "Observed richness") %>% kable_styling(full_width = FALSE, position = "center")
+```
+:::
+::::
+
+::: {.callout-note}
+### 💬 Discussion — Controls
+
+Those control are less reassuring than the 16S ones:
+
+**Positive control**: 438k reads, 171 ASVs → 171 ASVs sounds high, but can have different explanations!
+
+**Extraction negative**: Extraction negative: 243 reads, 3 ASVs → This is still very low, but higher than the 16S negative (which had 4 reads).
+
+Let's dive into it!
+:::
+
+#### Negative control
+:::{.column width="80%"}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+df_neg <- psmelt(ps_controls) %>%
+  filter(Sample == "66_Extraction_negative") %>%
+  group_by(Genus, Family, Phylum) %>%
+  summarise(Reads = sum(Abundance)) %>%
+  arrange(desc(Reads))
+
+df_neg %>% head(2) %>% kable()
+
+```
+:::
+
+::: {.callout-note}
+### 💬 Discussion — Negative control
+
+The 18S extraction negative control contained 243 reads distributed across **two dinoflagellate genera** that (as we will see later) are also abundant in the environmental samples. Given the low read count (~0.1% of a average sample depth) and taxonomic identity, these sequences likely reflect minimal **index cross-talk** rather than true contamination. No need for decontamination!
+:::
+
+#### Positive control
+
+:::{.column width="60%"}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+df_pos <- psmelt(ps_controls) %>%
+  filter(Sample == "65_Positive_control")
+
+df_pos %>%
+     group_by(OTU) %>%
+     summarise(Reads = sum(Abundance)) %>%
+     arrange(desc(Reads)) %>%
+     slice(1:10) %>% kable()
+
+```
+:::
+
+::: {.callout-note}
+### 💬 Discussion — Positive control
+
+From the Zymo standard, we are expecting 2 yeasts:
+
+🍄 Yeasts:
+
+ - *Saccharomyces cerevisiae*
+ - *Cryptococcus neoformans*
+
+The 18S positive control was dominated by the expected yeast taxa (**Saccharomyces cerevisiae** and **Cryptococcus spp.**), confirmed via BLAST analysis (the MZG database is not adapted in this case).
+
+However, several marine dinoflagellate ASVs were also detected at low relative abundance (~1–2% each). Given the dominance of yeast sequences and the minimal read count in the extraction negative control, these minor marine taxa most likely reflect low-level cross-contamination during PCR or library preparation rather than sample mislabeling or widespread contamination. The overall composition confirms successful amplification of the mock community while indicating minor carryover from environmental samples.
+
+We can now remove the controls from the phyloseq object and move on with the ecological interpretation.
+:::
 
 ## 📊 Data visualisation
 
@@ -83,87 +178,6 @@ y = "Number of non-chimeric reads"
 )
 ```
 
-### Positive and negative control
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-
-ps_controls <- subset_samples(
-  ps_18s,
-  Name %in% c("65_Positive_control", "66_Extraction_negative")
-)
-
-ps_controls <- prune_taxa(taxa_sums(ps_controls) > 0, ps_controls)
-cat("Number of reads in the controls:\n")
-sample_sums(ps_controls)
-```
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-
-estimate_richness(ps_controls, measures = "Observed")
-
-```
-
-::: {.callout-note}
-### 💬 Discussion — Controls
-
-Those control are less reassuring than the 16S ones:
-
-**Positive control**: 438k reads, 171 ASVs → 171 ASVs sounds high, but can have different explanations!
-
-**Extraction negative**: Extraction negative: 243 reads, 3 ASVs → This is still very low, but higher than the 16S negative (which had 4 reads).
-
-Let's dive into it!
-:::
-
-#### Negative control
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-df_neg <- psmelt(ps_controls) %>%
-  filter(Sample == "66_Extraction_negative") %>%
-  group_by(Genus, Family, Phylum) %>%
-  summarise(Reads = sum(Abundance)) %>%
-  arrange(desc(Reads))
-
-df_neg %>% head(2)
-
-```
-
-::: {.callout-note}
-### 💬 Discussion — Negative control
-
-The 18S extraction negative control contained 243 reads distributed across **two dinoflagellate genera** that (as we will see later) are also abundant in the environmental samples. Given the low read count (~0.1% of a average sample depth) and taxonomic identity, these sequences likely reflect minimal **index cross-talk** rather than true contamination. No need for decontamination!
-:::
-
-#### Positive control
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-df_pos <- psmelt(ps_controls) %>%
-  filter(Sample == "65_Positive_control")
-
-df_pos %>%
-     group_by(OTU) %>%
-     summarise(Reads = sum(Abundance)) %>%
-     arrange(desc(Reads)) %>%
-     slice(1:10)
-
-```
-
-::: {.callout-note}
-### 💬 Discussion — Positive control
-
-From the Zymo standard, we are expecting 2 yeasts:
-
-🍄 Yeasts:
-
- - *Saccharomyces cerevisiae*
- - *Cryptococcus neoformans*
-
-The 18S positive control was dominated by the expected yeast taxa (**Saccharomyces cerevisiae** and **Cryptococcus spp.**), confirmed via BLAST analysis (the MZG database is not adapted in this case).
-
-However, several marine dinoflagellate ASVs were also detected at low relative abundance (~1–2% each). Given the dominance of yeast sequences and the minimal read count in the extraction negative control, these minor marine taxa most likely reflect low-level cross-contamination during PCR or library preparation rather than sample mislabeling or widespread contamination. The overall composition confirms successful amplification of the mock community while indicating minor carryover from environmental samples.
-
-We can now remove the controls from the phyloseq object and move on with the ecological interpretation.
-:::
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 # Environmental samples only
@@ -242,6 +256,7 @@ plot_ordination(ps_18s, ord, color = "Fjord") +
 The 18S ordination reveals partial clustering by fjord but with substantial overlap among systems. Compared to the 16S bacterial communities, eukaryotic assemblages show greater within-fjord variability and weaker separation among fjords. Tunulliarfik displays the highest dispersion, consistent with elevated alpha diversity and environmental heterogeneity. Overall, these results suggest that while fjord identity influences eukaryotic community structure, planktonic assemblages may be shaped more strongly by shared regional drivers such as stratification and bloom dynamics than by fjord-specific environmental filtering alone.
 :::
 
+::: {style="width:60%; margin:auto;"}
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 # Extract sample coordinates from the PCoA result
 site <- as.data.frame(ord$vectors)
@@ -249,8 +264,9 @@ site$SampleID <- rownames(site)
 
 # Get the 5 lowest values on Axis.1 (side of plot)
 bottom5 <- site[order(site$Axis.1), ][1:5, c("SampleID", "Axis.1", "Axis.2")]
-bottom5
+kable(bottom5) %>% kable_styling(full_width = FALSE, position = "center")
 ```
+:::
 
 ::: {.callout-note}
 Again, the most divergent samples in the ordination correspond exclusively to surface (D1) samples. Particularly they are the stations surrounded by icebergs (Fjord Sermilik and Tunulliarfik). These stations were influenced by meltwater and low salinity conditions, suggesting that surface stratification and freshwater input may exert a strong effect on eukaryotic community composition.
@@ -418,7 +434,8 @@ df <- df %>%
              if_else(Depth %in% c("15","15m","15 m"), "15m",
              if_else(Depth %in% c("45","45m","45 m"), "45m", Depth))),
     Depth = factor(Depth, levels = c("surface", "15m", "45m")),
-    Fjord = as.factor(Fjord)
+    Fjord = as.factor(Fjord),
+    Station = factor(Station, levels = as.character(sort(unique(as.numeric(Station)))))
   )
 
 # Top10 + Other

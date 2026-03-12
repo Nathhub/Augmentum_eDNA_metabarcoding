@@ -2,6 +2,8 @@
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 library(tidyverse)
+library(knitr)
+library(kableExtra)
 
 # ctd <- read_csv("data/CTD_data_Greenland_fjords.csv")
 # 
@@ -24,7 +26,7 @@ ps_18s <- readRDS("data/ps_18s.rds")
 ```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
 
 meta_long <- metadata %>%
-  select(10:23) %>%
+  select(11:24) %>%
   pivot_longer(
     cols = everything(),
     names_to = "Variable",
@@ -37,23 +39,6 @@ ggplot(meta_long, aes(y = Value)) +
   theme_minimal()
 
 ```
-
-::: {.callout-note}
-### 💬 Discussion — 
-
-
-:::
-
-```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
-
-ggplot(metadata, aes(x = Salinity, y = Pot_temperature, color = Depth)) +
-  geom_point() +
-  facet_wrap(~Area) +
-  theme_minimal()
-
-
-```
-
 
 
 ## Looking for associations
@@ -113,6 +98,8 @@ se <- spiec.easi(
   pulsar.params = list(rep.num = 50)
 )
 
+cat("Number of edges:\n")
+
 adj <- getRefit(se)
 sum(adj) / 2   # number of edges
 rownames(adj) <- taxa_names_combined
@@ -165,7 +152,6 @@ nrow(cross_edges)   # cross-domain edges
 ```
 
 ::: {.callout-note}
-
 💬 Note — Cross-domain associations
 
 A total of **278 cross-domain edges** were identified out of **725 total inferred associations**, representing approximately **38%** of all network connections.
@@ -186,10 +172,7 @@ summary(deg_cross)
 
 ```
 
-:: {.callout-note}
-
-💬 Note — Network connectivity structure
-
+::: {.callout-note title="Network connectivity structure"}
 The inferred cross-domain network comprised 238 taxa connected by 725 edges, with a median node degree of 6. Bacterial genera exhibited slightly higher connectivity (mean degree ≈ 7, maximum = 19) compared to eukaryotic genera (mean degree ≈ 5.3, maximum = 12). This pattern indicates a moderately connected but sparse network structure, without dominance by a few extreme hubs. The higher connectivity observed among bacteria suggests that prokaryotic taxa may act as integrators within the microbial community, associating with multiple eukaryotic groups. Overall, the degree distribution supports the presence of structured cross-domain coupling rather than random co-occurrence.
 :::
 
@@ -203,7 +186,7 @@ deg_df <- data.frame(
 
 ```
 
-
+:::{.column width="100%"}
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 
 # 1) Extract taxonomy with correct keys (rownames are the taxa_names)
@@ -234,9 +217,10 @@ deg_tax <- deg_tax %>%
 deg_tax %>%
   arrange(desc(degree)) %>%
   select(taxon, domain, degree, Phylum, Order, Genus_final) %>%
-  head(20)
+  head(20) %>% kable() %>% kable_styling(full_width = FALSE, position = "center")
 
 ```
+:::
 
 ### Building Network graph
 
@@ -272,27 +256,6 @@ graph_cross <- delete_vertices(graph_cross, degree(graph_cross) == 0)
 # Compute degrees in the cross network
 deg_cross <- degree(graph_cross)
 
-# Label top hubs (adjust n if needed)
-top_n <- 12
-top_nodes <- names(sort(deg_cross, decreasing = TRUE))[1:top_n]
-
-V(graph_cross)$label <- ifelse(V(graph_cross)$name %in% top_nodes, V(graph_cross)$name, NA)
-V(graph_cross)$size  <- scales::rescale(deg_cross, to = c(2, 8))  # node size by degree
-
-set.seed(1)
-
-ggraph(as_tbl_graph(graph_cross), layout = "fr") +
-  geom_edge_link(alpha = 0.25, linewidth = 0.3) +
-  geom_node_point(aes(size = size, color = domain), alpha = 0.9) +
-  geom_node_text(aes(label = label), repel = TRUE, size = 3) +
-  scale_size_identity() +
-  theme_void() +
-  labs(title = "Cross-domain association network (16S–18S)") +
-  theme(legend.position = "bottom")
-
-```
-
-```{r echo=FALSE, message=FALSE, warning=FALSE}
 # Create lookup table
 genus_lookup <- deg_tax %>%
   select(taxon, Genus_final) %>%
@@ -321,9 +284,6 @@ V(graph_cross)$label <- ifelse(
   NA
 )
 
-library(ggraph)
-library(tidygraph)
-
 set.seed(1)
 
 ggraph(as_tbl_graph(graph_cross), layout = "fr") +
@@ -340,7 +300,8 @@ ggraph(as_tbl_graph(graph_cross), layout = "fr") +
 
 ```
 
-### Interactive plot
+### Interactive plots
+#### Overall cross-domain network
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 
@@ -377,5 +338,290 @@ visNetwork(nodes, edges, height = "800px", width = "100%") %>%
 
 
 ::: {.callout-note}
-
+This is great but it's too complex so let's filter out nodes that have degree < 11.
 ::: 
+
+#### core of the network
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# Calculate node degree
+deg <- degree(graph_cross)
+
+# Keep nodes with degree > 3
+nodes_keep <- names(deg[deg > 10])
+
+# Create filtered graph
+graph_filtered <- induced_subgraph(graph_cross, vids = nodes_keep)
+
+# Check new size
+vcount(graph_filtered)
+ecount(graph_filtered)
+
+# Calculate node degree
+deg <- degree(graph_cross)
+
+# Keep nodes with degree > 3
+nodes_keep <- names(deg[deg > 10])
+
+# Create filtered graph
+graph_filtered <- induced_subgraph(graph_cross, vids = nodes_keep)
+
+# Check new size
+vcount(graph_filtered)
+ecount(graph_filtered)
+
+nodes <- data.frame(
+  id    = V(graph_filtered)$name,
+  label = ifelse(!is.na(V(graph_filtered)$genus_clean),
+                 V(graph_filtered)$genus_clean,
+                 V(graph_filtered)$name),
+  group = V(graph_filtered)$domain,
+  value = degree(graph_filtered)
+)
+
+edges <- as_data_frame(graph_filtered, what = "edges") %>%
+  transmute(from = from, to = to)
+
+visNetwork(nodes, edges, height = "800px", width = "100%") %>%
+  visOptions(
+    highlightNearest = TRUE,
+    nodesIdSelection = TRUE
+  ) %>%
+  visInteraction(
+    navigationButtons = TRUE,
+    zoomView = TRUE
+  ) %>%
+  visPhysics(stabilization = TRUE)
+```
+
+::: {.callout-note}
+Bacterial hubs (blue) dominate the network core. These taxa are typical marine heterotrophic bacteria associated with phytoplankton or organic matter degradation. 
+
+The central structure appears around:
+RS62 marine group → Aureispira → Mariniblastus → OM27
+
+Eukaryotes (yellow) appear as satellites linked to bacterial hubs. They connect mainly through bacterial hubs rather than directly to each other.
+
+That pattern suggests that bacterial communities may be responding to eukaryotic blooms or shared environmental drivers.
+::: 
+
+#### Cross-domain partner preference
+
+To better understand the ecological structure of the inferred 16S–18S association network, we examined **cross-domain partner preference**, i.e. which bacterial taxa were most frequently associated with eukaryotic taxa and vice versa. This allows identification of potential bacterial hubs linked to particular protistan or metazoan groups, and helps reveal whether the network is structured around specific cross-domain partnerships rather than diffuse associations.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+
+# Prepare node metadata from network + taxonomy
+nodes_df <- data.frame(
+  taxon = V(graph)$name,
+  domain = V(graph)$domain,
+  degree = degree(graph),
+  stringsAsFactors = FALSE
+) %>%
+  left_join(
+    deg_tax %>%
+      select(taxon, Phylum, Class, Order, Family, Genus_final),
+    by = "taxon"
+  )
+
+# Clean label column
+nodes_df <- nodes_df %>%
+  mutate(
+    Label = ifelse(!is.na(Genus_final) & Genus_final != "",
+                   Genus_final,
+                   taxon)
+  )
+
+# Prepare edge table and retain cross-domain edges only
+
+edges_df <- as_data_frame(graph, what = "edges") %>%
+  left_join(nodes_df %>% select(taxon, domain, Label, Phylum, Class, Order, Family),
+            by = c("from" = "taxon")) %>%
+  rename(domain_from = domain,
+         label_from  = Label,
+         phylum_from = Phylum,
+         class_from  = Class,
+         order_from  = Order,
+         family_from = Family) %>%
+  left_join(nodes_df %>% select(taxon, domain, Label, Phylum, Class, Order, Family),
+            by = c("to" = "taxon")) %>%
+  rename(domain_to = domain,
+         label_to  = Label,
+         phylum_to = Phylum,
+         class_to  = Class,
+         order_to  = Order,
+         family_to = Family)
+
+cross_edges <- edges_df %>%
+  filter(domain_from != domain_to)
+
+nrow(cross_edges)
+
+# Standardize edge direction:
+# bacteria always on the left, eukaryotes on the right
+
+cross_pref <- cross_edges %>%
+  mutate(
+    bacteria = ifelse(domain_from == "Bacteria", label_from, label_to),
+    bacteria_family = ifelse(domain_from == "Bacteria", family_from, family_to),
+    bacteria_order  = ifelse(domain_from == "Bacteria", order_from, order_to),
+    eukaryote = ifelse(domain_from == "Eukaryote", label_from, label_to),
+    euk_family = ifelse(domain_from == "Eukaryote", family_from, family_to),
+    euk_order  = ifelse(domain_from == "Eukaryote", order_from, order_to)
+  )
+
+# Count how many times each bacterial genus is connected
+# to each eukaryotic order
+
+partner_pref <- cross_pref %>%
+  count(bacteria, euk_order, sort = TRUE) %>%
+  filter(!is.na(euk_order))
+
+head(partner_pref, 20)
+
+# Top 20 most frequent bacteria–eukaryote order associations
+partner_pref %>%
+  arrange(desc(n)) %>%
+  slice(1:20)
+```
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# Identify important bacteria
+top_bacteria <- partner_pref %>%
+  group_by(bacteria) %>%
+  summarise(total = sum(n)) %>%
+  filter(total >= 2) %>%
+  pull(bacteria)
+
+# Identify important eukaryotic orders
+top_euk <- partner_pref %>%
+  group_by(euk_order) %>%
+  summarise(total = sum(n)) %>%
+  filter(total >= 2) %>%
+  pull(euk_order)
+
+heat_df2 <- partner_pref %>%
+  filter(
+    bacteria %in% top_bacteria,
+    euk_order %in% top_euk
+  )
+
+ggplot(heat_df2, aes(x = euk_order, y = bacteria, fill = n)) +
+  geom_tile(color = "white") +
+  scale_fill_gradient(low = "grey90", high = "steelblue") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+#### Fjord-specific core subnetworks
+
+To explore whether the cross-domain association network is organized differently among fjords, we can visualise **fjord-specific core subnetworks** derived from the global 16S–18S cross-domain network. For each fjord, let's retain taxa present in samples from that fjord, extract the corresponding induced subgraph, and then filter to keep only highly connected nodes (core taxa). This approach provides an exploratory view of the dominant cross-domain network structure within each fjord while avoiding the instability associated with re-inferring sparse networks from small fjord-specific sample sets.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# Make sure sample order is identical between filtered 16S and 18S objects
+stopifnot(all(sample_names(ps16_filt) == sample_names(ps18_filt)))
+
+# Extract count matrices with taxa in rows
+mat16 <- as(otu_table(ps16_filt), "matrix")
+mat18 <- as(otu_table(ps18_filt), "matrix")
+
+if (!taxa_are_rows(ps16_filt)) mat16 <- t(mat16)
+if (!taxa_are_rows(ps18_filt)) mat18 <- t(mat18)
+
+# Metadata
+meta <- data.frame(sample_data(ps16_filt))
+meta$Sample <- rownames(meta)
+
+# Fjord names
+fjords <- sort(unique(meta$Fjord))
+fjords
+```
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+make_fjord_network <- function(fjord_name,
+                               graph_obj = NULL,
+                               meta_df = NULL,
+                               mat16_in = NULL,
+                               mat18_in = NULL,
+                               degree_threshold = 5,
+                               min_taxon_sum = 1) {
+  
+  if (is.null(graph_obj)) graph_obj <- graph_cross
+  if (is.null(meta_df)) meta_df <- meta
+  if (is.null(mat16_in)) mat16_in <- mat16
+  if (is.null(mat18_in)) mat18_in <- mat18
+  
+  # Samples from that fjord
+  samp <- meta_df$Sample[meta_df$Fjord == fjord_name]
+  
+  # Taxa present in that fjord
+  bac_present <- rownames(mat16_in)[rowSums(mat16_in[, samp, drop = FALSE]) >= min_taxon_sum]
+  euk_present <- rownames(mat18_in)[rowSums(mat18_in[, samp, drop = FALSE]) >= min_taxon_sum]
+  taxa_present <- unique(c(bac_present, euk_present))
+  
+  # Keep only taxa that are also in the global cross-domain graph
+  taxa_present <- intersect(taxa_present, V(graph_obj)$name)
+  
+  # Induced fjord subgraph
+  g_fjord <- induced_subgraph(graph_obj, vids = taxa_present)
+  
+  # Remove isolated nodes
+  g_fjord <- delete_vertices(g_fjord, degree(g_fjord) == 0)
+  
+  if (vcount(g_fjord) == 0) return(NULL)
+  
+  # Core filtering by degree within fjord subgraph
+  deg_fjord <- degree(g_fjord)
+  keep_nodes <- names(deg_fjord[deg_fjord > degree_threshold])
+  
+  g_core <- induced_subgraph(g_fjord, vids = keep_nodes)
+  g_core <- delete_vertices(g_core, degree(g_core) == 0)
+  
+  if (vcount(g_core) == 0) return(NULL)
+  
+  # Build nodes table
+  nodes <- data.frame(
+    id    = V(g_core)$name,
+    label = ifelse(!is.na(V(g_core)$genus_clean),
+                   V(g_core)$genus_clean,
+                   V(g_core)$name),
+    group = V(g_core)$domain,
+    value = degree(g_core),
+    stringsAsFactors = FALSE
+  )
+  
+  nodes$color <- ifelse(nodes$group == "Bacteria", "#2C7FB8", "#D95F0E")
+  
+  # Build edge table
+  edges <- as_data_frame(g_core, what = "edges") %>%
+    transmute(from = from, to = to)
+  
+  visNetwork(nodes, edges, height = "750px", width = "100%") %>%
+    visNodes(borderWidth = 1) %>%
+    visOptions(
+      highlightNearest = TRUE,
+      nodesIdSelection = TRUE
+    ) %>%
+    visInteraction(
+      navigationButtons = TRUE,
+      zoomView = TRUE,
+      dragNodes = TRUE,
+      dragView = TRUE
+    ) %>%
+    visPhysics(stabilization = TRUE) %>%
+    visLayout(randomSeed = 7) %>%
+    visLegend()
+}
+```
+
+##### Sermilik
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
+make_fjord_network("Sermilik", degree_threshold = 10)
+```
+
+##### Iterdalk
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
+make_fjord_network("Iterdalk", degree_threshold = 10)
+```
+
+##### Tunulliarfik
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
+make_fjord_network("Tunulliarfik", degree_threshold = 10)
+```

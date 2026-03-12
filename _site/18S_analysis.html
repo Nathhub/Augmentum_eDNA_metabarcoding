@@ -102,6 +102,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+
+<link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+
 
 
 </head>
@@ -186,38 +190,59 @@ tax_table()   Taxonomy Table:    [ 16357 taxa by 20 taxonomic ranks ]</code></pr
 [8] "Lon"     "Fjord"  </code></pre>
 </div>
 </div>
-</section>
-<section id="data-visualisation" class="level2">
-<h2 class="anchored" data-anchor-id="data-visualisation">📊 Data visualisation</h2>
-<p>In this section, we explore the community structure of the RoCSI 18S dataset using the <code>phyloseq</code> object (<code>ps_18s</code>) generated above. We start by visualising read depth per sample, followed by basic taxonomic composition summaries.</p>
-<section id="read-depth-per-sample" class="level3">
-<h3 class="anchored" data-anchor-id="read-depth-per-sample">Read depth per sample</h3>
-<div class="cell">
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="18S_analysis_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="960"></p>
-</figure>
-</div>
-</div>
-</div>
-</section>
 <section id="positive-and-negative-control" class="level3">
 <h3 class="anchored" data-anchor-id="positive-and-negative-control">Positive and negative control</h3>
+<div class="columns">
+<div class="column" style="width:40%;">
 <div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>Number of reads in the controls:</code></pre>
+<div class="cell-output-display">
+<table class="table caption-top table-sm table-striped small">
+<caption>Number of reads in the controls</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">x</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">65_Positive_control</td>
+<td style="text-align: right;">438884</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">66_Extraction_negative</td>
+<td style="text-align: right;">243</td>
+</tr>
+</tbody>
+</table>
 </div>
-<div class="cell-output cell-output-stdout">
-<pre><code>   65_Positive_control 66_Extraction_negative 
-                438884                    243 </code></pre>
 </div>
-</div>
+</div><div class="column" style="width:20%;">
+
+</div><div class="column" style="width:40%;">
 <div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>                        Observed
-X65_Positive_control         171
-X66_Extraction_negative        3</code></pre>
+<div class="cell-output-display">
+<table class="table caption-top table-sm table-striped small">
+<caption>Observed richness</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Observed</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">X65_Positive_control</td>
+<td style="text-align: right;">171</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">X66_Extraction_negative</td>
+<td style="text-align: right;">3</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
@@ -238,14 +263,34 @@ X66_Extraction_negative        3</code></pre>
 </div>
 <section id="negative-control" class="level4">
 <h4 class="anchored" data-anchor-id="negative-control">Negative control</h4>
+<div class="column" style="width:80%;">
 <div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 2 × 4
-# Groups:   Genus, Family [2]
-  Genus       Family                            Phylum  Reads
-  &lt;chr&gt;       &lt;chr&gt;                             &lt;chr&gt;   &lt;int&gt;
-1 Ansanella   Suessiaceae                       Myzozoa   205
-2 Protodinium Dinoflagellata_incertae_sedis_EXT Myzozoa    38</code></pre>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Genus</th>
+<th style="text-align: left;">Family</th>
+<th style="text-align: left;">Phylum</th>
+<th style="text-align: right;">Reads</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Ansanella</td>
+<td style="text-align: left;">Suessiaceae</td>
+<td style="text-align: left;">Myzozoa</td>
+<td style="text-align: right;">205</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Protodinium</td>
+<td style="text-align: left;">Dinoflagellata_incertae_sedis_EXT</td>
+<td style="text-align: left;">Myzozoa</td>
+<td style="text-align: right;">38</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
@@ -264,21 +309,60 @@ X66_Extraction_negative        3</code></pre>
 </section>
 <section id="positive-control" class="level4">
 <h4 class="anchored" data-anchor-id="positive-control">Positive control</h4>
+<div class="column" style="width:60%;">
 <div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 10 × 2
-   OTU     Reads
-   &lt;chr&gt;   &lt;int&gt;
- 1 ASV15  272251
- 2 ASV56   56991
- 3 ASV327   5966
- 4 ASV346   5450
- 5 ASV1     5371
- 6 ASV423   3887
- 7 ASV433   3722
- 8 ASV493   2968
- 9 ASV587   2320
-10 ASV602   2263</code></pre>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">OTU</th>
+<th style="text-align: right;">Reads</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">ASV15</td>
+<td style="text-align: right;">272251</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">ASV56</td>
+<td style="text-align: right;">56991</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ASV327</td>
+<td style="text-align: right;">5966</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">ASV346</td>
+<td style="text-align: right;">5450</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ASV1</td>
+<td style="text-align: right;">5371</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">ASV423</td>
+<td style="text-align: right;">3887</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ASV433</td>
+<td style="text-align: right;">3722</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">ASV493</td>
+<td style="text-align: right;">2968</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ASV587</td>
+<td style="text-align: right;">2320</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">ASV602</td>
+<td style="text-align: right;">2263</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
@@ -303,6 +387,22 @@ X66_Extraction_negative        3</code></pre>
 </div>
 </div>
 </section>
+</section>
+</section>
+<section id="data-visualisation" class="level2">
+<h2 class="anchored" data-anchor-id="data-visualisation">📊 Data visualisation</h2>
+<p>In this section, we explore the community structure of the RoCSI 18S dataset using the <code>phyloseq</code> object (<code>ps_18s</code>) generated above. We start by visualising read depth per sample, followed by basic taxonomic composition summaries.</p>
+<section id="read-depth-per-sample" class="level3">
+<h3 class="anchored" data-anchor-id="read-depth-per-sample">Read depth per sample</h3>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="18S_analysis_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
 </section>
 <section id="alpha-diversity" class="level3">
 <h3 class="anchored" data-anchor-id="alpha-diversity">Alpha diversity</h3>
@@ -375,14 +475,52 @@ X66_Extraction_negative        3</code></pre>
 <p>The 18S ordination reveals partial clustering by fjord but with substantial overlap among systems. Compared to the 16S bacterial communities, eukaryotic assemblages show greater within-fjord variability and weaker separation among fjords. Tunulliarfik displays the highest dispersion, consistent with elevated alpha diversity and environmental heterogeneity. Overall, these results suggest that while fjord identity influences eukaryotic community structure, planktonic assemblages may be shaped more strongly by shared regional drivers such as stratification and bloom dynamics than by fjord-specific environmental filtering alone.</p>
 </div>
 </div>
+<div style="width:60%; margin:auto;">
 <div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>             SampleID     Axis.1     Axis.2
-50_St18_D1 50_St18_D1 -0.3679453 -0.3018036
-56_St20_D1 56_St20_D1 -0.3628814 -0.1845450
-04_St2_D1   04_St2_D1 -0.3416142 -0.3236995
-10_St4_D1   10_St4_D1 -0.3276851 -0.2928791
-01_St1_D1   01_St1_D1 -0.3265305 -0.2939818</code></pre>
+<div class="cell-output-display">
+<table class="table caption-top table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">SampleID</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Axis.1</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Axis.2</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">50_St18_D1</td>
+<td style="text-align: left;">50_St18_D1</td>
+<td style="text-align: right;">-0.3679453</td>
+<td style="text-align: right;">-0.3018036</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">56_St20_D1</td>
+<td style="text-align: left;">56_St20_D1</td>
+<td style="text-align: right;">-0.3628814</td>
+<td style="text-align: right;">-0.1845450</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">04_St2_D1</td>
+<td style="text-align: left;">04_St2_D1</td>
+<td style="text-align: right;">-0.3416142</td>
+<td style="text-align: right;">-0.3236995</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">10_St4_D1</td>
+<td style="text-align: left;">10_St4_D1</td>
+<td style="text-align: right;">-0.3276851</td>
+<td style="text-align: right;">-0.2928791</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">01_St1_D1</td>
+<td style="text-align: left;">01_St1_D1</td>
+<td style="text-align: right;">-0.3265305</td>
+<td style="text-align: right;">-0.2939818</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
@@ -487,12 +625,8 @@ Note
 <section id="ocean" class="level4">
 <h4 class="anchored" data-anchor-id="ocean">Ocean</h4>
 <div class="cell">
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="18S_analysis_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid figure-img" width="960"></p>
-</figure>
-</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>NULL</code></pre>
 </div>
 </div>
 

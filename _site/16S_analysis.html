@@ -102,6 +102,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+
+<link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+
 
 
 </head>
@@ -177,38 +181,59 @@ tax_table()   Taxonomy Table:    [ 3633 taxa by 7 taxonomic ranks ]</code></pre>
 [8] "Lon"     "Fjord"  </code></pre>
 </div>
 </div>
-</section>
-<section id="data-visualisation" class="level2">
-<h2 class="anchored" data-anchor-id="data-visualisation">📊 Data visualisation</h2>
-<p>In this section, we explore the community structure of the RoCSI 16S dataset using the <code>phyloseq</code> object (<code>ps_16s</code>) generated above. We start by visualising read depth per sample, followed by basic taxonomic composition summaries.</p>
-<section id="read-depth-per-sample" class="level3">
-<h3 class="anchored" data-anchor-id="read-depth-per-sample">Read depth per sample</h3>
-<div class="cell">
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="16S_analysis_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="960"></p>
-</figure>
-</div>
-</div>
-</div>
-</section>
 <section id="positive-and-negative-control" class="level3">
 <h3 class="anchored" data-anchor-id="positive-and-negative-control">Positive and negative control</h3>
+<div class="columns">
+<div class="column" style="width:40%;">
 <div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>Number of reads in the controls:</code></pre>
+<div class="cell-output-display">
+<table class="table caption-top table-sm table-striped small">
+<caption>Number of reads in the controls</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">x</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">65_zymo_positive</td>
+<td style="text-align: right;">733263</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">66_Extraction_negative</td>
+<td style="text-align: right;">4</td>
+</tr>
+</tbody>
+</table>
 </div>
-<div class="cell-output cell-output-stdout">
-<pre><code>      65_zymo_positive 66_Extraction_negative 
-                733263                      4 </code></pre>
 </div>
-</div>
+</div><div class="column" style="width:20%;">
+
+</div><div class="column" style="width:40%;">
 <div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>                        Observed
-X65_zymo_positive             14
-X66_Extraction_negative        4</code></pre>
+<div class="cell-output-display">
+<table class="table caption-top table-sm table-striped small">
+<caption>Observed richness</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Observed</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">X65_zymo_positive</td>
+<td style="text-align: right;">14</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">X66_Extraction_negative</td>
+<td style="text-align: right;">4</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
@@ -227,21 +252,68 @@ X66_Extraction_negative        4</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 10 × 3
-# Groups:   Sample [1]
-   Sample           Family             Abundance
-   &lt;chr&gt;            &lt;chr&gt;                  &lt;int&gt;
- 1 65_zymo_positive Listeriaceae          182566
- 2 65_zymo_positive Bacillaceae           133228
- 3 65_zymo_positive Staphylococcaceae     124031
- 4 65_zymo_positive Enterobacteriaceae     97560
- 5 65_zymo_positive Lactobacillaceae       96823
- 6 65_zymo_positive Enterococcaceae        90290
- 7 65_zymo_positive Pseudomonadaceae        8742
- 8 65_zymo_positive Paenibacillaceae          17
- 9 65_zymo_positive Cyclobacteriaceae          2
-10 65_zymo_positive Paracoccaceae              2</code></pre>
+<div class="cell-output-display">
+<table class="table caption-top table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">Sample</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Family</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Abundance</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">65_zymo_positive</td>
+<td style="text-align: left;">Listeriaceae</td>
+<td style="text-align: right;">182566</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">65_zymo_positive</td>
+<td style="text-align: left;">Bacillaceae</td>
+<td style="text-align: right;">133228</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">65_zymo_positive</td>
+<td style="text-align: left;">Staphylococcaceae</td>
+<td style="text-align: right;">124031</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">65_zymo_positive</td>
+<td style="text-align: left;">Enterobacteriaceae</td>
+<td style="text-align: right;">97560</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">65_zymo_positive</td>
+<td style="text-align: left;">Lactobacillaceae</td>
+<td style="text-align: right;">96823</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">65_zymo_positive</td>
+<td style="text-align: left;">Enterococcaceae</td>
+<td style="text-align: right;">90290</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">65_zymo_positive</td>
+<td style="text-align: left;">Pseudomonadaceae</td>
+<td style="text-align: right;">8742</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">65_zymo_positive</td>
+<td style="text-align: left;">Paenibacillaceae</td>
+<td style="text-align: right;">17</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">65_zymo_positive</td>
+<td style="text-align: left;">Cyclobacteriaceae</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">65_zymo_positive</td>
+<td style="text-align: left;">Paracoccaceae</td>
+<td style="text-align: right;">2</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
@@ -260,20 +332,63 @@ X66_Extraction_negative        4</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 9 × 3
-# Groups:   Sample [1]
-  Sample           Genus                Abundance
-  &lt;chr&gt;            &lt;chr&gt;                    &lt;int&gt;
-1 65_zymo_positive Listeria                182566
-2 65_zymo_positive Bacillus                133228
-3 65_zymo_positive Staphylococcus          124031
-4 65_zymo_positive Limosilactobacillus      96823
-5 65_zymo_positive Enterococcus             90290
-6 65_zymo_positive Escherichia-Shigella     45150
-7 65_zymo_positive Salmonella               45099
-8 65_zymo_positive Pseudomonas               8742
-9 65_zymo_positive &lt;NA&gt;                      7312</code></pre>
+<div class="cell-output-display">
+<table class="table caption-top table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">Sample</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Genus</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Abundance</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">65_zymo_positive</td>
+<td style="text-align: left;">Listeria</td>
+<td style="text-align: right;">182566</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">65_zymo_positive</td>
+<td style="text-align: left;">Bacillus</td>
+<td style="text-align: right;">133228</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">65_zymo_positive</td>
+<td style="text-align: left;">Staphylococcus</td>
+<td style="text-align: right;">124031</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">65_zymo_positive</td>
+<td style="text-align: left;">Limosilactobacillus</td>
+<td style="text-align: right;">96823</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">65_zymo_positive</td>
+<td style="text-align: left;">Enterococcus</td>
+<td style="text-align: right;">90290</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">65_zymo_positive</td>
+<td style="text-align: left;">Escherichia-Shigella</td>
+<td style="text-align: right;">45150</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">65_zymo_positive</td>
+<td style="text-align: left;">Salmonella</td>
+<td style="text-align: right;">45099</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">65_zymo_positive</td>
+<td style="text-align: left;">Pseudomonas</td>
+<td style="text-align: right;">8742</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">65_zymo_positive</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">7312</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
@@ -290,6 +405,22 @@ X66_Extraction_negative        4</code></pre>
 <p>A small proportion (~1%) of reads were assigned to Enterobacteriaceae without genus-level resolution, likely reflecting limitations of the amplified 16S region or conservative classification thresholds.</p>
 <p>Overall, these results confirm the reliability of amplification, sequencing, and taxonomic assignment in the 16S workflow.</p>
 <p>We can now remove the controls from the phyloseq object and move on with the ecological interpretation.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="data-visualisation" class="level2">
+<h2 class="anchored" data-anchor-id="data-visualisation">📊 Data visualisation</h2>
+<p>In this section, we explore the community structure of the RoCSI 16S dataset using the <code>phyloseq</code> object (<code>ps_16s</code>) generated above. We start by visualising read depth per sample, followed by basic taxonomic composition summaries.</p>
+<section id="read-depth-per-sample" class="level3">
+<h3 class="anchored" data-anchor-id="read-depth-per-sample">Read depth per sample</h3>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="16S_analysis_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
 </div>
 </div>
 </section>
@@ -361,19 +492,57 @@ X66_Extraction_negative        4</code></pre>
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>The ordination shows <strong>clustering of samples by fjord</strong>, indicating fjord-level structuring of bacterial communities. Sermilik forms a relatively distinct and tightly clustered group, whereas Tunulliarfik exhibits greater within-fjord variability. Notably, there is considerable overlap between Itterdalk and Tunulliarfik, suggesting partial similarity in community composition and potentially shared environmental controls. Ocean samples occupy an intermediate position, consistent with coastal waters acting as a regional microbial source pool. Overall, <strong>fjord identity contributes to community differentiation</strong>, although separation is not absolute among all systems.</p>
+<p>The ordination shows <strong>clustering of samples by fjord</strong>, indicating fjord-level structuring of bacterial communities. Sermilik forms a relatively distinct and tightly clustered group, whereas Tunulliarfik exhibits greater within-fjord variability. Notably, there is considerable overlap between Itterdalk and Tunulliarfik, suggesting partial similarity in community composition and potentially shared environmental controls. Overall, <strong>fjord identity contributes to community differentiation</strong>, although separation is not absolute among all systems.</p>
 <p>Next: check if dispersion differs significantly? betadisper(…) permutest(…)</p>
-<p><strong>NOTE</strong>: some samples are pretty distant from the othesr. Who are they?</p>
+<p><strong>NOTE</strong>: some samples are pretty distant from the others . Who are they?</p>
 </div>
 </div>
+<div style="width:60%; margin:auto;">
 <div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>             SampleID     Axis.1      Axis.2
-04_St2_D1   04_St2_D1 -0.5962332 -0.07053332
-01_St1_D1   01_St1_D1 -0.5730710 -0.09099290
-07_St3_D1   07_St3_D1 -0.5275916 -0.10260712
-10_St4_D1   10_St4_D1 -0.4828438 -0.08940618
-56_St20_D1 56_St20_D1 -0.4406480  0.04950692</code></pre>
+<div class="cell-output-display">
+<table class="table caption-top table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">SampleID</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Axis.1</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Axis.2</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">04_St2_D1</td>
+<td style="text-align: left;">04_St2_D1</td>
+<td style="text-align: right;">-0.5962332</td>
+<td style="text-align: right;">-0.0705333</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">01_St1_D1</td>
+<td style="text-align: left;">01_St1_D1</td>
+<td style="text-align: right;">-0.5730710</td>
+<td style="text-align: right;">-0.0909929</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">07_St3_D1</td>
+<td style="text-align: left;">07_St3_D1</td>
+<td style="text-align: right;">-0.5275916</td>
+<td style="text-align: right;">-0.1026071</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">10_St4_D1</td>
+<td style="text-align: left;">10_St4_D1</td>
+<td style="text-align: right;">-0.4828438</td>
+<td style="text-align: right;">-0.0894062</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">56_St20_D1</td>
+<td style="text-align: left;">56_St20_D1</td>
+<td style="text-align: right;">-0.4406480</td>
+<td style="text-align: right;">0.0495069</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
@@ -386,7 +555,7 @@ Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>The most divergent samples in the ordination correspond exclusively to surface (D1) samples. These stations were influenced by meltwater and low salinity conditions, suggesting that surface stratification and freshwater input may exert a strong effect on microbial community composition. This pattern indicates that vertical position and freshwater influence may be key drivers of community differentiation in these fjord systems.</p>
+<p>The most divergent samples in the ordination correspond exclusively to surface samples (ID ending with D1). These stations were influenced by meltwater and low salinity conditions, suggesting that surface stratification and freshwater input may exert a strong effect on microbial community composition. This pattern indicates that vertical position and freshwater influence may be key drivers of community differentiation in these fjord systems.</p>
 </div>
 </div>
 </section>
@@ -423,19 +592,6 @@ Note
 </div>
 </div>
 </div>
-<div class="callout callout-style-default callout-note callout-empty-content callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>💬 Discussion — Class composition
-</div>
-</div>
-<div class="callout-body-container callout-body">
-
-</div>
-</div>
 </section>
 <section id="plotting-by-fjords-and-depth" class="level3">
 <h3 class="anchored" data-anchor-id="plotting-by-fjords-and-depth">Plotting by fjords and depth</h3>
@@ -470,18 +626,6 @@ Note
 <div>
 <figure class="figure">
 <p><img src="16S_analysis_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="960"></p>
-</figure>
-</div>
-</div>
-</div>
-</section>
-<section id="ocean" class="level4">
-<h4 class="anchored" data-anchor-id="ocean">Ocean</h4>
-<div class="cell">
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="16S_analysis_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid figure-img" width="960"></p>
 </figure>
 </div>
 </div>

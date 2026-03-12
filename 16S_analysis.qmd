@@ -45,6 +45,115 @@ cat("🔹 These are the metadata variables:\n")
 print(sample_variables(ps_16s))
 ```
 
+### Positive and negative control
+
+:::: {.columns}
+
+::: {.column width="40%"}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+library(knitr)
+library(kableExtra)
+
+ps_controls <- subset_samples(
+  ps_16s,
+  Name %in% c("65_zymo_positive", "66_Extraction_negative")
+)
+
+ps_controls <- prune_taxa(taxa_sums(ps_controls) > 0, ps_controls)
+
+kable(sample_sums(ps_controls), caption = "Number of reads in the controls") %>% kable_styling(full_width = FALSE, position = "center")
+```
+:::
+
+::: {.column width="20%"}
+:::
+
+::: {.column width="40%"}
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+
+kable(estimate_richness(ps_controls, measures = "Observed"), caption = "Observed richness") %>% kable_styling(full_width = FALSE, position = "center")
+
+```
+:::
+
+::::
+
+::: {.callout-note}
+### 💬 Discussion — Controls
+
+Excellent! Those control numbers are actually very reassuring:
+
+**Positive control**: 733,263 reads, 14 ASVs → perfectly reasonable (mock community). However, it's a bit more than expected
+
+**Extraction negative**: 4 reads, 4 ASVs → essentially clean (background noise).
+  
+:::
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+
+df_controls <- psmelt(ps_controls)
+
+df_controls %>%
+  group_by(Sample, Family) %>%
+  summarise(Abundance = sum(Abundance)) %>%
+  arrange(Sample, desc(Abundance)) %>%
+  head(10) %>% kable() %>% kable_styling(full_width = FALSE)
+
+```
+
+::: {.callout-note}
+### 💬 Discussion — Positive Controls : **ZymoBIOMICS Microbial Standard**
+
+From the table above, we can ignore the ASVs that have low abundance (noise). We therefore have ASVs that match 7 families.
+
+From the Zymo standard, we are expecting 8 bacteria:
+
+🦠 Bacteria species:
+- Pseudomonas aeruginosa
+- Escherichia coli
+- Salmonella enterica
+- Lactobacillus fermentum
+- Enterococcus faecalis
+- Staphylococcus aureus
+- Listeria monocytogenes
+- Bacillus subtilis
+
+:::
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+df_controls %>%
+  group_by(Sample, Genus) %>%
+  summarise(Abundance = sum(Abundance)) %>%
+  arrange(Sample, desc(Abundance)) %>%
+  head(9) %>% kable() %>% kable_styling(full_width = FALSE)
+
+```
+::: {.callout-note}
+### 💬 Discussion — Controls Conclusion
+
+The ZymoBIOMICS Microbial Community Standard positive control performed as expected. All eight bacterial genera included in the mock community were successfully recovered.The relative abundances of recovered taxa were broadly consistent with expected composition, although minor deviations were observed, likely reflecting known amplification biases associated with 16S rRNA gene primers.
+
+A small proportion (~1%) of reads were assigned to Enterobacteriaceae without genus-level resolution, likely reflecting limitations of the amplified 16S region or conservative classification thresholds.
+
+Overall, these results confirm the reliability of amplification, sequencing, and taxonomic assignment in the 16S workflow.
+
+We can now remove the controls from the phyloseq object and move on with the ecological interpretation.
+:::
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+ps_16s <- subset_samples(
+  ps_16s,
+  !Name %in% c("65_zymo_positive", "66_Extraction_negative")
+)
+
+# Prune zero-abundance taxa
+ps_16s <- prune_taxa(taxa_sums(ps_16s) > 0, ps_16s)
+
+saveRDS(ps_16s, "data/ps_16s.rds")
+
+```
+
 ## 📊 Data visualisation
 
 In this section, we explore the community structure of the RoCSI 16S dataset using the
@@ -73,101 +182,6 @@ x = "Sample",
 y = "Number of non-chimeric reads"
 )
 ```
-
-### Positive and negative control
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-
-ps_controls <- subset_samples(
-  ps_16s,
-  Name %in% c("65_zymo_positive", "66_Extraction_negative")
-)
-
-ps_controls <- prune_taxa(taxa_sums(ps_controls) > 0, ps_controls)
-cat("Number of reads in the controls:\n")
-sample_sums(ps_controls)
-```
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-
-estimate_richness(ps_controls, measures = "Observed")
-
-```
-
-::: {.callout-note}
-### 💬 Discussion — Controls
-
-Excellent! Those control numbers are actually very reassuring:
-
-**Positive control**: 733,263 reads, 14 ASVs → perfectly reasonable (mock community). However, it's a bit more than expected
-
-**Extraction negative**: 4 reads, 4 ASVs → essentially clean (background noise).
-  
-:::
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-
-df_controls <- psmelt(ps_controls)
-
-df_controls %>%
-  group_by(Sample, Family) %>%
-  summarise(Abundance = sum(Abundance)) %>%
-  arrange(Sample, desc(Abundance)) %>%
-  head(10)
-
-```
-
-::: {.callout-note}
-### 💬 Discussion — Positive Controls : **ZymoBIOMICS Microbial Standard**
-
-From the table above, we can ignore the ASVs that have low abundance (noise). We therefore have ASVs that match 7 families.
-
-From the Zymo standard, we are expecting 8 bacteria:
-
-🦠 Bacteria species:
-- Pseudomonas aeruginosa
-- Escherichia coli
-- Salmonella enterica
-- Lactobacillus fermentum
-- Enterococcus faecalis
-- Staphylococcus aureus
-- Listeria monocytogenes
-- Bacillus subtilis
-
-:::
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-df_controls %>%
-  group_by(Sample, Genus) %>%
-  summarise(Abundance = sum(Abundance)) %>%
-  arrange(Sample, desc(Abundance)) %>%
-  head(9)
-
-```
-::: {.callout-note}
-### 💬 Discussion — Controls Conclusion
-
-The ZymoBIOMICS Microbial Community Standard positive control performed as expected. All eight bacterial genera included in the mock community were successfully recovered.The relative abundances of recovered taxa were broadly consistent with expected composition, although minor deviations were observed, likely reflecting known amplification biases associated with 16S rRNA gene primers.
-
-A small proportion (~1%) of reads were assigned to Enterobacteriaceae without genus-level resolution, likely reflecting limitations of the amplified 16S region or conservative classification thresholds.
-
-Overall, these results confirm the reliability of amplification, sequencing, and taxonomic assignment in the 16S workflow.
-
-We can now remove the controls from the phyloseq object and move on with the ecological interpretation.
-:::
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-ps_16s <- subset_samples(
-  ps_16s,
-  !Name %in% c("65_zymo_positive", "66_Extraction_negative")
-)
-
-# Prune zero-abundance taxa
-ps_16s <- prune_taxa(taxa_sums(ps_16s) > 0, ps_16s)
-
-saveRDS(ps_16s, "data/ps_16s.rds")
-
-```
-
 
 ### Alpha diversity
 
@@ -232,15 +246,16 @@ plot_ordination(ps_16s, ord, color = "Fjord") +
 ::: {.callout-note}
 ### 💬 Discussion — Beta diversity
 
-The ordination shows **clustering of samples by fjord**, indicating fjord-level structuring of bacterial communities. Sermilik forms a relatively distinct and tightly clustered group, whereas Tunulliarfik exhibits greater within-fjord variability. Notably, there is considerable overlap between Itterdalk and Tunulliarfik, suggesting partial similarity in community composition and potentially shared environmental controls. Ocean samples occupy an intermediate position, consistent with coastal waters acting as a regional microbial source pool. Overall, **fjord identity contributes to community differentiation**, although separation is not absolute among all systems.
+The ordination shows **clustering of samples by fjord**, indicating fjord-level structuring of bacterial communities. Sermilik forms a relatively distinct and tightly clustered group, whereas Tunulliarfik exhibits greater within-fjord variability. Notably, there is considerable overlap between Itterdalk and Tunulliarfik, suggesting partial similarity in community composition and potentially shared environmental controls. Overall, **fjord identity contributes to community differentiation**, although separation is not absolute among all systems.
 
 Next: check if dispersion differs significantly? 
 betadisper(...)
 permutest(...)
 
-**NOTE**: some samples are pretty distant from the othesr. Who are they?
+**NOTE**: some samples are pretty distant from the others . Who are they?
 :::
 
+::: {style="width:60%; margin:auto;"}
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 # Extract sample coordinates from the PCoA result
 site <- as.data.frame(ord$vectors)
@@ -248,11 +263,12 @@ site$SampleID <- rownames(site)
 
 # Get the 5 lowest values on Axis.1 (side of plot)
 bottom5 <- site[order(site$Axis.1), ][1:5, c("SampleID", "Axis.1", "Axis.2")]
-bottom5
+kable(bottom5) %>% kable_styling(full_width = FALSE, position = "center")
 ```
+:::
 
 ::: {.callout-note}
-The most divergent samples in the ordination correspond exclusively to surface (D1) samples. These stations were influenced by meltwater and low salinity conditions, suggesting that surface stratification and freshwater input may exert a strong effect on microbial community composition. This pattern indicates that vertical position and freshwater influence may be key drivers of community differentiation in these fjord systems.
+The most divergent samples in the ordination correspond exclusively to surface samples (ID ending with D1). These stations were influenced by meltwater and low salinity conditions, suggesting that surface stratification and freshwater input may exert a strong effect on microbial community composition. This pattern indicates that vertical position and freshwater influence may be key drivers of community differentiation in these fjord systems.
 :::
 
 
@@ -384,12 +400,6 @@ ggplot(df, aes(x = Number, y = Abundance, fill = Class_plot)) +
   ) +
   guides(fill = guide_legend(nrow = 2, byrow = TRUE))
 ```
-::: {.callout-note}
-### 💬 Discussion — Class composition
-
-
-:::
-
 
 ### Plotting by fjords and depth
 #### Sermilik
@@ -414,7 +424,8 @@ df <- df %>%
              if_else(Depth %in% c("15","15m","15 m"), "15m",
              if_else(Depth %in% c("45","45m","45 m"), "45m", Depth))),
     Depth = factor(Depth, levels = c("surface", "15m", "45m")),
-    Fjord = as.factor(Fjord)
+    Fjord = as.factor(Fjord),
+    Station = factor(Station, levels = as.character(sort(unique(as.numeric(Station)))))
   )
 
 # Top10 + Other
@@ -487,12 +498,5 @@ plots[["Tunulliarfik"]]
 
 ```
 
-
-#### Ocean
-
-```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
-plots[["Ocean"]]
-
-```
 
 

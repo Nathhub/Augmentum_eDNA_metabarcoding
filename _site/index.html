@@ -155,11 +155,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#read-tracking-summary" id="toc-read-tracking-summary" class="nav-link" data-scroll-target="#read-tracking-summary">🔍 Read Tracking Summary</a></li>
   <li><a href="#s-dataset" id="toc-s-dataset" class="nav-link" data-scroll-target="#s-dataset">16S Dataset</a>
   <ul class="collapse">
-  <li><a href="#build-the-phyloseq-object-16s" id="toc-build-the-phyloseq-object-16s" class="nav-link" data-scroll-target="#build-the-phyloseq-object-16s">📦 Build the phyloseq object (16S)</a></li>
+  <li><a href="#build-the-phyloseq-object-16s" id="toc-build-the-phyloseq-object-16s" class="nav-link" data-scroll-target="#build-the-phyloseq-object-16s">📦 Build the phyloseq object (16S)</a>
+  <ul class="collapse">
+  <li><a href="#positive-and-negative-control" id="toc-positive-and-negative-control" class="nav-link" data-scroll-target="#positive-and-negative-control">Positive and negative control</a></li>
+  </ul></li>
   <li><a href="#data-visualisation" id="toc-data-visualisation" class="nav-link" data-scroll-target="#data-visualisation">📊 Data visualisation</a>
   <ul class="collapse">
   <li><a href="#read-depth-per-sample" id="toc-read-depth-per-sample" class="nav-link" data-scroll-target="#read-depth-per-sample">Read depth per sample</a></li>
-  <li><a href="#positive-and-negative-control" id="toc-positive-and-negative-control" class="nav-link" data-scroll-target="#positive-and-negative-control">Positive and negative control</a></li>
   <li><a href="#alpha-diversity" id="toc-alpha-diversity" class="nav-link" data-scroll-target="#alpha-diversity">Alpha diversity</a></li>
   <li><a href="#ordination" id="toc-ordination" class="nav-link" data-scroll-target="#ordination">Ordination</a></li>
   <li><a href="#phylum-composition" id="toc-phylum-composition" class="nav-link" data-scroll-target="#phylum-composition">Phylum composition</a></li>
@@ -168,11 +170,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </ul></li>
   <li><a href="#s-dataset-1" id="toc-s-dataset-1" class="nav-link" data-scroll-target="#s-dataset-1">18S Dataset</a>
   <ul class="collapse">
-  <li><a href="#build-the-phyloseq-object-16s-1" id="toc-build-the-phyloseq-object-16s-1" class="nav-link" data-scroll-target="#build-the-phyloseq-object-16s-1">📦 Build the phyloseq object (16S)</a></li>
+  <li><a href="#build-the-phyloseq-object-16s-1" id="toc-build-the-phyloseq-object-16s-1" class="nav-link" data-scroll-target="#build-the-phyloseq-object-16s-1">📦 Build the phyloseq object (16S)</a>
+  <ul class="collapse">
+  <li><a href="#positive-and-negative-control-1" id="toc-positive-and-negative-control-1" class="nav-link" data-scroll-target="#positive-and-negative-control-1">Positive and negative control</a></li>
+  </ul></li>
   <li><a href="#data-visualisation-1" id="toc-data-visualisation-1" class="nav-link" data-scroll-target="#data-visualisation-1">📊 Data visualisation</a>
   <ul class="collapse">
   <li><a href="#read-depth-per-sample-1" id="toc-read-depth-per-sample-1" class="nav-link" data-scroll-target="#read-depth-per-sample-1">Read depth per sample</a></li>
-  <li><a href="#positive-and-negative-control-1" id="toc-positive-and-negative-control-1" class="nav-link" data-scroll-target="#positive-and-negative-control-1">Positive and negative control</a></li>
   <li><a href="#alpha-diversity-1" id="toc-alpha-diversity-1" class="nav-link" data-scroll-target="#alpha-diversity-1">Alpha diversity</a></li>
   <li><a href="#ordination-1" id="toc-ordination-1" class="nav-link" data-scroll-target="#ordination-1">Ordination</a></li>
   <li><a href="#phylum-composition-1" id="toc-phylum-composition-1" class="nav-link" data-scroll-target="#phylum-composition-1">Phylum composition</a></li>
@@ -185,7 +189,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul class="collapse">
   <li><a href="#plotting-the-network-graph-igraph" id="toc-plotting-the-network-graph-igraph" class="nav-link" data-scroll-target="#plotting-the-network-graph-igraph">Plotting the Network graph (iGraph)</a></li>
   <li><a href="#building-network-graph" id="toc-building-network-graph" class="nav-link" data-scroll-target="#building-network-graph">Building Network graph</a></li>
-  <li><a href="#interactive-plot" id="toc-interactive-plot" class="nav-link" data-scroll-target="#interactive-plot">Interactive plot</a></li>
+  <li><a href="#interactive-plots" id="toc-interactive-plots" class="nav-link" data-scroll-target="#interactive-plots">Interactive plots</a></li>
   </ul></li>
   </ul></li>
   </ul>
@@ -1401,38 +1405,59 @@ tax_table()   Taxonomy Table:    [ 3633 taxa by 7 taxonomic ranks ]</code></pre>
 [8] "Lon"     "Fjord"  </code></pre>
 </div>
 </div>
-</section>
-<section id="data-visualisation" class="level2">
-<h2 class="anchored" data-anchor-id="data-visualisation">📊 Data visualisation</h2>
-<p>In this section, we explore the community structure of the RoCSI 16S dataset using the <code>phyloseq</code> object (<code>ps_16s</code>) generated above. We start by visualising read depth per sample, followed by basic taxonomic composition summaries.</p>
-<section id="read-depth-per-sample" class="level3">
-<h3 class="anchored" data-anchor-id="read-depth-per-sample">Read depth per sample</h3>
-<div class="cell">
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="960"></p>
-</figure>
-</div>
-</div>
-</div>
-</section>
 <section id="positive-and-negative-control" class="level3">
 <h3 class="anchored" data-anchor-id="positive-and-negative-control">Positive and negative control</h3>
+<div class="columns">
+<div class="column" style="width:40%;">
 <div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>Number of reads in the controls:</code></pre>
+<div class="cell-output-display">
+<table class="table caption-top table-sm table-striped small">
+<caption>Number of reads in the controls</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">x</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">65_zymo_positive</td>
+<td style="text-align: right;">733263</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">66_Extraction_negative</td>
+<td style="text-align: right;">4</td>
+</tr>
+</tbody>
+</table>
 </div>
-<div class="cell-output cell-output-stdout">
-<pre><code>      65_zymo_positive 66_Extraction_negative 
-                733263                      4 </code></pre>
 </div>
-</div>
+</div><div class="column" style="width:20%;">
+
+</div><div class="column" style="width:40%;">
 <div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>                        Observed
-X65_zymo_positive             14
-X66_Extraction_negative        4</code></pre>
+<div class="cell-output-display">
+<table class="table caption-top table-sm table-striped small">
+<caption>Observed richness</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Observed</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">X65_zymo_positive</td>
+<td style="text-align: right;">14</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">X66_Extraction_negative</td>
+<td style="text-align: right;">4</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
@@ -1451,21 +1476,68 @@ X66_Extraction_negative        4</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 10 × 3
-# Groups:   Sample [1]
-   Sample           Family             Abundance
-   &lt;chr&gt;            &lt;chr&gt;                  &lt;int&gt;
- 1 65_zymo_positive Listeriaceae          182566
- 2 65_zymo_positive Bacillaceae           133228
- 3 65_zymo_positive Staphylococcaceae     124031
- 4 65_zymo_positive Enterobacteriaceae     97560
- 5 65_zymo_positive Lactobacillaceae       96823
- 6 65_zymo_positive Enterococcaceae        90290
- 7 65_zymo_positive Pseudomonadaceae        8742
- 8 65_zymo_positive Paenibacillaceae          17
- 9 65_zymo_positive Cyclobacteriaceae          2
-10 65_zymo_positive Paracoccaceae              2</code></pre>
+<div class="cell-output-display">
+<table class="table caption-top table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">Sample</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Family</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Abundance</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">65_zymo_positive</td>
+<td style="text-align: left;">Listeriaceae</td>
+<td style="text-align: right;">182566</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">65_zymo_positive</td>
+<td style="text-align: left;">Bacillaceae</td>
+<td style="text-align: right;">133228</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">65_zymo_positive</td>
+<td style="text-align: left;">Staphylococcaceae</td>
+<td style="text-align: right;">124031</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">65_zymo_positive</td>
+<td style="text-align: left;">Enterobacteriaceae</td>
+<td style="text-align: right;">97560</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">65_zymo_positive</td>
+<td style="text-align: left;">Lactobacillaceae</td>
+<td style="text-align: right;">96823</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">65_zymo_positive</td>
+<td style="text-align: left;">Enterococcaceae</td>
+<td style="text-align: right;">90290</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">65_zymo_positive</td>
+<td style="text-align: left;">Pseudomonadaceae</td>
+<td style="text-align: right;">8742</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">65_zymo_positive</td>
+<td style="text-align: left;">Paenibacillaceae</td>
+<td style="text-align: right;">17</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">65_zymo_positive</td>
+<td style="text-align: left;">Cyclobacteriaceae</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">65_zymo_positive</td>
+<td style="text-align: left;">Paracoccaceae</td>
+<td style="text-align: right;">2</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
@@ -1484,20 +1556,63 @@ X66_Extraction_negative        4</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 9 × 3
-# Groups:   Sample [1]
-  Sample           Genus                Abundance
-  &lt;chr&gt;            &lt;chr&gt;                    &lt;int&gt;
-1 65_zymo_positive Listeria                182566
-2 65_zymo_positive Bacillus                133228
-3 65_zymo_positive Staphylococcus          124031
-4 65_zymo_positive Limosilactobacillus      96823
-5 65_zymo_positive Enterococcus             90290
-6 65_zymo_positive Escherichia-Shigella     45150
-7 65_zymo_positive Salmonella               45099
-8 65_zymo_positive Pseudomonas               8742
-9 65_zymo_positive &lt;NA&gt;                      7312</code></pre>
+<div class="cell-output-display">
+<table class="table caption-top table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">Sample</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Genus</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Abundance</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">65_zymo_positive</td>
+<td style="text-align: left;">Listeria</td>
+<td style="text-align: right;">182566</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">65_zymo_positive</td>
+<td style="text-align: left;">Bacillus</td>
+<td style="text-align: right;">133228</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">65_zymo_positive</td>
+<td style="text-align: left;">Staphylococcus</td>
+<td style="text-align: right;">124031</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">65_zymo_positive</td>
+<td style="text-align: left;">Limosilactobacillus</td>
+<td style="text-align: right;">96823</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">65_zymo_positive</td>
+<td style="text-align: left;">Enterococcus</td>
+<td style="text-align: right;">90290</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">65_zymo_positive</td>
+<td style="text-align: left;">Escherichia-Shigella</td>
+<td style="text-align: right;">45150</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">65_zymo_positive</td>
+<td style="text-align: left;">Salmonella</td>
+<td style="text-align: right;">45099</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">65_zymo_positive</td>
+<td style="text-align: left;">Pseudomonas</td>
+<td style="text-align: right;">8742</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">65_zymo_positive</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">7312</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
@@ -1514,6 +1629,22 @@ X66_Extraction_negative        4</code></pre>
 <p>A small proportion (~1%) of reads were assigned to Enterobacteriaceae without genus-level resolution, likely reflecting limitations of the amplified 16S region or conservative classification thresholds.</p>
 <p>Overall, these results confirm the reliability of amplification, sequencing, and taxonomic assignment in the 16S workflow.</p>
 <p>We can now remove the controls from the phyloseq object and move on with the ecological interpretation.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="data-visualisation" class="level2">
+<h2 class="anchored" data-anchor-id="data-visualisation">📊 Data visualisation</h2>
+<p>In this section, we explore the community structure of the RoCSI 16S dataset using the <code>phyloseq</code> object (<code>ps_16s</code>) generated above. We start by visualising read depth per sample, followed by basic taxonomic composition summaries.</p>
+<section id="read-depth-per-sample" class="level3">
+<h3 class="anchored" data-anchor-id="read-depth-per-sample">Read depth per sample</h3>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
 </div>
 </div>
 </section>
@@ -1585,19 +1716,57 @@ X66_Extraction_negative        4</code></pre>
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>The ordination shows <strong>clustering of samples by fjord</strong>, indicating fjord-level structuring of bacterial communities. Sermilik forms a relatively distinct and tightly clustered group, whereas Tunulliarfik exhibits greater within-fjord variability. Notably, there is considerable overlap between Itterdalk and Tunulliarfik, suggesting partial similarity in community composition and potentially shared environmental controls. Ocean samples occupy an intermediate position, consistent with coastal waters acting as a regional microbial source pool. Overall, <strong>fjord identity contributes to community differentiation</strong>, although separation is not absolute among all systems.</p>
+<p>The ordination shows <strong>clustering of samples by fjord</strong>, indicating fjord-level structuring of bacterial communities. Sermilik forms a relatively distinct and tightly clustered group, whereas Tunulliarfik exhibits greater within-fjord variability. Notably, there is considerable overlap between Itterdalk and Tunulliarfik, suggesting partial similarity in community composition and potentially shared environmental controls. Overall, <strong>fjord identity contributes to community differentiation</strong>, although separation is not absolute among all systems.</p>
 <p>Next: check if dispersion differs significantly? betadisper(…) permutest(…)</p>
-<p><strong>NOTE</strong>: some samples are pretty distant from the othesr. Who are they?</p>
+<p><strong>NOTE</strong>: some samples are pretty distant from the others . Who are they?</p>
 </div>
 </div>
+<div style="width:60%; margin:auto;">
 <div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>             SampleID     Axis.1      Axis.2
-04_St2_D1   04_St2_D1 -0.5962332 -0.07053332
-01_St1_D1   01_St1_D1 -0.5730710 -0.09099290
-07_St3_D1   07_St3_D1 -0.5275916 -0.10260712
-10_St4_D1   10_St4_D1 -0.4828438 -0.08940618
-56_St20_D1 56_St20_D1 -0.4406480  0.04950692</code></pre>
+<div class="cell-output-display">
+<table class="table caption-top table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">SampleID</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Axis.1</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Axis.2</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">04_St2_D1</td>
+<td style="text-align: left;">04_St2_D1</td>
+<td style="text-align: right;">-0.5962332</td>
+<td style="text-align: right;">-0.0705333</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">01_St1_D1</td>
+<td style="text-align: left;">01_St1_D1</td>
+<td style="text-align: right;">-0.5730710</td>
+<td style="text-align: right;">-0.0909929</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">07_St3_D1</td>
+<td style="text-align: left;">07_St3_D1</td>
+<td style="text-align: right;">-0.5275916</td>
+<td style="text-align: right;">-0.1026071</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">10_St4_D1</td>
+<td style="text-align: left;">10_St4_D1</td>
+<td style="text-align: right;">-0.4828438</td>
+<td style="text-align: right;">-0.0894062</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">56_St20_D1</td>
+<td style="text-align: left;">56_St20_D1</td>
+<td style="text-align: right;">-0.4406480</td>
+<td style="text-align: right;">0.0495069</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
@@ -1610,7 +1779,7 @@ Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>The most divergent samples in the ordination correspond exclusively to surface (D1) samples. These stations were influenced by meltwater and low salinity conditions, suggesting that surface stratification and freshwater input may exert a strong effect on microbial community composition. This pattern indicates that vertical position and freshwater influence may be key drivers of community differentiation in these fjord systems.</p>
+<p>The most divergent samples in the ordination correspond exclusively to surface samples (ID ending with D1). These stations were influenced by meltwater and low salinity conditions, suggesting that surface stratification and freshwater input may exert a strong effect on microbial community composition. This pattern indicates that vertical position and freshwater influence may be key drivers of community differentiation in these fjord systems.</p>
 </div>
 </div>
 </section>
@@ -1645,19 +1814,6 @@ Note
 <p><img src="index_files/figure-html/unnamed-chunk-26-1.png" class="img-fluid figure-img" width="960"></p>
 </figure>
 </div>
-</div>
-</div>
-<div class="callout callout-style-default callout-note callout-empty-content callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>💬 Discussion — Class composition
-</div>
-</div>
-<div class="callout-body-container callout-body">
-
 </div>
 </div>
 </section>
@@ -1699,18 +1855,6 @@ Note
 </div>
 </div>
 </section>
-<section id="ocean" class="level4">
-<h4 class="anchored" data-anchor-id="ocean">Ocean</h4>
-<div class="cell">
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-30-1.png" class="img-fluid figure-img" width="960"></p>
-</figure>
-</div>
-</div>
-</div>
-</section>
 </section>
 </section>
 </section>
@@ -1738,38 +1882,59 @@ tax_table()   Taxonomy Table:    [ 16357 taxa by 20 taxonomic ranks ]</code></pr
 [8] "Lon"     "Fjord"  </code></pre>
 </div>
 </div>
-</section>
-<section id="data-visualisation-1" class="level2">
-<h2 class="anchored" data-anchor-id="data-visualisation-1">📊 Data visualisation</h2>
-<p>In this section, we explore the community structure of the RoCSI 18S dataset using the <code>phyloseq</code> object (<code>ps_18s</code>) generated above. We start by visualising read depth per sample, followed by basic taxonomic composition summaries.</p>
-<section id="read-depth-per-sample-1" class="level3">
-<h3 class="anchored" data-anchor-id="read-depth-per-sample-1">Read depth per sample</h3>
-<div class="cell">
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-51-1.png" class="img-fluid figure-img" width="960"></p>
-</figure>
-</div>
-</div>
-</div>
-</section>
 <section id="positive-and-negative-control-1" class="level3">
 <h3 class="anchored" data-anchor-id="positive-and-negative-control-1">Positive and negative control</h3>
+<div class="columns">
+<div class="column" style="width:40%;">
 <div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>Number of reads in the controls:</code></pre>
+<div class="cell-output-display">
+<table class="table caption-top table-sm table-striped small">
+<caption>Number of reads in the controls</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">x</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">65_Positive_control</td>
+<td style="text-align: right;">438884</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">66_Extraction_negative</td>
+<td style="text-align: right;">243</td>
+</tr>
+</tbody>
+</table>
 </div>
-<div class="cell-output cell-output-stdout">
-<pre><code>   65_Positive_control 66_Extraction_negative 
-                438884                    243 </code></pre>
 </div>
-</div>
+</div><div class="column" style="width:20%;">
+
+</div><div class="column" style="width:40%;">
 <div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>                        Observed
-X65_Positive_control         171
-X66_Extraction_negative        3</code></pre>
+<div class="cell-output-display">
+<table class="table caption-top table-sm table-striped small">
+<caption>Observed richness</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Observed</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">X65_Positive_control</td>
+<td style="text-align: right;">171</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">X66_Extraction_negative</td>
+<td style="text-align: right;">3</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
@@ -1790,14 +1955,34 @@ X66_Extraction_negative        3</code></pre>
 </div>
 <section id="negative-control" class="level4">
 <h4 class="anchored" data-anchor-id="negative-control">Negative control</h4>
+<div class="column" style="width:80%;">
 <div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 2 × 4
-# Groups:   Genus, Family [2]
-  Genus       Family                            Phylum  Reads
-  &lt;chr&gt;       &lt;chr&gt;                             &lt;chr&gt;   &lt;int&gt;
-1 Ansanella   Suessiaceae                       Myzozoa   205
-2 Protodinium Dinoflagellata_incertae_sedis_EXT Myzozoa    38</code></pre>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Genus</th>
+<th style="text-align: left;">Family</th>
+<th style="text-align: left;">Phylum</th>
+<th style="text-align: right;">Reads</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Ansanella</td>
+<td style="text-align: left;">Suessiaceae</td>
+<td style="text-align: left;">Myzozoa</td>
+<td style="text-align: right;">205</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Protodinium</td>
+<td style="text-align: left;">Dinoflagellata_incertae_sedis_EXT</td>
+<td style="text-align: left;">Myzozoa</td>
+<td style="text-align: right;">38</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
@@ -1816,21 +2001,60 @@ X66_Extraction_negative        3</code></pre>
 </section>
 <section id="positive-control" class="level4">
 <h4 class="anchored" data-anchor-id="positive-control">Positive control</h4>
+<div class="column" style="width:60%;">
 <div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 10 × 2
-   OTU     Reads
-   &lt;chr&gt;   &lt;int&gt;
- 1 ASV15  272251
- 2 ASV56   56991
- 3 ASV327   5966
- 4 ASV346   5450
- 5 ASV1     5371
- 6 ASV423   3887
- 7 ASV433   3722
- 8 ASV493   2968
- 9 ASV587   2320
-10 ASV602   2263</code></pre>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">OTU</th>
+<th style="text-align: right;">Reads</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">ASV15</td>
+<td style="text-align: right;">272251</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">ASV56</td>
+<td style="text-align: right;">56991</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ASV327</td>
+<td style="text-align: right;">5966</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">ASV346</td>
+<td style="text-align: right;">5450</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ASV1</td>
+<td style="text-align: right;">5371</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">ASV423</td>
+<td style="text-align: right;">3887</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ASV433</td>
+<td style="text-align: right;">3722</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">ASV493</td>
+<td style="text-align: right;">2968</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ASV587</td>
+<td style="text-align: right;">2320</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">ASV602</td>
+<td style="text-align: right;">2263</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
@@ -1856,13 +2080,29 @@ X66_Extraction_negative        3</code></pre>
 </div>
 </section>
 </section>
+</section>
+<section id="data-visualisation-1" class="level2">
+<h2 class="anchored" data-anchor-id="data-visualisation-1">📊 Data visualisation</h2>
+<p>In this section, we explore the community structure of the RoCSI 18S dataset using the <code>phyloseq</code> object (<code>ps_18s</code>) generated above. We start by visualising read depth per sample, followed by basic taxonomic composition summaries.</p>
+<section id="read-depth-per-sample-1" class="level3">
+<h3 class="anchored" data-anchor-id="read-depth-per-sample-1">Read depth per sample</h3>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-54-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
 <section id="alpha-diversity-1" class="level3">
 <h3 class="anchored" data-anchor-id="alpha-diversity-1">Alpha diversity</h3>
 <div class="cell">
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-57-1.png" class="img-fluid figure-img" width="960"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-56-1.png" class="img-fluid figure-img" width="960"></p>
 </figure>
 </div>
 </div>
@@ -1884,7 +2124,7 @@ X66_Extraction_negative        3</code></pre>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-58-1.png" class="img-fluid figure-img" width="960"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-57-1.png" class="img-fluid figure-img" width="960"></p>
 </figure>
 </div>
 </div>
@@ -1909,7 +2149,7 @@ X66_Extraction_negative        3</code></pre>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-59-1.png" class="img-fluid figure-img" width="960"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-58-1.png" class="img-fluid figure-img" width="960"></p>
 </figure>
 </div>
 </div>
@@ -1927,14 +2167,52 @@ X66_Extraction_negative        3</code></pre>
 <p>The 18S ordination reveals partial clustering by fjord but with substantial overlap among systems. Compared to the 16S bacterial communities, eukaryotic assemblages show greater within-fjord variability and weaker separation among fjords. Tunulliarfik displays the highest dispersion, consistent with elevated alpha diversity and environmental heterogeneity. Overall, these results suggest that while fjord identity influences eukaryotic community structure, planktonic assemblages may be shaped more strongly by shared regional drivers such as stratification and bloom dynamics than by fjord-specific environmental filtering alone.</p>
 </div>
 </div>
+<div style="width:60%; margin:auto;">
 <div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>             SampleID     Axis.1     Axis.2
-50_St18_D1 50_St18_D1 -0.3679453 -0.3018036
-56_St20_D1 56_St20_D1 -0.3628814 -0.1845450
-04_St2_D1   04_St2_D1 -0.3416142 -0.3236995
-10_St4_D1   10_St4_D1 -0.3276851 -0.2928791
-01_St1_D1   01_St1_D1 -0.3265305 -0.2939818</code></pre>
+<div class="cell-output-display">
+<table class="table caption-top table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">SampleID</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Axis.1</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Axis.2</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">50_St18_D1</td>
+<td style="text-align: left;">50_St18_D1</td>
+<td style="text-align: right;">-0.3679453</td>
+<td style="text-align: right;">-0.3018036</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">56_St20_D1</td>
+<td style="text-align: left;">56_St20_D1</td>
+<td style="text-align: right;">-0.3628814</td>
+<td style="text-align: right;">-0.1845450</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">04_St2_D1</td>
+<td style="text-align: left;">04_St2_D1</td>
+<td style="text-align: right;">-0.3416142</td>
+<td style="text-align: right;">-0.3236995</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">10_St4_D1</td>
+<td style="text-align: left;">10_St4_D1</td>
+<td style="text-align: right;">-0.3276851</td>
+<td style="text-align: right;">-0.2928791</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">01_St1_D1</td>
+<td style="text-align: left;">01_St1_D1</td>
+<td style="text-align: right;">-0.3265305</td>
+<td style="text-align: right;">-0.2939818</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
@@ -1957,7 +2235,7 @@ Note
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-61-1.png" class="img-fluid figure-img" width="960"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-60-1.png" class="img-fluid figure-img" width="960"></p>
 </figure>
 </div>
 </div>
@@ -1979,7 +2257,7 @@ Note
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-62-1.png" class="img-fluid figure-img" width="960"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-61-1.png" class="img-fluid figure-img" width="960"></p>
 </figure>
 </div>
 </div>
@@ -2006,7 +2284,7 @@ Note
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-63-1.png" class="img-fluid figure-img" width="960"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-62-1.png" class="img-fluid figure-img" width="960"></p>
 </figure>
 </div>
 </div>
@@ -2018,7 +2296,7 @@ Note
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-64-1.png" class="img-fluid figure-img" width="960"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-63-1.png" class="img-fluid figure-img" width="960"></p>
 </figure>
 </div>
 </div>
@@ -2030,21 +2308,17 @@ Note
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-65-1.png" class="img-fluid figure-img" width="960"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-64-1.png" class="img-fluid figure-img" width="960"></p>
 </figure>
 </div>
 </div>
 </div>
 </section>
-<section id="ocean-1" class="level4">
-<h4 class="anchored" data-anchor-id="ocean-1">Ocean</h4>
+<section id="ocean" class="level4">
+<h4 class="anchored" data-anchor-id="ocean">Ocean</h4>
 <div class="cell">
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-66-1.png" class="img-fluid figure-img" width="960"></p>
-</figure>
-</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>NULL</code></pre>
 </div>
 </div>
 </section>
@@ -2057,29 +2331,7 @@ Note
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-87-1.png" class="img-fluid figure-img" width="960"></p>
-</figure>
-</div>
-</div>
-</div>
-<div class="callout callout-style-default callout-note callout-empty-content callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>💬 Discussion —
-</div>
-</div>
-<div class="callout-body-container callout-body">
-
-</div>
-</div>
-<div class="cell">
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-88-1.png" class="img-fluid figure-img" width="960"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-86-1.png" class="img-fluid figure-img" width="960"></p>
 </figure>
 </div>
 </div>
@@ -2087,6 +2339,9 @@ Note
 <section id="looking-for-associations" class="level2">
 <h2 class="anchored" data-anchor-id="looking-for-associations">Looking for associations</h2>
 <div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>Number of edges:</code></pre>
+</div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 725</code></pre>
 </div>
@@ -2144,53 +2399,197 @@ Note
   0.000   3.000   5.000   5.268   7.000  12.000 </code></pre>
 </div>
 </div>
-<p>:: {.callout-note}</p>
-<p>💬 Note — Network connectivity structure</p>
-<p>The inferred cross-domain network comprised 238 taxa connected by 725 edges, with a median node degree of 6. Bacterial genera exhibited slightly higher connectivity (mean degree ≈ 7, maximum = 19) compared to eukaryotic genera (mean degree ≈ 5.3, maximum = 12). This pattern indicates a moderately connected but sparse network structure, without dominance by a few extreme hubs. The higher connectivity observed among bacteria suggests that prokaryotic taxa may act as integrators within the microbial community, associating with multiple eukaryotic groups. Overall, the degree distribution supports the presence of structured cross-domain coupling rather than random co-occurrence. :::</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Network connectivity structure">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Network connectivity structure
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The inferred cross-domain network comprised 238 taxa connected by 725 edges, with a median node degree of 6. Bacterial genera exhibited slightly higher connectivity (mean degree ≈ 7, maximum = 19) compared to eukaryotic genera (mean degree ≈ 5.3, maximum = 12). This pattern indicates a moderately connected but sparse network structure, without dominance by a few extreme hubs. The higher connectivity observed among bacteria suggests that prokaryotic taxa may act as integrators within the microbial community, associating with multiple eukaryotic groups. Overall, the degree distribution supports the presence of structured cross-domain coupling rather than random co-occurrence.</p>
+</div>
+</div>
+<div class="column" style="width:100%;">
 <div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>        taxon    domain degree            Phylum             Order
-1  Bac_ASV286  Bacteria     19 Verrucomicrobiota        Opitutales
-2   Bac_ASV53  Bacteria     14    Thermoproteota  Nitrosopumilales
-3  Bac_ASV250  Bacteria     14  Bdellovibrionota Bdellovibrionales
-4   Bac_ASV18  Bacteria     13    Pseudomonadota   Pseudomonadales
-5   Bac_ASV38  Bacteria     13    Pseudomonadota   Burkholderiales
-6  Bac_ASV305  Bacteria     13      Bacteroidota   Chitinophagales
-7    Bac_ASV3  Bacteria     12    Pseudomonadota   Pseudomonadales
-8   Bac_ASV58  Bacteria     12      Bacteroidota  Flavobacteriales
-9   Bac_ASV68  Bacteria     12      Bacteroidota  Flavobacteriales
-10  Euk_ASV69 Eukaryote     12           Myzozoa     Dinophysiales
-11 Bac_ASV169  Bacteria     11    Pseudomonadota      Beggiatoales
-12 Bac_ASV377  Bacteria     11   Planctomycetota      Pirellulales
-13   Euk_ASV2 Eukaryote     11           Myzozoa      Peridiniales
-14  Euk_ASV12 Eukaryote     11           Myzozoa      Peridiniales
-15  Euk_ASV71 Eukaryote     11        Ciliophora     Oligotrichida
-16 Euk_ASV192 Eukaryote     11           Myzozoa      Peridiniales
-17   Bac_ASV5  Bacteria     10    Pseudomonadota   Rhodobacterales
-18   Bac_ASV8  Bacteria     10    Pseudomonadota   Pseudomonadales
-19  Bac_ASV71  Bacteria     10      Bacteroidota  Flavobacteriales
-20  Bac_ASV91  Bacteria     10    Pseudomonadota   Rhodobacterales
-                 Genus_final
-1               Diplosphaera
-2  Candidatus Nitrosopumilus
-3                 OM27 clade
-4                SAR92 clade
-5          RS62 marine group
-6                 Aureispira
-7              SUP05 cluster
-8          NS3a marine group
-9               Aurantivirga
-10                Dinophysis
-11             Pelagibaculum
-12             Mariniblastus
-13              Scrippsiella
-14               Heterocapsa
-15             Spirotontonia
-16         Pentapharsodinium
-17             Planktomarina
-18              Kineobactrum
-19          NS4 marine group
-20            Octadecabacter</code></pre>
+<div class="cell-output-display">
+<table class="table caption-top table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">taxon</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">domain</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">degree</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Phylum</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Order</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Genus_final</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Bac_ASV286</td>
+<td style="text-align: left;">Bacteria</td>
+<td style="text-align: right;">19</td>
+<td style="text-align: left;">Verrucomicrobiota</td>
+<td style="text-align: left;">Opitutales</td>
+<td style="text-align: left;">Diplosphaera</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Bac_ASV53</td>
+<td style="text-align: left;">Bacteria</td>
+<td style="text-align: right;">14</td>
+<td style="text-align: left;">Thermoproteota</td>
+<td style="text-align: left;">Nitrosopumilales</td>
+<td style="text-align: left;">Candidatus Nitrosopumilus</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Bac_ASV250</td>
+<td style="text-align: left;">Bacteria</td>
+<td style="text-align: right;">14</td>
+<td style="text-align: left;">Bdellovibrionota</td>
+<td style="text-align: left;">Bdellovibrionales</td>
+<td style="text-align: left;">OM27 clade</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Bac_ASV18</td>
+<td style="text-align: left;">Bacteria</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: left;">Pseudomonadota</td>
+<td style="text-align: left;">Pseudomonadales</td>
+<td style="text-align: left;">SAR92 clade</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Bac_ASV38</td>
+<td style="text-align: left;">Bacteria</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: left;">Pseudomonadota</td>
+<td style="text-align: left;">Burkholderiales</td>
+<td style="text-align: left;">RS62 marine group</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Bac_ASV305</td>
+<td style="text-align: left;">Bacteria</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: left;">Bacteroidota</td>
+<td style="text-align: left;">Chitinophagales</td>
+<td style="text-align: left;">Aureispira</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Bac_ASV3</td>
+<td style="text-align: left;">Bacteria</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: left;">Pseudomonadota</td>
+<td style="text-align: left;">Pseudomonadales</td>
+<td style="text-align: left;">SUP05 cluster</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Bac_ASV58</td>
+<td style="text-align: left;">Bacteria</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: left;">Bacteroidota</td>
+<td style="text-align: left;">Flavobacteriales</td>
+<td style="text-align: left;">NS3a marine group</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Bac_ASV68</td>
+<td style="text-align: left;">Bacteria</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: left;">Bacteroidota</td>
+<td style="text-align: left;">Flavobacteriales</td>
+<td style="text-align: left;">Aurantivirga</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Euk_ASV69</td>
+<td style="text-align: left;">Eukaryote</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: left;">Myzozoa</td>
+<td style="text-align: left;">Dinophysiales</td>
+<td style="text-align: left;">Dinophysis</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Bac_ASV169</td>
+<td style="text-align: left;">Bacteria</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: left;">Pseudomonadota</td>
+<td style="text-align: left;">Beggiatoales</td>
+<td style="text-align: left;">Pelagibaculum</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Bac_ASV377</td>
+<td style="text-align: left;">Bacteria</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: left;">Planctomycetota</td>
+<td style="text-align: left;">Pirellulales</td>
+<td style="text-align: left;">Mariniblastus</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Euk_ASV2</td>
+<td style="text-align: left;">Eukaryote</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: left;">Myzozoa</td>
+<td style="text-align: left;">Peridiniales</td>
+<td style="text-align: left;">Scrippsiella</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Euk_ASV12</td>
+<td style="text-align: left;">Eukaryote</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: left;">Myzozoa</td>
+<td style="text-align: left;">Peridiniales</td>
+<td style="text-align: left;">Heterocapsa</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Euk_ASV71</td>
+<td style="text-align: left;">Eukaryote</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: left;">Ciliophora</td>
+<td style="text-align: left;">Oligotrichida</td>
+<td style="text-align: left;">Spirotontonia</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Euk_ASV192</td>
+<td style="text-align: left;">Eukaryote</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: left;">Myzozoa</td>
+<td style="text-align: left;">Peridiniales</td>
+<td style="text-align: left;">Pentapharsodinium</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Bac_ASV5</td>
+<td style="text-align: left;">Bacteria</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: left;">Pseudomonadota</td>
+<td style="text-align: left;">Rhodobacterales</td>
+<td style="text-align: left;">Planktomarina</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Bac_ASV8</td>
+<td style="text-align: left;">Bacteria</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: left;">Pseudomonadota</td>
+<td style="text-align: left;">Pseudomonadales</td>
+<td style="text-align: left;">Kineobactrum</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Bac_ASV71</td>
+<td style="text-align: left;">Bacteria</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: left;">Bacteroidota</td>
+<td style="text-align: left;">Flavobacteriales</td>
+<td style="text-align: left;">NS4 marine group</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Bac_ASV91</td>
+<td style="text-align: left;">Bacteria</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: left;">Pseudomonadota</td>
+<td style="text-align: left;">Rhodobacterales</td>
+<td style="text-align: left;">Octadecabacter</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 </div>
 </section>
@@ -2200,30 +2599,23 @@ Note
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-94-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<div class="cell">
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-95-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-92-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
 </section>
-<section id="interactive-plot" class="level3">
-<h3 class="anchored" data-anchor-id="interactive-plot">Interactive plot</h3>
+<section id="interactive-plots" class="level3">
+<h3 class="anchored" data-anchor-id="interactive-plots">Interactive plots</h3>
+<section id="overall-cross-domain-network" class="level4">
+<h4 class="anchored" data-anchor-id="overall-cross-domain-network">Overall cross-domain network</h4>
 <div class="cell">
 <div class="cell-output-display">
 <div id="htmlwidget-83985f1a3eb3805e6412" style="width:100%;height:800px;" class="visNetwork html-widget"></div>
 <script type="application/json" data-for="htmlwidget-83985f1a3eb3805e6412">{"x":{"nodes":{"id":["Bac_ASV3","Bac_ASV4","Bac_ASV5","Bac_ASV6","Bac_ASV8","Bac_ASV9","Bac_ASV11","Bac_ASV12","Bac_ASV18","Bac_ASV26","Bac_ASV38","Bac_ASV44","Bac_ASV48","Bac_ASV53","Bac_ASV58","Bac_ASV60","Bac_ASV62","Bac_ASV68","Bac_ASV71","Bac_ASV83","Bac_ASV88","Bac_ASV90","Bac_ASV91","Bac_ASV93","Bac_ASV94","Bac_ASV95","Bac_ASV108","Bac_ASV111","Bac_ASV116","Bac_ASV119","Bac_ASV122","Bac_ASV131","Bac_ASV138","Bac_ASV152","Bac_ASV157","Bac_ASV169","Bac_ASV170","Bac_ASV173","Bac_ASV174","Bac_ASV177","Bac_ASV178","Bac_ASV180","Bac_ASV186","Bac_ASV197","Bac_ASV198","Bac_ASV203","Bac_ASV222","Bac_ASV234","Bac_ASV250","Bac_ASV252","Bac_ASV253","Bac_ASV257","Bac_ASV263","Bac_ASV272","Bac_ASV274","Bac_ASV276","Bac_ASV284","Bac_ASV286","Bac_ASV289","Bac_ASV305","Bac_ASV311","Bac_ASV323","Bac_ASV328","Bac_ASV332","Bac_ASV334","Bac_ASV355","Bac_ASV370","Bac_ASV377","Bac_ASV389","Bac_ASV393","Bac_ASV394","Bac_ASV400","Bac_ASV430","Bac_ASV434","Bac_ASV435","Bac_ASV442","Bac_ASV445","Bac_ASV461","Bac_ASV486","Bac_ASV494","Bac_ASV496","Bac_ASV527","Bac_ASV532","Bac_ASV534","Bac_ASV535","Bac_ASV545","Bac_ASV565","Bac_ASV592","Bac_ASV608","Bac_ASV612","Bac_ASV613","Bac_ASV648","Bac_ASV663","Bac_ASV676","Bac_ASV677","Bac_ASV727","Bac_ASV738","Bac_ASV750","Bac_ASV770","Bac_ASV772","Bac_ASV807","Bac_ASV1026","Bac_ASV1252","Euk_ASV1","Euk_ASV2","Euk_ASV4","Euk_ASV5","Euk_ASV7","Euk_ASV12","Euk_ASV16","Euk_ASV19","Euk_ASV21","Euk_ASV22","Euk_ASV25","Euk_ASV27","Euk_ASV37","Euk_ASV39","Euk_ASV45","Euk_ASV53","Euk_ASV59","Euk_ASV66","Euk_ASV69","Euk_ASV71","Euk_ASV72","Euk_ASV76","Euk_ASV77","Euk_ASV80","Euk_ASV81","Euk_ASV82","Euk_ASV83","Euk_ASV84","Euk_ASV85","Euk_ASV90","Euk_ASV92","Euk_ASV94","Euk_ASV96","Euk_ASV102","Euk_ASV103","Euk_ASV106","Euk_ASV112","Euk_ASV113","Euk_ASV114","Euk_ASV122","Euk_ASV126","Euk_ASV127","Euk_ASV133","Euk_ASV135","Euk_ASV140","Euk_ASV148","Euk_ASV152","Euk_ASV157","Euk_ASV159","Euk_ASV161","Euk_ASV168","Euk_ASV171","Euk_ASV174","Euk_ASV176","Euk_ASV179","Euk_ASV186","Euk_ASV192","Euk_ASV200","Euk_ASV205","Euk_ASV218","Euk_ASV224","Euk_ASV226","Euk_ASV227","Euk_ASV236","Euk_ASV240","Euk_ASV245","Euk_ASV246","Euk_ASV256","Euk_ASV277","Euk_ASV281","Euk_ASV282","Euk_ASV300","Euk_ASV306","Euk_ASV323","Euk_ASV356","Euk_ASV364","Euk_ASV384","Euk_ASV404","Euk_ASV426","Euk_ASV428","Euk_ASV444","Euk_ASV453","Euk_ASV459","Euk_ASV463","Euk_ASV475","Euk_ASV476","Euk_ASV514","Euk_ASV517","Euk_ASV519","Euk_ASV561","Euk_ASV742","Euk_ASV762","Euk_ASV800","Euk_ASV805","Euk_ASV811","Euk_ASV899","Euk_ASV1011","Euk_ASV1118","Euk_ASV1128","Euk_ASV1259","Euk_ASV1375","Euk_ASV1588","Euk_ASV1625","Euk_ASV1637","Euk_ASV1717","Euk_ASV1799","Euk_ASV1908","Euk_ASV2707"],"label":["SUP05 cluster","Amylibacter","Planktomarina","Gilvibacter","Kineobactrum","Polaribacter","NS5 marine group","Candidatus Aquiluna","SAR92 clade","Pseudohongiella","RS62 marine group","Fluviicola","Ascidiaceihabitans","Candidatus Nitrosopumilus","NS3a marine group","Yoonia","Loktanella","Aurantivirga","NS4 marine group","Magnetospira","OM43 clade","Paraglaciecola","Octadecabacter","Lentibacter","Porticoccus","Glaciecola","Polaromonas","Sva0996 marine group","Lentimonas","NS2b marine group","Marinoscillum","Litoreibacter","Rhodoferax","IS-44","Patiriisocius","Pelagibaculum","Francisella","Oceanicoccus","Nitrosomonas","Litorivicinus","Ilumatobacter","Methylotenera","Colwellia","Luminiphilus","NS10 marine group","Candidatus Thioglobus","Reinekea","Vicingus","OM27 clade","Marimicrobium","Candidatus Puniceispirillum","ML602J-51","Pelagicoccus","Sinobacterium","Shewanella","Candidatus Nitrosoarchaeum","MB11C04 marine group","Diplosphaera","Arcobacter","Aureispira","Woeseia","Clade Ib","Salinirepens","Nonlabens","Roseibacillus","BD1-7 clade","Roseobacter clade NAC11-7 lineage","Mariniblastus","Lacihabitans","Candidatus Nitrosopelagicus","Pseudoalteromonas","Sulfurovum","Synechococcus CC9902","OM60(NOR5) clade","Candidatus Megaira","Arenicella","Pseudofulvibacter","Halioglobus","CL500-3","Cypionkella","MD3-55","Moritella","Pseudomonas","Flavobacterium","Granulosicoccus","Crocinitomix","Rubripirellula","Cm1-21","Marivibrio","MSB-1D1","Dethiosulfatarculus","Allofrancisella","Lentisphaera","CSP1-2","Candidatus Actinomarina","Aliivibrio","Photobacterium","Acinetobacter","Oleispira","Psychrobacter","FS140-16B-02 marine group","Rubritalea","Coxiella","Oithona","Scrippsiella","Micromonas","Lepidodinium","Margalefidinium","Heterocapsa","Teleaulax","Chaetoceros","Pseudocalanus","Coscinodiscus","Thalassiosira","Karenia","Protoperidinium","Karlodinium","Diaphanoeca","Biecheleria","Torodinium","Bathycoccus","Dinophysis","Spirotontonia","Cyclotrichium","Leptocylindrus","Pyramimonas","Skeletonema","Ansanella","Schmidingerella","Dinobryon","Lynnella","Protodinium","Loxophyllum","Alexandrium","Calliacantha","Prorocentrum","Biecheleriopsis","Octactis","Pirsonia","Leucocryptos","Bicosta","Rhodomonas","Strombidium","Gyrodinium","Rhabdamoeba","Gymnodinium","Pleurasiga","Rhizosolenia","Actinocyclus","Solenicola","Paraphysomonas","Apedinella","Pfiesteria","Pseudochattonella","Pseudotontonia","Cosmoeca","Phaeocystis","Tripos","Helicopedinella","Pentapharsodinium","Chrysochromulina","Pseudonitzschia","Quadricilia","Protoceratium","Mantoniella","Mertensia","Protaspa","Dolichomastix","Ebria","Fragilariopsis","Rimostrombidium","Mamiella","Cylindrotheca","Bellerochea","Trachelophyllum","Codonaria","Yihiella","Hemiselmis","Aureococcus","Phalacroma","Katablepharis","Pseudopedinella","Pelagostrobilidium","Nephroselmis","Parafavella","Mataza","Nanomia","Fragilidium","Synchaeta","Gymnoxanthella","Reckertia","Achradina","Savillea","Islandinium","Pterosperma","Haptolina","Ichthyodinium","Amphiacon","Tintinnopsis","Salpingella","Vibrio","Stephanopyxis","Chrysocystis","Porosira","Synedropsis","Paragymnodinium","Pseudopirsonia","Syracosphaera","Amylax","Prymnesium","Plagioselmis"],"group":["Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote","Eukaryote"],"value":[12,8,8,8,7,7,5,6,13,9,13,6,5,13,12,5,8,11,10,8,4,8,9,7,4,7,6,8,3,4,4,8,4,8,8,9,9,6,7,4,6,6,7,6,6,8,10,6,14,9,9,5,9,7,7,9,5,19,5,13,8,5,4,7,5,5,9,11,2,6,5,6,5,5,3,3,3,9,6,5,5,8,2,9,4,8,5,8,3,4,3,5,6,4,6,5,5,6,3,5,6,6,3,6,11,7,6,8,10,8,3,2,6,7,6,4,6,5,9,8,8,11,11,5,6,8,4,8,6,7,5,2,4,6,3,3,3,6,7,7,7,7,7,7,7,5,2,4,8,5,8,7,8,10,10,6,5,6,7,11,6,6,6,7,7,3,4,4,5,7,3,6,5,6,5,5,3,9,5,4,6,5,6,4,3,5,3,8,3,1,4,1,3,8,2,3,2,3,6,3,3,3,4,4,4,5,3,1,5,8,4]},"edges":{"from":["Bac_ASV3","Bac_ASV3","Bac_ASV3","Bac_ASV3","Bac_ASV3","Bac_ASV3","Bac_ASV3","Bac_ASV3","Bac_ASV3","Bac_ASV3","Bac_ASV3","Bac_ASV3","Bac_ASV4","Bac_ASV4","Bac_ASV4","Bac_ASV4","Bac_ASV4","Bac_ASV4","Bac_ASV4","Bac_ASV4","Bac_ASV5","Bac_ASV5","Bac_ASV5","Bac_ASV5","Bac_ASV5","Bac_ASV5","Bac_ASV5","Bac_ASV5","Bac_ASV6","Bac_ASV6","Bac_ASV6","Bac_ASV6","Bac_ASV6","Bac_ASV6","Bac_ASV6","Bac_ASV6","Bac_ASV8","Bac_ASV8","Bac_ASV8","Bac_ASV8","Bac_ASV8","Bac_ASV8","Bac_ASV8","Bac_ASV9","Bac_ASV9","Bac_ASV9","Bac_ASV9","Bac_ASV9","Bac_ASV9","Bac_ASV11","Bac_ASV11","Bac_ASV11","Bac_ASV11","Bac_ASV11","Bac_ASV12","Bac_ASV12","Bac_ASV12","Bac_ASV12","Bac_ASV12","Bac_ASV18","Bac_ASV18","Bac_ASV18","Bac_ASV18","Bac_ASV18","Bac_ASV18","Bac_ASV18","Bac_ASV18","Bac_ASV18","Bac_ASV18","Bac_ASV18","Bac_ASV26","Bac_ASV26","Bac_ASV26","Bac_ASV26","Bac_ASV26","Bac_ASV26","Bac_ASV26","Bac_ASV38","Bac_ASV38","Bac_ASV38","Bac_ASV38","Bac_ASV38","Bac_ASV38","Bac_ASV38","Bac_ASV38","Bac_ASV38","Bac_ASV38","Bac_ASV38","Bac_ASV44","Bac_ASV44","Bac_ASV44","Bac_ASV44","Bac_ASV44","Bac_ASV48","Bac_ASV48","Bac_ASV48","Bac_ASV53","Bac_ASV53","Bac_ASV53","Bac_ASV53","Bac_ASV53","Bac_ASV53","Bac_ASV53","Bac_ASV53","Bac_ASV53","Bac_ASV53","Bac_ASV53","Bac_ASV53","Bac_ASV53","Bac_ASV58","Bac_ASV58","Bac_ASV58","Bac_ASV58","Bac_ASV58","Bac_ASV58","Bac_ASV58","Bac_ASV58","Bac_ASV58","Bac_ASV58","Bac_ASV58","Bac_ASV60","Bac_ASV60","Bac_ASV62","Bac_ASV62","Bac_ASV62","Bac_ASV62","Bac_ASV62","Bac_ASV62","Bac_ASV62","Bac_ASV68","Bac_ASV68","Bac_ASV68","Bac_ASV68","Bac_ASV68","Bac_ASV68","Bac_ASV68","Bac_ASV71","Bac_ASV71","Bac_ASV71","Bac_ASV71","Bac_ASV71","Bac_ASV71","Bac_ASV83","Bac_ASV83","Bac_ASV83","Bac_ASV83","Bac_ASV83","Bac_ASV83","Bac_ASV83","Bac_ASV88","Bac_ASV88","Bac_ASV90","Bac_ASV90","Bac_ASV90","Bac_ASV90","Bac_ASV90","Bac_ASV90","Bac_ASV91","Bac_ASV91","Bac_ASV91","Bac_ASV91","Bac_ASV93","Bac_ASV93","Bac_ASV93","Bac_ASV93","Bac_ASV93","Bac_ASV93","Bac_ASV94","Bac_ASV94","Bac_ASV94","Bac_ASV95","Bac_ASV95","Bac_ASV95","Bac_ASV95","Bac_ASV108","Bac_ASV108","Bac_ASV108","Bac_ASV108","Bac_ASV108","Bac_ASV111","Bac_ASV111","Bac_ASV111","Bac_ASV111","Bac_ASV111","Bac_ASV111","Bac_ASV111","Bac_ASV111","Bac_ASV116","Bac_ASV116","Bac_ASV116","Bac_ASV119","Bac_ASV119","Bac_ASV119","Bac_ASV122","Bac_ASV122","Bac_ASV131","Bac_ASV131","Bac_ASV131","Bac_ASV131","Bac_ASV131","Bac_ASV138","Bac_ASV138","Bac_ASV138","Bac_ASV152","Bac_ASV152","Bac_ASV152","Bac_ASV152","Bac_ASV157","Bac_ASV157","Bac_ASV157","Bac_ASV157","Bac_ASV157","Bac_ASV157","Bac_ASV157","Bac_ASV157","Bac_ASV169","Bac_ASV169","Bac_ASV169","Bac_ASV169","Bac_ASV169","Bac_ASV169","Bac_ASV170","Bac_ASV170","Bac_ASV170","Bac_ASV170","Bac_ASV170","Bac_ASV170","Bac_ASV170","Bac_ASV170","Bac_ASV173","Bac_ASV173","Bac_ASV173","Bac_ASV173","Bac_ASV173","Bac_ASV173","Bac_ASV174","Bac_ASV174","Bac_ASV174","Bac_ASV174","Bac_ASV174","Bac_ASV177","Bac_ASV177","Bac_ASV178","Bac_ASV178","Bac_ASV180","Bac_ASV180","Bac_ASV180","Bac_ASV180","Bac_ASV186","Bac_ASV186","Bac_ASV186","Bac_ASV186","Bac_ASV186","Bac_ASV197","Bac_ASV197","Bac_ASV197","Bac_ASV197","Bac_ASV198","Bac_ASV198","Bac_ASV198","Bac_ASV198","Bac_ASV203","Bac_ASV203","Bac_ASV203","Bac_ASV203","Bac_ASV203","Bac_ASV203","Bac_ASV203","Bac_ASV222","Bac_ASV222","Bac_ASV222","Bac_ASV222","Bac_ASV222","Bac_ASV234","Bac_ASV234","Bac_ASV234","Bac_ASV234","Bac_ASV234","Bac_ASV234","Bac_ASV250","Bac_ASV250","Bac_ASV250","Bac_ASV250","Bac_ASV250","Bac_ASV250","Bac_ASV250","Bac_ASV250","Bac_ASV250","Bac_ASV250","Bac_ASV250","Bac_ASV252","Bac_ASV252","Bac_ASV252","Bac_ASV252","Bac_ASV252","Bac_ASV252","Bac_ASV252","Bac_ASV253","Bac_ASV253","Bac_ASV253","Bac_ASV253","Bac_ASV253","Bac_ASV253","Bac_ASV257","Bac_ASV257","Bac_ASV257","Bac_ASV263","Bac_ASV263","Bac_ASV263","Bac_ASV263","Bac_ASV272","Bac_ASV272","Bac_ASV272","Bac_ASV272","Bac_ASV272","Bac_ASV272","Bac_ASV274","Bac_ASV274","Bac_ASV274","Bac_ASV274","Bac_ASV274","Bac_ASV276","Bac_ASV276","Bac_ASV276","Bac_ASV276","Bac_ASV276","Bac_ASV284","Bac_ASV284","Bac_ASV284","Bac_ASV286","Bac_ASV286","Bac_ASV286","Bac_ASV286","Bac_ASV286","Bac_ASV286","Bac_ASV286","Bac_ASV286","Bac_ASV286","Bac_ASV286","Bac_ASV286","Bac_ASV286","Bac_ASV289","Bac_ASV289","Bac_ASV305","Bac_ASV305","Bac_ASV305","Bac_ASV305","Bac_ASV305","Bac_ASV305","Bac_ASV305","Bac_ASV311","Bac_ASV311","Bac_ASV311","Bac_ASV311","Bac_ASV323","Bac_ASV323","Bac_ASV328","Bac_ASV332","Bac_ASV332","Bac_ASV332","Bac_ASV332","Bac_ASV332","Bac_ASV334","Bac_ASV334","Bac_ASV334","Bac_ASV334","Bac_ASV334","Bac_ASV355","Bac_ASV355","Bac_ASV370","Bac_ASV370","Bac_ASV370","Bac_ASV370","Bac_ASV370","Bac_ASV377","Bac_ASV377","Bac_ASV377","Bac_ASV377","Bac_ASV377","Bac_ASV377","Bac_ASV377","Bac_ASV377","Bac_ASV389","Bac_ASV393","Bac_ASV393","Bac_ASV393","Bac_ASV393","Bac_ASV394","Bac_ASV394","Bac_ASV394","Bac_ASV400","Bac_ASV400","Bac_ASV400","Bac_ASV400","Bac_ASV430","Bac_ASV430","Bac_ASV430","Bac_ASV430","Bac_ASV434","Bac_ASV434","Bac_ASV434","Bac_ASV435","Bac_ASV435","Bac_ASV435","Bac_ASV442","Bac_ASV442","Bac_ASV445","Bac_ASV445","Bac_ASV461","Bac_ASV461","Bac_ASV461","Bac_ASV461","Bac_ASV461","Bac_ASV486","Bac_ASV486","Bac_ASV486","Bac_ASV494","Bac_ASV494","Bac_ASV494","Bac_ASV496","Bac_ASV496","Bac_ASV527","Bac_ASV527","Bac_ASV527","Bac_ASV527","Bac_ASV527","Bac_ASV527","Bac_ASV532","Bac_ASV534","Bac_ASV534","Bac_ASV534","Bac_ASV534","Bac_ASV534","Bac_ASV535","Bac_ASV535","Bac_ASV535","Bac_ASV535","Bac_ASV545","Bac_ASV545","Bac_ASV545","Bac_ASV545","Bac_ASV545","Bac_ASV545","Bac_ASV565","Bac_ASV565","Bac_ASV565","Bac_ASV592","Bac_ASV592","Bac_ASV592","Bac_ASV592","Bac_ASV608","Bac_ASV612","Bac_ASV612","Bac_ASV612","Bac_ASV613","Bac_ASV648","Bac_ASV648","Bac_ASV648","Bac_ASV663","Bac_ASV663","Bac_ASV663","Bac_ASV676","Bac_ASV676","Bac_ASV676","Bac_ASV677","Bac_ASV677","Bac_ASV677","Bac_ASV727","Bac_ASV727","Bac_ASV727","Bac_ASV727","Bac_ASV738","Bac_ASV738","Bac_ASV738","Bac_ASV738","Bac_ASV750","Bac_ASV750","Bac_ASV770","Bac_ASV772","Bac_ASV772","Bac_ASV807","Bac_ASV807","Bac_ASV807","Bac_ASV1026","Bac_ASV1026","Bac_ASV1026","Bac_ASV1252","Bac_ASV1252","Euk_ASV1","Euk_ASV1","Euk_ASV2","Euk_ASV2","Euk_ASV2","Euk_ASV2","Euk_ASV2","Euk_ASV2","Euk_ASV2","Euk_ASV2","Euk_ASV2","Euk_ASV4","Euk_ASV4","Euk_ASV4","Euk_ASV4","Euk_ASV4","Euk_ASV4","Euk_ASV5","Euk_ASV5","Euk_ASV7","Euk_ASV7","Euk_ASV7","Euk_ASV7","Euk_ASV7","Euk_ASV7","Euk_ASV12","Euk_ASV12","Euk_ASV12","Euk_ASV12","Euk_ASV16","Euk_ASV16","Euk_ASV16","Euk_ASV16","Euk_ASV16","Euk_ASV16","Euk_ASV19","Euk_ASV21","Euk_ASV22","Euk_ASV22","Euk_ASV25","Euk_ASV25","Euk_ASV25","Euk_ASV25","Euk_ASV27","Euk_ASV27","Euk_ASV27","Euk_ASV37","Euk_ASV39","Euk_ASV39","Euk_ASV39","Euk_ASV39","Euk_ASV45","Euk_ASV45","Euk_ASV53","Euk_ASV53","Euk_ASV53","Euk_ASV53","Euk_ASV53","Euk_ASV59","Euk_ASV59","Euk_ASV59","Euk_ASV66","Euk_ASV66","Euk_ASV66","Euk_ASV69","Euk_ASV69","Euk_ASV69","Euk_ASV69","Euk_ASV71","Euk_ASV71","Euk_ASV71","Euk_ASV71","Euk_ASV71","Euk_ASV71","Euk_ASV72","Euk_ASV72","Euk_ASV72","Euk_ASV76","Euk_ASV76","Euk_ASV76","Euk_ASV77","Euk_ASV77","Euk_ASV81","Euk_ASV82","Euk_ASV83","Euk_ASV83","Euk_ASV84","Euk_ASV85","Euk_ASV90","Euk_ASV90","Euk_ASV94","Euk_ASV102","Euk_ASV103","Euk_ASV103","Euk_ASV103","Euk_ASV106","Euk_ASV106","Euk_ASV106","Euk_ASV112","Euk_ASV112","Euk_ASV113","Euk_ASV122","Euk_ASV122","Euk_ASV127","Euk_ASV127","Euk_ASV133","Euk_ASV148","Euk_ASV148","Euk_ASV152","Euk_ASV157","Euk_ASV159","Euk_ASV159","Euk_ASV159","Euk_ASV161","Euk_ASV161","Euk_ASV168","Euk_ASV171","Euk_ASV171","Euk_ASV171","Euk_ASV171","Euk_ASV174","Euk_ASV179","Euk_ASV179","Euk_ASV179","Euk_ASV186","Euk_ASV192","Euk_ASV192","Euk_ASV192","Euk_ASV192","Euk_ASV200","Euk_ASV218","Euk_ASV224","Euk_ASV224","Euk_ASV224","Euk_ASV226","Euk_ASV227","Euk_ASV240","Euk_ASV246","Euk_ASV246","Euk_ASV256","Euk_ASV277","Euk_ASV281","Euk_ASV282","Euk_ASV306","Euk_ASV306","Euk_ASV356","Euk_ASV356","Euk_ASV356","Euk_ASV384","Euk_ASV404","Euk_ASV426","Euk_ASV428","Euk_ASV475","Euk_ASV475","Euk_ASV561","Euk_ASV742","Euk_ASV762","Euk_ASV800","Euk_ASV1625","Euk_ASV1908"],"to":["Bac_ASV83","Bac_ASV91","Bac_ASV122","Bac_ASV169","Bac_ASV203","Bac_ASV276","Bac_ASV323","Euk_ASV27","Euk_ASV81","Euk_ASV224","Euk_ASV236","Euk_ASV476","Bac_ASV71","Bac_ASV90","Bac_ASV253","Bac_ASV274","Bac_ASV286","Bac_ASV394","Euk_ASV205","Euk_ASV246","Bac_ASV26","Bac_ASV48","Bac_ASV60","Bac_ASV68","Bac_ASV88","Bac_ASV152","Bac_ASV178","Euk_ASV404","Bac_ASV9","Bac_ASV68","Bac_ASV250","Bac_ASV355","Bac_ASV648","Euk_ASV25","Euk_ASV27","Euk_ASV135","Bac_ASV44","Bac_ASV48","Bac_ASV178","Bac_ASV252","Bac_ASV442","Bac_ASV532","Euk_ASV899","Bac_ASV12","Bac_ASV18","Bac_ASV62","Bac_ASV95","Bac_ASV332","Euk_ASV126","Bac_ASV71","Bac_ASV169","Bac_ASV178","Euk_ASV236","Euk_ASV459","Bac_ASV18","Bac_ASV38","Bac_ASV91","Bac_ASV177","Euk_ASV140","Bac_ASV26","Bac_ASV38","Bac_ASV68","Bac_ASV108","Bac_ASV122","Bac_ASV272","Euk_ASV1","Euk_ASV106","Euk_ASV126","Euk_ASV463","Euk_ASV2707","Bac_ASV60","Bac_ASV88","Bac_ASV152","Bac_ASV180","Bac_ASV592","Euk_ASV127","Euk_ASV174","Bac_ASV58","Bac_ASV60","Bac_ASV91","Bac_ASV494","Bac_ASV534","Euk_ASV1","Euk_ASV59","Euk_ASV171","Euk_ASV226","Euk_ASV811","Euk_ASV899","Bac_ASV68","Bac_ASV71","Bac_ASV198","Bac_ASV400","Euk_ASV12","Bac_ASV486","Euk_ASV227","Euk_ASV282","Bac_ASV91","Bac_ASV131","Bac_ASV174","Bac_ASV186","Bac_ASV276","Bac_ASV305","Bac_ASV311","Bac_ASV393","Euk_ASV12","Euk_ASV53","Euk_ASV81","Euk_ASV192","Euk_ASV475","Bac_ASV91","Bac_ASV180","Bac_ASV197","Bac_ASV323","Euk_ASV59","Euk_ASV126","Euk_ASV148","Euk_ASV161","Euk_ASV205","Euk_ASV245","Euk_ASV1011","Bac_ASV170","Euk_ASV76","Bac_ASV90","Bac_ASV95","Bac_ASV222","Euk_ASV226","Euk_ASV246","Euk_ASV899","Euk_ASV1588","Bac_ASV71","Euk_ASV45","Euk_ASV112","Euk_ASV114","Euk_ASV140","Euk_ASV168","Euk_ASV428","Bac_ASV93","Bac_ASV119","Bac_ASV152","Bac_ASV198","Euk_ASV186","Euk_ASV1375","Bac_ASV152","Bac_ASV263","Bac_ASV284","Bac_ASV461","Euk_ASV102","Euk_ASV133","Euk_ASV245","Bac_ASV94","Euk_ASV76","Bac_ASV95","Bac_ASV186","Bac_ASV222","Bac_ASV355","Bac_ASV370","Euk_ASV281","Euk_ASV81","Euk_ASV96","Euk_ASV126","Euk_ASV152","Bac_ASV131","Bac_ASV250","Bac_ASV284","Euk_ASV159","Euk_ASV236","Euk_ASV742","Bac_ASV177","Euk_ASV4","Euk_ASV281","Bac_ASV332","Euk_ASV246","Euk_ASV1375","Euk_ASV1588","Bac_ASV138","Bac_ASV222","Bac_ASV494","Bac_ASV534","Euk_ASV82","Bac_ASV131","Bac_ASV174","Bac_ASV178","Bac_ASV250","Bac_ASV263","Bac_ASV276","Bac_ASV377","Euk_ASV159","Bac_ASV328","Euk_ASV218","Euk_ASV1908","Bac_ASV169","Euk_ASV1128","Euk_ASV1375","Euk_ASV179","Euk_ASV364","Bac_ASV276","Bac_ASV311","Euk_ASV81","Euk_ASV192","Euk_ASV300","Bac_ASV389","Bac_ASV592","Euk_ASV82","Bac_ASV274","Euk_ASV102","Euk_ASV133","Euk_ASV742","Bac_ASV257","Bac_ASV286","Bac_ASV289","Bac_ASV370","Euk_ASV161","Euk_ASV282","Euk_ASV475","Euk_ASV742","Bac_ASV252","Bac_ASV323","Bac_ASV328","Euk_ASV1","Euk_ASV226","Euk_ASV476","Bac_ASV222","Bac_ASV289","Bac_ASV496","Bac_ASV592","Euk_ASV5","Euk_ASV25","Euk_ASV83","Euk_ASV176","Bac_ASV197","Euk_ASV66","Euk_ASV85","Euk_ASV148","Euk_ASV282","Euk_ASV1908","Bac_ASV263","Bac_ASV305","Bac_ASV311","Bac_ASV461","Euk_ASV1625","Bac_ASV770","Euk_ASV113","Euk_ASV122","Euk_ASV404","Bac_ASV286","Bac_ASV461","Bac_ASV534","Euk_ASV1011","Bac_ASV222","Bac_ASV545","Euk_ASV69","Euk_ASV84","Euk_ASV92","Bac_ASV253","Euk_ASV92","Euk_ASV224","Euk_ASV356","Euk_ASV1","Euk_ASV22","Euk_ASV186","Euk_ASV742","Bac_ASV263","Bac_ASV400","Bac_ASV527","Euk_ASV112","Euk_ASV236","Euk_ASV426","Euk_ASV459","Bac_ASV496","Bac_ASV592","Euk_ASV148","Euk_ASV174","Euk_ASV384","Bac_ASV253","Bac_ASV257","Bac_ASV370","Euk_ASV22","Euk_ASV152","Euk_ASV161","Bac_ASV263","Bac_ASV286","Bac_ASV305","Bac_ASV377","Bac_ASV648","Euk_ASV72","Euk_ASV81","Euk_ASV277","Euk_ASV300","Euk_ASV800","Euk_ASV1908","Bac_ASV328","Bac_ASV486","Euk_ASV77","Euk_ASV114","Euk_ASV122","Euk_ASV159","Euk_ASV356","Euk_ASV2","Euk_ASV90","Euk_ASV103","Euk_ASV127","Euk_ASV218","Euk_ASV356","Bac_ASV286","Euk_ASV39","Euk_ASV112","Bac_ASV305","Euk_ASV53","Euk_ASV71","Euk_ASV240","Bac_ASV286","Bac_ASV289","Bac_ASV370","Euk_ASV126","Euk_ASV161","Euk_ASV475","Bac_ASV286","Bac_ASV394","Bac_ASV750","Euk_ASV246","Euk_ASV514","Bac_ASV305","Bac_ASV311","Bac_ASV677","Euk_ASV81","Euk_ASV1259","Bac_ASV305","Euk_ASV245","Euk_ASV426","Bac_ASV355","Bac_ASV461","Euk_ASV21","Euk_ASV82","Euk_ASV103","Euk_ASV112","Euk_ASV127","Euk_ASV148","Euk_ASV168","Euk_ASV200","Euk_ASV205","Euk_ASV1908","Euk_ASV140","Euk_ASV176","Bac_ASV377","Bac_ASV393","Bac_ASV677","Bac_ASV770","Euk_ASV122","Euk_ASV444","Euk_ASV805","Bac_ASV565","Euk_ASV69","Euk_ASV71","Euk_ASV133","Bac_ASV613","Euk_ASV205","Euk_ASV218","Bac_ASV534","Euk_ASV96","Euk_ASV256","Euk_ASV742","Euk_ASV1588","Bac_ASV430","Bac_ASV434","Bac_ASV445","Bac_ASV663","Euk_ASV140","Euk_ASV517","Euk_ASV1637","Euk_ASV22","Euk_ASV161","Euk_ASV364","Euk_ASV1637","Euk_ASV1799","Bac_ASV527","Bac_ASV565","Bac_ASV608","Bac_ASV750","Euk_ASV71","Euk_ASV77","Euk_ASV171","Euk_ASV561","Euk_ASV19","Bac_ASV613","Euk_ASV12","Euk_ASV444","Euk_ASV561","Bac_ASV772","Euk_ASV103","Euk_ASV227","Bac_ASV676","Bac_ASV1252","Euk_ASV94","Euk_ASV1118","Bac_ASV434","Euk_ASV463","Euk_ASV1011","Euk_ASV2707","Bac_ASV486","Euk_ASV80","Euk_ASV463","Bac_ASV496","Euk_ASV45","Euk_ASV152","Euk_ASV2","Euk_ASV200","Bac_ASV545","Euk_ASV5","Bac_ASV750","Euk_ASV66","Euk_ASV82","Euk_ASV127","Euk_ASV168","Bac_ASV663","Bac_ASV807","Euk_ASV83","Euk_ASV59","Euk_ASV226","Euk_ASV811","Euk_ASV69","Euk_ASV157","Bac_ASV608","Euk_ASV77","Euk_ASV114","Euk_ASV176","Euk_ASV428","Euk_ASV517","Euk_ASV762","Euk_ASV66","Euk_ASV82","Euk_ASV168","Euk_ASV171","Euk_ASV519","Bac_ASV727","Bac_ASV1026","Euk_ASV27","Euk_ASV45","Bac_ASV663","Euk_ASV5","Euk_ASV77","Euk_ASV81","Euk_ASV122","Euk_ASV133","Euk_ASV66","Euk_ASV69","Euk_ASV428","Bac_ASV612","Euk_ASV179","Euk_ASV306","Euk_ASV384","Euk_ASV171","Euk_ASV7","Euk_ASV53","Euk_ASV1717","Euk_ASV84","Euk_ASV323","Euk_ASV453","Euk_ASV742","Bac_ASV677","Bac_ASV807","Euk_ASV77","Euk_ASV12","Euk_ASV92","Euk_ASV122","Bac_ASV807","Euk_ASV12","Euk_ASV805","Bac_ASV738","Bac_ASV1026","Euk_ASV157","Euk_ASV281","Bac_ASV750","Bac_ASV772","Bac_ASV1026","Euk_ASV5","Bac_ASV772","Euk_ASV7","Euk_ASV80","Euk_ASV37","Euk_ASV168","Euk_ASV12","Euk_ASV77","Euk_ASV114","Euk_ASV16","Euk_ASV83","Euk_ASV114","Euk_ASV66","Euk_ASV176","Euk_ASV22","Euk_ASV226","Euk_ASV19","Euk_ASV39","Euk_ASV59","Euk_ASV80","Euk_ASV106","Euk_ASV126","Euk_ASV192","Euk_ASV200","Euk_ASV899","Euk_ASV76","Euk_ASV157","Euk_ASV161","Euk_ASV176","Euk_ASV200","Euk_ASV475","Euk_ASV16","Euk_ASV37","Euk_ASV69","Euk_ASV71","Euk_ASV80","Euk_ASV84","Euk_ASV240","Euk_ASV1128","Euk_ASV53","Euk_ASV69","Euk_ASV92","Euk_ASV256","Euk_ASV25","Euk_ASV37","Euk_ASV83","Euk_ASV96","Euk_ASV114","Euk_ASV186","Euk_ASV245","Euk_ASV148","Euk_ASV174","Euk_ASV246","Euk_ASV106","Euk_ASV113","Euk_ASV135","Euk_ASV1625","Euk_ASV113","Euk_ASV152","Euk_ASV157","Euk_ASV168","Euk_ASV94","Euk_ASV106","Euk_ASV113","Euk_ASV356","Euk_ASV59","Euk_ASV83","Euk_ASV69","Euk_ASV90","Euk_ASV113","Euk_ASV157","Euk_ASV306","Euk_ASV192","Euk_ASV226","Euk_ASV245","Euk_ASV112","Euk_ASV168","Euk_ASV428","Euk_ASV71","Euk_ASV84","Euk_ASV404","Euk_ASV475","Euk_ASV72","Euk_ASV171","Euk_ASV240","Euk_ASV277","Euk_ASV453","Euk_ASV800","Euk_ASV171","Euk_ASV300","Euk_ASV404","Euk_ASV174","Euk_ASV281","Euk_ASV517","Euk_ASV277","Euk_ASV300","Euk_ASV277","Euk_ASV168","Euk_ASV157","Euk_ASV186","Euk_ASV92","Euk_ASV323","Euk_ASV92","Euk_ASV192","Euk_ASV113","Euk_ASV323","Euk_ASV127","Euk_ASV186","Euk_ASV517","Euk_ASV126","Euk_ASV192","Euk_ASV475","Euk_ASV114","Euk_ASV186","Euk_ASV224","Euk_ASV159","Euk_ASV218","Euk_ASV148","Euk_ASV168","Euk_ASV742","Euk_ASV205","Euk_ASV1908","Euk_ASV157","Euk_ASV174","Euk_ASV192","Euk_ASV277","Euk_ASV459","Euk_ASV282","Euk_ASV364","Euk_ASV205","Euk_ASV179","Euk_ASV428","Euk_ASV453","Euk_ASV1625","Euk_ASV356","Euk_ASV218","Euk_ASV384","Euk_ASV2707","Euk_ASV200","Euk_ASV224","Euk_ASV404","Euk_ASV1259","Euk_ASV1799","Euk_ASV426","Euk_ASV364","Euk_ASV356","Euk_ASV476","Euk_ASV811","Euk_ASV899","Euk_ASV306","Euk_ASV1908","Euk_ASV300","Euk_ASV1588","Euk_ASV282","Euk_ASV426","Euk_ASV1799","Euk_ASV364","Euk_ASV444","Euk_ASV1118","Euk_ASV459","Euk_ASV899","Euk_ASV1259","Euk_ASV1118","Euk_ASV1637","Euk_ASV459","Euk_ASV444","Euk_ASV1625","Euk_ASV1799","Euk_ASV1128","Euk_ASV1375","Euk_ASV1259","Euk_ASV1908","Euk_ASV1799","Euk_ASV2707"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot"},"manipulation":{"enabled":false},"interaction":{"navigationButtons":true,"zoomView":true,"zoomSpeed":1},"physics":{"stabilization":true}},"groups":["Bacteria","Eukaryote"],"width":"100%","height":"800px","idselection":{"enabled":true,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":null,"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":true,"hoverNearest":false,"degree":1,"algorithm":"all","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":false,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"tooltipStay":300,"tooltipStyle":"position: fixed;visibility:hidden;padding: 5px;white-space: nowrap;font-family: verdana;font-size:14px;font-color:#000000;background-color: #f5f4ed;-moz-border-radius: 3px;-webkit-border-radius: 3px;border-radius: 3px;border: 1px solid #808074;box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);"},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
-<div class="callout callout-style-default callout-note callout-empty-content callout-titled">
+<div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
@@ -2233,11 +2625,149 @@ Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
-
+<p>This is great but it’s too complex so let’s filter out nodes that have degree &lt; 11.</p>
+</div>
+</div>
+</section>
+<section id="core-of-the-network" class="level4">
+<h4 class="anchored" data-anchor-id="core-of-the-network">core of the network</h4>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 14</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 12</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 14</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 12</code></pre>
+</div>
+<div class="cell-output-display">
+<div id="htmlwidget-50076612bd7f520a2450" style="width:100%;height:800px;" class="visNetwork html-widget"></div>
+<script type="application/json" data-for="htmlwidget-50076612bd7f520a2450">{"x":{"nodes":{"id":["Bac_ASV3","Bac_ASV18","Bac_ASV38","Bac_ASV53","Bac_ASV58","Bac_ASV68","Bac_ASV250","Bac_ASV286","Bac_ASV305","Bac_ASV377","Euk_ASV2","Euk_ASV69","Euk_ASV71","Euk_ASV192"],"label":["SUP05 cluster","SAR92 clade","RS62 marine group","Candidatus Nitrosopumilus","NS3a marine group","Aurantivirga","OM27 clade","Diplosphaera","Aureispira","Mariniblastus","Scrippsiella","Dinophysis","Spirotontonia","Pentapharsodinium"],"group":["Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Eukaryote","Eukaryote","Eukaryote","Eukaryote"],"value":[0,2,2,2,1,1,3,1,3,3,1,1,2,2]},"edges":{"from":["Bac_ASV18","Bac_ASV38","Bac_ASV18","Bac_ASV250","Bac_ASV53","Bac_ASV250","Bac_ASV250","Bac_ASV305","Bac_ASV377","Euk_ASV69","Bac_ASV53","Euk_ASV2"],"to":["Bac_ASV38","Bac_ASV58","Bac_ASV68","Bac_ASV286","Bac_ASV305","Bac_ASV305","Bac_ASV377","Bac_ASV377","Euk_ASV71","Euk_ASV71","Euk_ASV192","Euk_ASV192"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot"},"manipulation":{"enabled":false},"interaction":{"navigationButtons":true,"zoomView":true,"zoomSpeed":1},"physics":{"stabilization":true}},"groups":["Bacteria","Eukaryote"],"width":"100%","height":"800px","idselection":{"enabled":true,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":null,"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":true,"hoverNearest":false,"degree":1,"algorithm":"all","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":false,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"tooltipStay":300,"tooltipStyle":"position: fixed;visibility:hidden;padding: 5px;white-space: nowrap;font-family: verdana;font-size:14px;font-color:#000000;background-color: #f5f4ed;-moz-border-radius: 3px;-webkit-border-radius: 3px;border-radius: 3px;border: 1px solid #808074;box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);"},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Bacterial hubs (blue) dominate the network core. These taxa are typical marine heterotrophic bacteria associated with phytoplankton or organic matter degradation.</p>
+<p>The central structure appears around: RS62 marine group → Aureispira → Mariniblastus → OM27</p>
+<p>Eukaryotes (yellow) appear as satellites linked to bacterial hubs. They connect mainly through bacterial hubs rather than directly to each other.</p>
+<p>That pattern suggests that bacterial communities may be responding to eukaryotic blooms or shared environmental drivers.</p>
+</div>
+</div>
+</section>
+<section id="cross-domain-partner-preference" class="level4">
+<h4 class="anchored" data-anchor-id="cross-domain-partner-preference">Cross-domain partner preference</h4>
+<p>To better understand the ecological structure of the inferred 16S–18S association network, we examined <strong>cross-domain partner preference</strong>, i.e.&nbsp;which bacterial taxa were most frequently associated with eukaryotic taxa and vice versa. This allows identification of potential bacterial hubs linked to particular protistan or metazoan groups, and helps reveal whether the network is structured around specific cross-domain partnerships rather than diffuse associations.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 278</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                    bacteria       euk_order n
+1                Amylibacter   Bacillariales 2
+2  Candidatus Nitrosopumilus    Peridiniales 2
+3  Candidatus Nitrosopumilus      Suessiales 2
+4               Crocinitomix   Gymnodiniales 2
+5               Diplosphaera    Prymnesiales 2
+6               Luminiphilus   Gonyaulacales 2
+7              Marimicrobium Pyrenomonadales 2
+8              Mariniblastus   Oligotrichida 2
+9          NS3a marine group   Gymnodiniales 2
+10                OM27 clade       Haptorida 2
+11                OM27 clade    Prymnesiales 2
+12                Rubritalea Pyrenomonadales 2
+13             Acinetobacter   Gymnodiniales 1
+14                Aliivibrio   Bacillariales 1
+15                Aliivibrio   Chromulinales 1
+16           Allofrancisella  Choreotrichida 1
+17           Allofrancisella    Peridiniales 1
+18           Allofrancisella      Suessiales 1
+19                Arcobacter   Phaeocystales 1
+20                Arcobacter Rhizosoleniales 1</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                    bacteria       euk_order n
+1                Amylibacter   Bacillariales 2
+2  Candidatus Nitrosopumilus    Peridiniales 2
+3  Candidatus Nitrosopumilus      Suessiales 2
+4               Crocinitomix   Gymnodiniales 2
+5               Diplosphaera    Prymnesiales 2
+6               Luminiphilus   Gonyaulacales 2
+7              Marimicrobium Pyrenomonadales 2
+8              Mariniblastus   Oligotrichida 2
+9          NS3a marine group   Gymnodiniales 2
+10                OM27 clade       Haptorida 2
+11                OM27 clade    Prymnesiales 2
+12                Rubritalea Pyrenomonadales 2
+13             Acinetobacter   Gymnodiniales 1
+14                Aliivibrio   Bacillariales 1
+15                Aliivibrio   Chromulinales 1
+16           Allofrancisella  Choreotrichida 1
+17           Allofrancisella    Peridiniales 1
+18           Allofrancisella      Suessiales 1
+19                Arcobacter   Phaeocystales 1
+20                Arcobacter Rhizosoleniales 1</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-96-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="fjord-specific-core-subnetworks" class="level4">
+<h4 class="anchored" data-anchor-id="fjord-specific-core-subnetworks">Fjord-specific core subnetworks</h4>
+<p>To explore whether the cross-domain association network is organized differently among fjords, we can visualise <strong>fjord-specific core subnetworks</strong> derived from the global 16S–18S cross-domain network. For each fjord, let’s retain taxa present in samples from that fjord, extract the corresponding induced subgraph, and then filter to keep only highly connected nodes (core taxa). This approach provides an exploratory view of the dominant cross-domain network structure within each fjord while avoiding the instability associated with re-inferring sparse networks from small fjord-specific sample sets.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Iterdalk"     "Sermilik"     "Tunulliarfik"</code></pre>
+</div>
+</div>
+<section id="sermilik-2" class="level5">
+<h5 class="anchored" data-anchor-id="sermilik-2">Sermilik</h5>
+<div class="cell">
+<div class="cell-output-display">
+<div id="htmlwidget-563df7e620720683d03e" style="width:100%;height:750px;" class="visNetwork html-widget"></div>
+<script type="application/json" data-for="htmlwidget-563df7e620720683d03e">{"x":{"nodes":{"id":["Bac_ASV18","Bac_ASV38","Bac_ASV53","Bac_ASV58","Bac_ASV68","Bac_ASV250","Bac_ASV286","Bac_ASV305","Bac_ASV377","Euk_ASV69","Euk_ASV71"],"label":["SAR92 clade","RS62 marine group","Candidatus Nitrosopumilus","NS3a marine group","Aurantivirga","OM27 clade","Diplosphaera","Aureispira","Mariniblastus","Dinophysis","Spirotontonia"],"group":["Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Eukaryote","Eukaryote"],"value":[2,2,1,1,1,3,1,3,3,1,2],"color":["#2C7FB8","#2C7FB8","#2C7FB8","#2C7FB8","#2C7FB8","#2C7FB8","#2C7FB8","#2C7FB8","#2C7FB8","#D95F0E","#D95F0E"]},"edges":{"from":["Bac_ASV18","Bac_ASV38","Bac_ASV18","Bac_ASV250","Bac_ASV53","Bac_ASV250","Bac_ASV250","Bac_ASV305","Bac_ASV377","Euk_ASV69"],"to":["Bac_ASV38","Bac_ASV58","Bac_ASV68","Bac_ASV286","Bac_ASV305","Bac_ASV305","Bac_ASV377","Bac_ASV377","Euk_ASV71","Euk_ASV71"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","borderWidth":1},"manipulation":{"enabled":false},"interaction":{"dragNodes":true,"dragView":true,"navigationButtons":true,"zoomView":true,"zoomSpeed":1},"physics":{"stabilization":true},"layout":{"randomSeed":7}},"groups":["Bacteria","Eukaryote"],"width":"100%","height":"750px","idselection":{"enabled":true,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":null,"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":true,"hoverNearest":false,"degree":1,"algorithm":"all","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":false,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"tooltipStay":300,"tooltipStyle":"position: fixed;visibility:hidden;padding: 5px;white-space: nowrap;font-family: verdana;font-size:14px;font-color:#000000;background-color: #f5f4ed;-moz-border-radius: 3px;-webkit-border-radius: 3px;border-radius: 3px;border: 1px solid #808074;box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);","legend":{"width":0.2,"useGroups":true,"position":"left","ncol":1,"stepX":100,"stepY":100,"zoom":true}},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+</section>
+<section id="iterdalk-2" class="level5">
+<h5 class="anchored" data-anchor-id="iterdalk-2">Iterdalk</h5>
+<div class="cell">
+<div class="cell-output-display">
+<div id="htmlwidget-9a372afc4dc06f02dcf0" style="width:100%;height:750px;" class="visNetwork html-widget"></div>
+<script type="application/json" data-for="htmlwidget-9a372afc4dc06f02dcf0">{"x":{"nodes":{"id":["Bac_ASV18","Bac_ASV38","Bac_ASV53","Bac_ASV58","Bac_ASV68","Bac_ASV250","Bac_ASV286","Bac_ASV305","Bac_ASV377","Euk_ASV2","Euk_ASV69","Euk_ASV71","Euk_ASV192"],"label":["SAR92 clade","RS62 marine group","Candidatus Nitrosopumilus","NS3a marine group","Aurantivirga","OM27 clade","Diplosphaera","Aureispira","Mariniblastus","Scrippsiella","Dinophysis","Spirotontonia","Pentapharsodinium"],"group":["Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Eukaryote","Eukaryote","Eukaryote","Eukaryote"],"value":[2,2,2,1,1,3,1,3,3,1,1,2,2],"color":["#2C7FB8","#2C7FB8","#2C7FB8","#2C7FB8","#2C7FB8","#2C7FB8","#2C7FB8","#2C7FB8","#2C7FB8","#D95F0E","#D95F0E","#D95F0E","#D95F0E"]},"edges":{"from":["Bac_ASV18","Bac_ASV38","Bac_ASV18","Bac_ASV250","Bac_ASV53","Bac_ASV250","Bac_ASV250","Bac_ASV305","Bac_ASV377","Euk_ASV69","Bac_ASV53","Euk_ASV2"],"to":["Bac_ASV38","Bac_ASV58","Bac_ASV68","Bac_ASV286","Bac_ASV305","Bac_ASV305","Bac_ASV377","Bac_ASV377","Euk_ASV71","Euk_ASV71","Euk_ASV192","Euk_ASV192"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","borderWidth":1},"manipulation":{"enabled":false},"interaction":{"dragNodes":true,"dragView":true,"navigationButtons":true,"zoomView":true,"zoomSpeed":1},"physics":{"stabilization":true},"layout":{"randomSeed":7}},"groups":["Bacteria","Eukaryote"],"width":"100%","height":"750px","idselection":{"enabled":true,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":null,"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":true,"hoverNearest":false,"degree":1,"algorithm":"all","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":false,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"tooltipStay":300,"tooltipStyle":"position: fixed;visibility:hidden;padding: 5px;white-space: nowrap;font-family: verdana;font-size:14px;font-color:#000000;background-color: #f5f4ed;-moz-border-radius: 3px;-webkit-border-radius: 3px;border-radius: 3px;border: 1px solid #808074;box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);","legend":{"width":0.2,"useGroups":true,"position":"left","ncol":1,"stepX":100,"stepY":100,"zoom":true}},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+</section>
+<section id="tunulliarfik-2" class="level5">
+<h5 class="anchored" data-anchor-id="tunulliarfik-2">Tunulliarfik</h5>
+<div class="cell">
+<div class="cell-output-display">
+<div id="htmlwidget-c7b719e5a95630f47985" style="width:100%;height:750px;" class="visNetwork html-widget"></div>
+<script type="application/json" data-for="htmlwidget-c7b719e5a95630f47985">{"x":{"nodes":{"id":["Bac_ASV18","Bac_ASV38","Bac_ASV53","Bac_ASV58","Bac_ASV68","Bac_ASV250","Bac_ASV286","Bac_ASV305","Bac_ASV377","Euk_ASV2","Euk_ASV69","Euk_ASV71","Euk_ASV192"],"label":["SAR92 clade","RS62 marine group","Candidatus Nitrosopumilus","NS3a marine group","Aurantivirga","OM27 clade","Diplosphaera","Aureispira","Mariniblastus","Scrippsiella","Dinophysis","Spirotontonia","Pentapharsodinium"],"group":["Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Bacteria","Eukaryote","Eukaryote","Eukaryote","Eukaryote"],"value":[2,2,2,1,1,3,1,3,3,1,1,2,2],"color":["#2C7FB8","#2C7FB8","#2C7FB8","#2C7FB8","#2C7FB8","#2C7FB8","#2C7FB8","#2C7FB8","#2C7FB8","#D95F0E","#D95F0E","#D95F0E","#D95F0E"]},"edges":{"from":["Bac_ASV18","Bac_ASV38","Bac_ASV18","Bac_ASV250","Bac_ASV53","Bac_ASV250","Bac_ASV250","Bac_ASV305","Bac_ASV377","Euk_ASV69","Bac_ASV53","Euk_ASV2"],"to":["Bac_ASV38","Bac_ASV58","Bac_ASV68","Bac_ASV286","Bac_ASV305","Bac_ASV305","Bac_ASV377","Bac_ASV377","Euk_ASV71","Euk_ASV71","Euk_ASV192","Euk_ASV192"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","borderWidth":1},"manipulation":{"enabled":false},"interaction":{"dragNodes":true,"dragView":true,"navigationButtons":true,"zoomView":true,"zoomSpeed":1},"physics":{"stabilization":true},"layout":{"randomSeed":7}},"groups":["Bacteria","Eukaryote"],"width":"100%","height":"750px","idselection":{"enabled":true,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":null,"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":true,"hoverNearest":false,"degree":1,"algorithm":"all","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":false,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"tooltipStay":300,"tooltipStyle":"position: fixed;visibility:hidden;padding: 5px;white-space: nowrap;font-family: verdana;font-size:14px;font-color:#000000;background-color: #f5f4ed;-moz-border-radius: 3px;-webkit-border-radius: 3px;border-radius: 3px;border: 1px solid #808074;box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);","legend":{"width":0.2,"useGroups":true,"position":"left","ncol":1,"stepX":100,"stepY":100,"zoom":true}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 
 
+</section>
+</section>
 </section>
 </section>
 </section>
