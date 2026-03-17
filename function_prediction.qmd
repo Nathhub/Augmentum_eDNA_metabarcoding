@@ -1,0 +1,190 @@
+# Function prediction - Picrust2
+
+## Running Picrust2
+
+```{r, message=FALSE, warning=FALSE}
+library(tidyverse)
+
+# Load DADA2 sequence table
+seqtab <- readRDS("seqtab_nochim.rds")
+
+# Remove controls
+seqtab <- seqtab[!rownames(seqtab) %in% c("65_zymo_positive", "66_Extraction_negative"), ]
+
+# Extract ASV sequences
+asv_seqs <- colnames(seqtab)
+
+# Make simple stable ASV IDs
+asv_ids <- paste0("ASV", seq_along(asv_seqs))
+
+# Save a lookup table
+asv_map <- data.frame(
+  ASV = asv_ids,
+  Sequence = asv_seqs,
+  stringsAsFactors = FALSE
+)
+write.csv(asv_map, "ASV_map.csv", row.names = FALSE, quote = FALSE)
+
+# Rename seqtab columns from raw sequences to ASV IDs
+colnames(seqtab) <- asv_ids
+
+# PICRUSt2 TSV input should have ASVs as rows, samples as columns
+picrust_tab <- t(seqtab)
+
+# Write abundance table
+write.table(
+  picrust_tab,
+  file = "picrust2_input.tsv",
+  sep = "\t",
+  quote = FALSE,
+  col.names = NA
+)
+
+# Write representative sequences FASTA
+con <- file("picrust2_seqs.fna", open = "w")
+for (i in seq_along(asv_ids)) {
+  writeLines(paste0(">", asv_ids[i]), con)
+  writeLines(asv_seqs[i], con)
+}
+close(con)
+```
+
+```{bash}
+picrust2_pipeline.py \
+-s picrust2_seqs.fna \
+-i picrust2_input.tsv \
+-o picrust2_out \
+--threads 30 \
+--stratified
+```
+
+```{r, message=FALSE, warning=FALSE}
+# If you want to analyze the abundance of KEGG pathways instead of KO within the pathway, please set `ko_to_kegg` to TRUE.
+# KEGG pathways typically have more descriptive explanations.
+
+library(readr)
+library(ggpicrust2)
+library(tibble)
+library(tidyverse)
+library(ggprism)
+library(patchwork)
+
+# Load necessary data: abundance data and metadata
+pathway_abun <- read_tsv("data/16S/pathways_out/path_abun_unstrat.tsv.gz",
+                            show_col_types = FALSE)
+metadata <- readxl::read_xlsx("data/16S/metadata_16S.xlsx") %>% 
+    filter(!Name %in% c("65_zymo_positive", "66_Extraction_negative"))
+# Clean metadata
+meta <- metadata %>%
+  mutate(
+    Name = as.character(Name),
+    Station = factor(Station),
+    Depth = factor(Depth, levels = c("1", "15", "45")),
+    Fjord = factor(Fjord),
+    Date = as.Date(as.numeric(Date), origin = "1899-12-30"),
+    Time = as.POSIXct(as.numeric(Time) * 86400, origin = "1970-01-01", tz = "UTC"),
+    Time = format(Time, "%H:%M:%S")
+  )
+
+# Convert to matrix format
+path_mat <- pathway_abun %>%
+  column_to_rownames("pathway") %>%
+  as.matrix()
+
+# Normalise abundances
+path_rel <- apply(path_mat, 2, function(x) x / sum(x))
+```
+
+## Visualise results
+### Ordination
+
+```{r, message=FALSE, warning=FALSE}
+library(vegan)
+
+bc <- vegdist(t(path_rel), method = "bray")
+ord <- metaMDS(bc)
+
+ord_df <- as.data.frame(ord$points) %>%
+  rownames_to_column("Name") %>%
+  left_join(metadata, by = "Name")
+
+ggplot(ord_df, aes(MDS1, MDS2, color = Depth)) +
+  geom_point(size = 3) +
+  theme_bw()
+```
+
+### Visualise functional composition
+
+```{r, message=FALSE, warning=FALSE}
+library(pheatmap)
+
+top_paths <- names(sort(rowMeans(path_rel), decreasing = TRUE))[1:30]
+
+pheatmap(
+  path_rel[top_paths, ],
+  annotation_col = metadata %>%
+    column_to_rownames("Name") %>%
+    select(Depth, Fjord)
+)
+```
+
+
+
+
+```{r, message=FALSE, warning=FALSE}
+# Run ggpicrust2 with input file path
+results_file_input <- ggpicrust2(file = abundance_file,
+                                 metadata = metadata,
+                                 group = "your_group_column", # For example dataset, group = "Environment"
+                                 pathway = "KO",
+                                 daa_method = "LinDA",
+                                 ko_to_kegg = TRUE,
+                                 order = "pathway_class",
+                                 p_values_bar = TRUE,
+                                 x_lab = "pathway_name")
+
+# Run ggpicrust2 with imported data.frame
+abundance_data <- read_delim(abundance_file, delim = "\t", col_names = TRUE, trim_ws = TRUE)
+
+# Run ggpicrust2 with input data
+results_data_input <- ggpicrust2(data = abundance_data,
+                                 metadata = metadata,
+                                 group = "your_group_column", # For example dataset, group = "Environment"
+                                 pathway = "KO",
+                                 daa_method = "LinDA",
+                                 ko_to_kegg = TRUE,
+                                 order = "pathway_class",
+                                 p_values_bar = TRUE,
+                                 x_lab = "pathway_name")
+
+# Access the plot and results dataframe for the first DA method
+example_plot <- results_file_input[[1]]$plot
+example_results <- results_file_input[[1]]$results
+
+# Use the example data in ggpicrust2 package
+data(ko_abundance)
+data(metadata)
+results_file_input <- ggpicrust2(data = ko_abundance,
+                                 metadata = metadata,
+                                 group = "Environment",
+                                 pathway = "KO",
+                                 daa_method = "LinDA",
+                                 ko_to_kegg = TRUE,
+                                 order = "pathway_class",
+                                 p_values_bar = TRUE,
+                                 x_lab = "pathway_name")
+
+# Analyze the EC or MetaCyc pathway
+data(metacyc_abundance)
+results_file_input <- ggpicrust2(data = metacyc_abundance,
+                                 metadata = metadata,
+                                 group = "Environment",
+                                 pathway = "MetaCyc",
+                                 daa_method = "LinDA",
+                                 ko_to_kegg = FALSE,
+                                 order = "group",
+                                 p_values_bar = TRUE,
+                                 x_lab = "description")
+results_file_input[[1]]$plot
+results_file_input[[1]]$results
+```
