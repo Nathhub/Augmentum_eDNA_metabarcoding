@@ -6,7 +6,7 @@
 library(tidyverse)
 
 # Load DADA2 sequence table
-seqtab <- readRDS("seqtab_nochim.rds")
+seqtab <- readRDS("data/16S/seqtab_nochim.rds")
 
 # Remove controls
 seqtab <- seqtab[!rownames(seqtab) %in% c("65_zymo_positive", "66_Extraction_negative"), ]
@@ -49,7 +49,7 @@ for (i in seq_along(asv_ids)) {
 close(con)
 ```
 
-```{bash}
+```bash
 picrust2_pipeline.py \
 -s picrust2_seqs.fna \
 -i picrust2_input.tsv \
@@ -57,6 +57,17 @@ picrust2_pipeline.py \
 --threads 30 \
 --stratified
 ```
+PICRUSt2 is giving you three levels of functional prediction from your 16S data:
+
+ - KO = KEGG Ortholog
+ - EC = Enzyme Commission number
+ - Pathway = usually MetaCyc pathway in PICRUSt2 by default
+
+They are related, but they are not the same kind of annotation. PICRUSt2 predicts gene-family abundances such as KO and EC, and then uses EC-based mappings to infer higher-level pathway abundances/coverage.
+
+## Pathways: multi-step metabolic processes
+
+A pathway is a higher-level biological process made of multiple enzymatic steps, such as amino-acid biosynthesis, glycolysis-related routes, sulfur metabolism, or degradation pathways. In PICRUSt2, pathway predictions are typically MetaCyc pathways, and they are inferred from the predicted EC content.
 
 ```{r, message=FALSE, warning=FALSE}
 # If you want to analyze the abundance of KEGG pathways instead of KO within the pathway, please set `ko_to_kegg` to TRUE.
@@ -70,12 +81,20 @@ library(ggprism)
 library(patchwork)
 
 # Load necessary data: abundance data and metadata
-pathway_abun <- read_tsv("data/16S/pathways_out/path_abun_unstrat.tsv.gz",
+pathway_abun <- read_tsv("data/16S/pathways_out/path_abun_unstrat_descrip.tsv.gz",
                             show_col_types = FALSE)
+# keep pathway annotations separately
+pathway_info <- pathway_abun %>%
+  select(pathway, description)
+
+# keep only abundance columns and convert to matrix for downstream analysis
+path_mat <- pathway_abun %>%
+  select(-description) %>%
+  column_to_rownames("pathway") %>%
+  as.matrix()
+
 metadata <- readxl::read_xlsx("data/16S/metadata_16S.xlsx") %>% 
-    filter(!Name %in% c("65_zymo_positive", "66_Extraction_negative"))
-# Clean metadata
-meta <- metadata %>%
+    filter(!Name %in% c("65_zymo_positive", "66_Extraction_negative")) %>%
   mutate(
     Name = as.character(Name),
     Station = factor(Station),
@@ -83,26 +102,22 @@ meta <- metadata %>%
     Fjord = factor(Fjord),
     Date = as.Date(as.numeric(Date), origin = "1899-12-30"),
     Time = as.POSIXct(as.numeric(Time) * 86400, origin = "1970-01-01", tz = "UTC"),
-    Time = format(Time, "%H:%M:%S")
+    Time = format(Time, "%H:%M:%S"),
+    Water_mass = factor(Water_mass)
   )
-
-# Convert to matrix format
-path_mat <- pathway_abun %>%
-  column_to_rownames("pathway") %>%
-  as.matrix()
 
 # Normalise abundances
 path_rel <- apply(path_mat, 2, function(x) x / sum(x))
 ```
 
-## Visualise results
 ### Ordination
 
 ```{r, message=FALSE, warning=FALSE}
 library(vegan)
+set.seed(42)
 
 bc <- vegdist(t(path_rel), method = "bray")
-ord <- metaMDS(bc)
+ord <- metaMDS(bc, trace = 0)
 
 ord_df <- as.data.frame(ord$points) %>%
   rownames_to_column("Name") %>%
@@ -112,26 +127,248 @@ ggplot(ord_df, aes(MDS1, MDS2, color = Depth)) +
   geom_point(size = 3) +
   theme_bw()
 ```
-
-### Visualise functional composition
-
 ```{r, message=FALSE, warning=FALSE}
+ggplot(ord_df, aes(MDS1, MDS2, color = Water_mass)) +
+  geom_point(size = 3) +
+  theme_bw()
+```
+
+### Visualise overall pathway differences
+
+```{r, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
 library(pheatmap)
 
-top_paths <- names(sort(rowMeans(path_rel), decreasing = TRUE))[1:30]
+top_ids <- names(sort(rowMeans(path_mat), decreasing = TRUE))[1:30]
 
-pheatmap(
-  path_rel[top_paths, ],
-  annotation_col = metadata %>%
-    column_to_rownames("Name") %>%
-    select(Depth, Fjord)
+top_mat <- path_rel[top_ids, ]
+
+top_labels <- pathway_info %>%
+  filter(pathway %in% top_ids) %>%
+  distinct(pathway, description)
+
+# make sure label order matches matrix row order
+top_labels <- top_labels %>%
+  slice(match(rownames(top_mat), pathway))
+
+rownames(top_mat) <- paste(top_labels$description)
+
+sample_annot <- metadata %>%
+  filter(Name %in% colnames(top_mat)) %>%
+  column_to_rownames("Name") %>%
+  select(Depth, Fjord, Water_mass)
+
+ph <- pheatmap(
+  top_mat,
+  annotation_col = sample_annot,
+  fontsize_col = 5,   # smaller column labels
+  angle_col = 45      # rotate labels
 )
+
+```
+
+Below is the list of the samples that belong to the cluster on the right side of the heatmap figure above: 
+```{r, message=FALSE, warning=FALSE}
+cl <- cutree(ph$tree_col, k = 2)
+ordered_samples <- colnames(top_mat)[ph$tree_col$order]
+right_samples_path <- ordered_samples[ordered_samples %in% names(cl[cl == 1])]
+
+right_samples_path
+```
+
+These samples are almost exclusively from 1 and 15 m... (there is one sample from 45 m)
+
+
+## KO: gene-family / ortholog groups
+
+A KO groups homologous genes that are considered to perform an equivalent function in the KEGG system. So a KO is usually the closest of the three outputs to a specific functional gene family. For example, a KO might correspond to a transporter subunit, an enzyme protein, or another functionally defined gene product.
+
+```{r, message=FALSE, warning=FALSE}
+
+# Load necessary data: 
+ko <- read_tsv("data/16S/KO_metagenome_out/pred_metagenome_unstrat_descrip.tsv.gz",
+                            show_col_types = FALSE) %>% rename(KO_ID = `function`)
+# keep pathway annotations separately
+ko_info <- ko %>%
+  select(KO_ID, description)
+
+nitrogen_kos <- c(
+  # Nitrogen fixation
+  "K02586", # nifH
+  "K02588", # nifD
+  "K02591", # nifK
+
+  # Ammonium transport / assimilation
+  "K03320", # amtB
+  "K01915", # glnA
+
+  # Nitrification: ammonia oxidation
+  "K10944", # amoA
+  "K10945", # amoB
+  "K10946", # amoC
+  "K10535", # hao
+
+  # Nitrification: nitrite oxidation
+  "K00370", # nxrA / narG
+  "K00371", # nxrB / narH
+
+  # Membrane-bound nitrate reductase (Nar)
+  "K00370", # narG / nxrA
+  "K00371", # narH / nxrB
+  "K00374", # narI
+  "K00373", # narJ
+
+  # Periplasmic nitrate reductase (Nap)
+  "K02567", # napA
+  "K02568", # napB
+  "K02569", # napC
+  "K02570", # napD
+
+  # Assimilatory nitrate/nitrite reduction
+  "K00372", # nasA
+  "K00366", # nirA
+
+  # Denitrification
+  "K00368", # nirK
+  "K15864", # nirS
+  "K04561", # norB
+  "K02305", # norC
+  "K00376", # nosZ
+
+  # DNRA
+  "K03385", # nrfA
+  "K15876", # nrfH
+  "K00362", # nirB
+  "K00363", # nirD
+
+  # Anammox
+  "K20932", # hzsA
+  "K20933", # hzsB
+  "K20934", # hzsC
+  "K20935"  # hdh
+) |> unique()
+
+ko_n <- ko %>%
+  mutate(KO = sub("ko:", "", KO_ID)) %>%
+  filter(KO %in% nitrogen_kos)
+
+nitrogen_kos_core <- c(
+  "K02586", # nifH
+  "K10944", # amoA
+  "K10535", # hao
+  "K00368", # nirK
+  "K15864", # nirS
+  "K04561", # norB
+  "K00376", # nosZ
+  "K03385", # nrfA
+  "K20935"  # hdh
+)
+
+ko_n_core <- ko %>%
+  mutate(KO = sub("ko:", "", KO_ID)) %>%
+  filter(KO %in% nitrogen_kos_core)
+
+# keep only abundance columns and convert to matrix for downstream analysis
+ko_n_mat <- ko_n %>%
+  select(-description, -KO) %>%
+  column_to_rownames("KO_ID") %>%
+  as.matrix()
+
+ko_n_core_mat <- ko_n_core %>%
+  select(-description, -KO) %>%
+  column_to_rownames("KO_ID") %>%
+  as.matrix()
+
+# Normalise abundances
+ko_rel <- apply(ko_n_mat, 2, function(x) x / sum(x))
+```
+
+### Visualise overall KO differences
+
+```{r, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
+
+top_ids <- names(sort(rowMeans(ko_n_mat), decreasing = TRUE))
+
+top_mat <- ko_rel[top_ids, ]
+
+top_labels <- ko_info %>%
+  filter(KO_ID %in% top_ids) %>%
+  distinct(KO_ID, description)
+
+# make sure label order matches matrix row order
+top_labels <- top_labels %>%
+  slice(match(rownames(top_mat), KO_ID))
+
+rownames(top_mat) <- paste(top_labels$description)
+
+sample_annot <- metadata %>%
+  filter(Name %in% colnames(top_mat)) %>%
+  column_to_rownames("Name") %>%
+  select(Depth, Fjord, Water_mass)
+
+ph <- pheatmap(
+  top_mat,
+  annotation_col = sample_annot,
+  fontsize_col = 8,   # smaller column labels
+  angle_col = 45      # rotate labels
+)
+
 ```
 
 
-
+Below is the list of the samples that belong to the cluster on the right side of the heatmap figure above: 
 
 ```{r, message=FALSE, warning=FALSE}
+cl <- cutree(ph$tree_col, k = 2)
+ordered_samples <- colnames(top_mat)[ph$tree_col$order]
+right_samples_ko <- ordered_samples[ordered_samples %in% names(cl[cl == 1])]
+
+right_samples_ko
+```
+
+Let's see how many of these samples clustered in the right side of this plot are the same as those also cluster at the right of the heatmap of pathways:
+
+```{r, message=FALSE, warning=FALSE}
+common_samples <- intersect(right_samples_ko, right_samples_path)
+common_samples
+```
+It seems that all the 20 samples from the right-cluster of the pathway heatmap are again present here. What do the have in common? Likely their taxonomical diversity will be similar. I could group a variable to separate these from the rest of the samples and look at their spatial distribution...
+
+```{r, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
+
+top_ids <- names(sort(rowMeans(ko_n_core_mat), decreasing = TRUE))
+
+top_mat <- ko_rel[top_ids, ]
+
+top_labels <- ko_info %>%
+  filter(KO_ID %in% top_ids) %>%
+  distinct(KO_ID, description)
+
+# make sure label order matches matrix row order
+top_labels <- top_labels %>%
+  slice(match(rownames(top_mat), KO_ID))
+
+rownames(top_mat) <- paste(top_labels$description)
+
+sample_annot <- metadata %>%
+  filter(Name %in% colnames(top_mat)) %>%
+  column_to_rownames("Name") %>%
+  select(Depth, Fjord, Water_mass)
+
+ph <- pheatmap(
+  top_mat,
+  annotation_col = sample_annot,
+  fontsize_col = 8,   # smaller column labels
+  angle_col = 45      # rotate labels
+)
+
+```
+
+### Using ggpicrust2
+
+ggpicrust2 was built specifically for PICRUSt2-derived functional profiles and provides a clean way to do differential abundance testing, annotation, and visualization of KO / EC / pathway outputs in R.
+
+
+``` r
 # Run ggpicrust2 with input file path
 results_file_input <- ggpicrust2(file = abundance_file,
                                  metadata = metadata,

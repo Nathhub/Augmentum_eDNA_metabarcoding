@@ -88,8 +88,9 @@ For each step, differences between the two pipelines are shown.
 
 Both datasets used a looping bash command of the form:
 
-``` bash
-
+```{bash}
+#| eval: false
+#!/bin/bash
 cutadapt\
   -g <forward_primer> \
   -G <reverse_primer> \
@@ -135,7 +136,9 @@ Read retention after primer trimming and filtering was generally high across sam
 
 Both datasets were processed with the standard DADA2 workflow:
 
-``` r
+```{bash}
+#| eval: false
+#!/bin/bash
 
 # Filtering and trimming (R1/R2 after cutadapt)
 filtered_out <- filterAndTrim(
