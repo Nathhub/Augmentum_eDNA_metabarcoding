@@ -149,6 +149,20 @@ However, several marine dinoflagellate ASVs were also detected at low relative a
 We can now remove the controls from the phyloseq object and move on with the ecological interpretation.
 :::
 
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+# Environmental samples only
+ps_18s <- subset_samples(
+  ps_18s,
+  !Name %in% c("65_Positive_control", "66_Extraction_negative")
+)
+
+# Remove zero taxa
+ps_18s <- prune_taxa(taxa_sums(ps_18s) > 0, ps_18s)
+
+saveRDS(ps_18s, "data/ps_18s.rds")
+
+```
+
 ## 📊 Data visualisation
 
 In this section, we explore the community structure of the RoCSI 18S dataset using the
@@ -178,20 +192,6 @@ y = "Number of non-chimeric reads"
 )
 ```
 
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-# Environmental samples only
-ps_18s <- subset_samples(
-  ps_18s,
-  !Name %in% c("65_Positive_control", "66_Extraction_negative")
-)
-
-# Remove zero taxa
-ps_18s <- prune_taxa(taxa_sums(ps_18s) > 0, ps_18s)
-
-saveRDS(ps_18s, "data/ps_18s.rds")
-
-```
 
 ### Alpha diversity
 
@@ -507,12 +507,5 @@ plots[["Tunulliarfik"]]
 
 ```
 
-
-#### Ocean
-
-```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
-plots[["Ocean"]]
-
-```
 
 

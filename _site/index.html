@@ -166,6 +166,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#ordination" id="toc-ordination" class="nav-link" data-scroll-target="#ordination">Ordination</a></li>
   <li><a href="#phylum-composition" id="toc-phylum-composition" class="nav-link" data-scroll-target="#phylum-composition">Phylum composition</a></li>
   <li><a href="#plotting-by-fjords-and-depth" id="toc-plotting-by-fjords-and-depth" class="nav-link" data-scroll-target="#plotting-by-fjords-and-depth">Plotting by fjords and depth</a></li>
+  <li><a href="#plotting-by-water-masses" id="toc-plotting-by-water-masses" class="nav-link" data-scroll-target="#plotting-by-water-masses">Plotting by water masses</a></li>
   </ul></li>
   </ul></li>
   <li><a href="#s-dataset-1" id="toc-s-dataset-1" class="nav-link" data-scroll-target="#s-dataset-1">18S Dataset</a>
@@ -185,6 +186,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </ul></li>
   <li><a href="#combined-16s-18s-and-metadata" id="toc-combined-16s-18s-and-metadata" class="nav-link" data-scroll-target="#combined-16s-18s-and-metadata">Combined 16S, 18S and metadata</a>
   <ul class="collapse">
+  <li><a href="#combining-datasets" id="toc-combining-datasets" class="nav-link" data-scroll-target="#combining-datasets">Combining datasets</a></li>
+  <li><a href="#taxonomy-by-water-masses" id="toc-taxonomy-by-water-masses" class="nav-link" data-scroll-target="#taxonomy-by-water-masses">Taxonomy by water masses</a></li>
+  <li><a href="#rda" id="toc-rda" class="nav-link" data-scroll-target="#rda">RDA</a></li>
+  <li><a href="#pca-analysis-with-environmental-conditions" id="toc-pca-analysis-with-environmental-conditions" class="nav-link" data-scroll-target="#pca-analysis-with-environmental-conditions">PCA analysis with environmental conditions</a></li>
   <li><a href="#looking-for-associations" id="toc-looking-for-associations" class="nav-link" data-scroll-target="#looking-for-associations">Looking for associations</a>
   <ul class="collapse">
   <li><a href="#plotting-the-network-graph-igraph" id="toc-plotting-the-network-graph-igraph" class="nav-link" data-scroll-target="#plotting-the-network-graph-igraph">Plotting the Network graph (iGraph)</a></li>
@@ -1820,6 +1825,57 @@ Note
 </div>
 </section>
 </section>
+<section id="plotting-by-water-masses" class="level3">
+<h3 class="anchored" data-anchor-id="plotting-by-water-masses">Plotting by water masses</h3>
+<section id="metling-water" class="level4">
+<h4 class="anchored" data-anchor-id="metling-water">Metling water</h4>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-35-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="atlantic-water" class="level4">
+<h4 class="anchored" data-anchor-id="atlantic-water">Atlantic Water</h4>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-36-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="west-greenland-shelf-water" class="level4">
+<h4 class="anchored" data-anchor-id="west-greenland-shelf-water">West Greenland Shelf Water</h4>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-37-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="west-greenland-irminger-water" class="level4">
+<h4 class="anchored" data-anchor-id="west-greenland-irminger-water">West Greenland Irminger Water</h4>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-38-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
 </section>
 </section>
 <section id="s-dataset-1" class="level1">
@@ -2054,7 +2110,7 @@ tax_table()   Taxonomy Table:    [ 16357 taxa by 20 taxonomic ranks ]</code></pr
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-59-1.png" class="img-fluid figure-img" width="960"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-66-1.png" class="img-fluid figure-img" width="960"></p>
 </figure>
 </div>
 </div>
@@ -2066,7 +2122,7 @@ tax_table()   Taxonomy Table:    [ 16357 taxa by 20 taxonomic ranks ]</code></pr
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-61-1.png" class="img-fluid figure-img" width="960"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-68-1.png" class="img-fluid figure-img" width="960"></p>
 </figure>
 </div>
 </div>
@@ -2088,7 +2144,7 @@ tax_table()   Taxonomy Table:    [ 16357 taxa by 20 taxonomic ranks ]</code></pr
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-62-1.png" class="img-fluid figure-img" width="960"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-69-1.png" class="img-fluid figure-img" width="960"></p>
 </figure>
 </div>
 </div>
@@ -2113,7 +2169,7 @@ tax_table()   Taxonomy Table:    [ 16357 taxa by 20 taxonomic ranks ]</code></pr
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-63-1.png" class="img-fluid figure-img" width="960"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-70-1.png" class="img-fluid figure-img" width="960"></p>
 </figure>
 </div>
 </div>
@@ -2199,7 +2255,7 @@ Note
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-65-1.png" class="img-fluid figure-img" width="960"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-72-1.png" class="img-fluid figure-img" width="960"></p>
 </figure>
 </div>
 </div>
@@ -2221,7 +2277,7 @@ Note
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-66-1.png" class="img-fluid figure-img" width="960"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-73-1.png" class="img-fluid figure-img" width="960"></p>
 </figure>
 </div>
 </div>
@@ -2248,7 +2304,7 @@ Note
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-67-1.png" class="img-fluid figure-img" width="960"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-74-1.png" class="img-fluid figure-img" width="960"></p>
 </figure>
 </div>
 </div>
@@ -2260,7 +2316,7 @@ Note
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-68-1.png" class="img-fluid figure-img" width="960"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-75-1.png" class="img-fluid figure-img" width="960"></p>
 </figure>
 </div>
 </div>
@@ -2272,17 +2328,9 @@ Note
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-69-1.png" class="img-fluid figure-img" width="960"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-76-1.png" class="img-fluid figure-img" width="960"></p>
 </figure>
 </div>
-</div>
-</div>
-</section>
-<section id="ocean" class="level4">
-<h4 class="anchored" data-anchor-id="ocean">Ocean</h4>
-<div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>NULL</code></pre>
 </div>
 </div>
 </section>
@@ -2295,11 +2343,150 @@ Note
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-91-1.png" class="img-fluid figure-img" width="960"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-96-1.png" class="img-fluid figure-img" width="960"></p>
 </figure>
 </div>
 </div>
 </div>
+<section id="combining-datasets" class="level3">
+<h3 class="anchored" data-anchor-id="combining-datasets">Combining datasets</h3>
+</section>
+<section id="taxonomy-by-water-masses" class="level3">
+<h3 class="anchored" data-anchor-id="taxonomy-by-water-masses">Taxonomy by water masses</h3>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-98-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="rda" class="level3">
+<h3 class="anchored" data-anchor-id="rda">RDA</h3>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>Permutation test for rda under reduced model
+Permutation: free
+Number of permutations: 999
+
+Model: rda(formula = otu_16s_hel ~ Depth + Salinity + Pot_temperature + NO3 + PO4 + SiO2 + Chla_ugL, data = metadata)
+         Df Variance     F Pr(&gt;F)    
+Model     7 0.102344 10.85  0.001 ***
+Residual 56 0.075464                 
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Permutation test for rda under reduced model
+Terms added sequentially (first to last)
+Permutation: free
+Number of permutations: 999
+
+Model: rda(formula = otu_16s_hel ~ Depth + Salinity + Pot_temperature + NO3 + PO4 + SiO2 + Chla_ugL, data = metadata)
+                Df Variance       F Pr(&gt;F)    
+Depth            1 0.028179 20.9111  0.001 ***
+Salinity         1 0.030729 22.8034  0.001 ***
+Pot_temperature  1 0.014619 10.8486  0.001 ***
+NO3              1 0.005356  3.9744  0.007 ** 
+PO4              1 0.011067  8.2125  0.001 ***
+SiO2             1 0.009909  7.3529  0.001 ***
+Chla_ugL         1 0.002485  1.8443  0.104    
+Residual        56 0.075464                   
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Permutation test for rda under reduced model
+Permutation: free
+Number of permutations: 999
+
+Model: rda(formula = otu_18s_hel ~ Depth + Salinity + Pot_temperature + NO3 + PO4 + SiO2 + Chla_ugL, data = metadata)
+         Df Variance      F Pr(&gt;F)    
+Model     7  0.11493 4.5692  0.001 ***
+Residual 56  0.20123                  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Permutation test for rda under reduced model
+Terms added sequentially (first to last)
+Permutation: free
+Number of permutations: 999
+
+Model: rda(formula = otu_18s_hel ~ Depth + Salinity + Pot_temperature + NO3 + PO4 + SiO2 + Chla_ugL, data = metadata)
+                Df Variance       F Pr(&gt;F)    
+Depth            1 0.036858 10.2574  0.001 ***
+Salinity         1 0.027909  7.7668  0.001 ***
+Pot_temperature  1 0.018915  5.2638  0.001 ***
+NO3              1 0.007408  2.0615  0.030 *  
+PO4              1 0.010990  3.0585  0.002 ** 
+SiO2             1 0.006959  1.9367  0.040 *  
+Chla_ugL         1 0.005893  1.6400  0.091 .  
+Residual        56 0.201227                   
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-100-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-101-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Note</strong>: What is collinearity? definition: Two or more environmental variables are strongly correlated with each other.</p>
+<p>We can test it with vif.cca(). VIF = Variance Inflation Factor</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>VIF value</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>&lt; 5</td>
+<td>OK</td>
+</tr>
+<tr class="even">
+<td>5–10</td>
+<td>Moderate collinearity ⚠️</td>
+</tr>
+<tr class="odd">
+<td>&gt; 10</td>
+<td>Strong collinearity ❌</td>
+</tr>
+</tbody>
+</table>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>          Depth        Salinity Pot_temperature             NO3             PO4 
+       3.695469       18.464723        2.289334        5.885460       13.763544 
+           SiO2        Chla_ugL 
+       8.278162        1.983604 </code></pre>
+</div>
+</div>
+<p>Depth 3.7 ✅ OK Salinity 18.5 ❌ VERY high Pot_temperature 2.3 ✅ OK NO3 5.9 ⚠️ borderline PO4 13.8 ❌ high SiO2 8.3 ⚠️ moderate Chla 2.0 ✅ OK</p>
+<p>What to do? We could remove redundant variables</p>
+<p>For example: keeping these: - Depth → physical structure - Temperature → water mass - NO3 → nutrients - Chla → biology</p>
+</section>
+<section id="pca-analysis-with-environmental-conditions" class="level2">
+<h2 class="anchored" data-anchor-id="pca-analysis-with-environmental-conditions">PCA analysis with environmental conditions</h2>
+<p>Note: To identify specific taxa (at the genus level) that are being driven by environmental conditions, I could use: 1. Extract and Plot Loadings from dbRDA 2. Correlation Analysis (Taxa vs.&nbsp;Environment) 3. Differential Abundance Testing 4. Machine Learning (Random Forest)</p>
+</section>
 <section id="looking-for-associations" class="level2">
 <h2 class="anchored" data-anchor-id="looking-for-associations">Looking for associations</h2>
 <div class="cell">
@@ -2563,7 +2750,7 @@ Note
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-97-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-108-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -2688,7 +2875,7 @@ Note
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-101-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-112-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -2737,12 +2924,12 @@ Note
 <h1>Function prediction - Picrust2</h1>
 <section id="running-picrust2" class="level2">
 <h2 class="anchored" data-anchor-id="running-picrust2">Running Picrust2</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="ex">picrust2_pipeline.py</span> <span class="dt">\</span></span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>-s picrust2_seqs.fna <span class="dt">\</span></span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>-i picrust2_input.tsv <span class="dt">\</span></span>
-<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>-o picrust2_out <span class="dt">\</span></span>
-<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>--threads 30 <span class="dt">\</span></span>
-<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>--stratified</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb34"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="ex">picrust2_pipeline.py</span> <span class="dt">\</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>-s picrust2_seqs.fna <span class="dt">\</span></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>-i picrust2_input.tsv <span class="dt">\</span></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>-o picrust2_out <span class="dt">\</span></span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>--threads 30 <span class="dt">\</span></span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>--stratified</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>PICRUSt2 is giving you three levels of functional prediction from your 16S data:</p>
 <ul>
 <li>KO = KEGG Ortholog</li>
@@ -2760,7 +2947,7 @@ Note
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-125-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-142-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -2769,7 +2956,7 @@ Note
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-126-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-143-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -2781,7 +2968,7 @@ Note
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-127-1.png" class="img-fluid figure-img" width="960"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-144-1.png" class="img-fluid figure-img" width="960"></p>
 </figure>
 </div>
 </div>
@@ -2807,7 +2994,7 @@ Note
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-130-1.png" class="img-fluid figure-img" width="960"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-147-1.png" class="img-fluid figure-img" width="960"></p>
 </figure>
 </div>
 </div>
@@ -2837,7 +3024,7 @@ Note
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/unnamed-chunk-133-1.png" class="img-fluid figure-img" width="960"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-150-1.png" class="img-fluid figure-img" width="960"></p>
 </figure>
 </div>
 </div>
@@ -2846,61 +3033,61 @@ Note
 <section id="using-ggpicrust2" class="level3">
 <h3 class="anchored" data-anchor-id="using-ggpicrust2">Using ggpicrust2</h3>
 <p>ggpicrust2 was built specifically for PICRUSt2-derived functional profiles and provides a clean way to do differential abundance testing, annotation, and visualization of KO / EC / pathway outputs in R.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Run ggpicrust2 with input file path</span></span>
-<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>results_file_input <span class="ot">&lt;-</span> <span class="fu">ggpicrust2</span>(<span class="at">file =</span> abundance_file,</span>
-<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">metadata =</span> metadata,</span>
-<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">group =</span> <span class="st">"your_group_column"</span>, <span class="co"># For example dataset, group = "Environment"</span></span>
-<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">pathway =</span> <span class="st">"KO"</span>,</span>
-<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">daa_method =</span> <span class="st">"LinDA"</span>,</span>
-<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">ko_to_kegg =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">order =</span> <span class="st">"pathway_class"</span>,</span>
-<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">p_values_bar =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">x_lab =</span> <span class="st">"pathway_name"</span>)</span>
-<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Run ggpicrust2 with imported data.frame</span></span>
-<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a>abundance_data <span class="ot">&lt;-</span> <span class="fu">read_delim</span>(abundance_file, <span class="at">delim =</span> <span class="st">"</span><span class="sc">\t</span><span class="st">"</span>, <span class="at">col_names =</span> <span class="cn">TRUE</span>, <span class="at">trim_ws =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb34-14"><a href="#cb34-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-15"><a href="#cb34-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Run ggpicrust2 with input data</span></span>
-<span id="cb34-16"><a href="#cb34-16" aria-hidden="true" tabindex="-1"></a>results_data_input <span class="ot">&lt;-</span> <span class="fu">ggpicrust2</span>(<span class="at">data =</span> abundance_data,</span>
-<span id="cb34-17"><a href="#cb34-17" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">metadata =</span> metadata,</span>
-<span id="cb34-18"><a href="#cb34-18" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">group =</span> <span class="st">"your_group_column"</span>, <span class="co"># For example dataset, group = "Environment"</span></span>
-<span id="cb34-19"><a href="#cb34-19" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">pathway =</span> <span class="st">"KO"</span>,</span>
-<span id="cb34-20"><a href="#cb34-20" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">daa_method =</span> <span class="st">"LinDA"</span>,</span>
-<span id="cb34-21"><a href="#cb34-21" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">ko_to_kegg =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb34-22"><a href="#cb34-22" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">order =</span> <span class="st">"pathway_class"</span>,</span>
-<span id="cb34-23"><a href="#cb34-23" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">p_values_bar =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb34-24"><a href="#cb34-24" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">x_lab =</span> <span class="st">"pathway_name"</span>)</span>
-<span id="cb34-25"><a href="#cb34-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-26"><a href="#cb34-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Access the plot and results dataframe for the first DA method</span></span>
-<span id="cb34-27"><a href="#cb34-27" aria-hidden="true" tabindex="-1"></a>example_plot <span class="ot">&lt;-</span> results_file_input[[<span class="dv">1</span>]]<span class="sc">$</span>plot</span>
-<span id="cb34-28"><a href="#cb34-28" aria-hidden="true" tabindex="-1"></a>example_results <span class="ot">&lt;-</span> results_file_input[[<span class="dv">1</span>]]<span class="sc">$</span>results</span>
-<span id="cb34-29"><a href="#cb34-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-30"><a href="#cb34-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Use the example data in ggpicrust2 package</span></span>
-<span id="cb34-31"><a href="#cb34-31" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(ko_abundance)</span>
-<span id="cb34-32"><a href="#cb34-32" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(metadata)</span>
-<span id="cb34-33"><a href="#cb34-33" aria-hidden="true" tabindex="-1"></a>results_file_input <span class="ot">&lt;-</span> <span class="fu">ggpicrust2</span>(<span class="at">data =</span> ko_abundance,</span>
-<span id="cb34-34"><a href="#cb34-34" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">metadata =</span> metadata,</span>
-<span id="cb34-35"><a href="#cb34-35" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">group =</span> <span class="st">"Environment"</span>,</span>
-<span id="cb34-36"><a href="#cb34-36" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">pathway =</span> <span class="st">"KO"</span>,</span>
-<span id="cb34-37"><a href="#cb34-37" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">daa_method =</span> <span class="st">"LinDA"</span>,</span>
-<span id="cb34-38"><a href="#cb34-38" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">ko_to_kegg =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb34-39"><a href="#cb34-39" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">order =</span> <span class="st">"pathway_class"</span>,</span>
-<span id="cb34-40"><a href="#cb34-40" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">p_values_bar =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb34-41"><a href="#cb34-41" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">x_lab =</span> <span class="st">"pathway_name"</span>)</span>
-<span id="cb34-42"><a href="#cb34-42" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-43"><a href="#cb34-43" aria-hidden="true" tabindex="-1"></a><span class="co"># Analyze the EC or MetaCyc pathway</span></span>
-<span id="cb34-44"><a href="#cb34-44" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(metacyc_abundance)</span>
-<span id="cb34-45"><a href="#cb34-45" aria-hidden="true" tabindex="-1"></a>results_file_input <span class="ot">&lt;-</span> <span class="fu">ggpicrust2</span>(<span class="at">data =</span> metacyc_abundance,</span>
-<span id="cb34-46"><a href="#cb34-46" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">metadata =</span> metadata,</span>
-<span id="cb34-47"><a href="#cb34-47" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">group =</span> <span class="st">"Environment"</span>,</span>
-<span id="cb34-48"><a href="#cb34-48" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">pathway =</span> <span class="st">"MetaCyc"</span>,</span>
-<span id="cb34-49"><a href="#cb34-49" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">daa_method =</span> <span class="st">"LinDA"</span>,</span>
-<span id="cb34-50"><a href="#cb34-50" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">ko_to_kegg =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb34-51"><a href="#cb34-51" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">order =</span> <span class="st">"group"</span>,</span>
-<span id="cb34-52"><a href="#cb34-52" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">p_values_bar =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb34-53"><a href="#cb34-53" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">x_lab =</span> <span class="st">"description"</span>)</span>
-<span id="cb34-54"><a href="#cb34-54" aria-hidden="true" tabindex="-1"></a>results_file_input[[<span class="dv">1</span>]]<span class="sc">$</span>plot</span>
-<span id="cb34-55"><a href="#cb34-55" aria-hidden="true" tabindex="-1"></a>results_file_input[[<span class="dv">1</span>]]<span class="sc">$</span>results</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Run ggpicrust2 with input file path</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>results_file_input <span class="ot">&lt;-</span> <span class="fu">ggpicrust2</span>(<span class="at">file =</span> abundance_file,</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">metadata =</span> metadata,</span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">group =</span> <span class="st">"your_group_column"</span>, <span class="co"># For example dataset, group = "Environment"</span></span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">pathway =</span> <span class="st">"KO"</span>,</span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">daa_method =</span> <span class="st">"LinDA"</span>,</span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">ko_to_kegg =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">order =</span> <span class="st">"pathway_class"</span>,</span>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">p_values_bar =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">x_lab =</span> <span class="st">"pathway_name"</span>)</span>
+<span id="cb38-11"><a href="#cb38-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-12"><a href="#cb38-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Run ggpicrust2 with imported data.frame</span></span>
+<span id="cb38-13"><a href="#cb38-13" aria-hidden="true" tabindex="-1"></a>abundance_data <span class="ot">&lt;-</span> <span class="fu">read_delim</span>(abundance_file, <span class="at">delim =</span> <span class="st">"</span><span class="sc">\t</span><span class="st">"</span>, <span class="at">col_names =</span> <span class="cn">TRUE</span>, <span class="at">trim_ws =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb38-14"><a href="#cb38-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-15"><a href="#cb38-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Run ggpicrust2 with input data</span></span>
+<span id="cb38-16"><a href="#cb38-16" aria-hidden="true" tabindex="-1"></a>results_data_input <span class="ot">&lt;-</span> <span class="fu">ggpicrust2</span>(<span class="at">data =</span> abundance_data,</span>
+<span id="cb38-17"><a href="#cb38-17" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">metadata =</span> metadata,</span>
+<span id="cb38-18"><a href="#cb38-18" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">group =</span> <span class="st">"your_group_column"</span>, <span class="co"># For example dataset, group = "Environment"</span></span>
+<span id="cb38-19"><a href="#cb38-19" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">pathway =</span> <span class="st">"KO"</span>,</span>
+<span id="cb38-20"><a href="#cb38-20" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">daa_method =</span> <span class="st">"LinDA"</span>,</span>
+<span id="cb38-21"><a href="#cb38-21" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">ko_to_kegg =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb38-22"><a href="#cb38-22" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">order =</span> <span class="st">"pathway_class"</span>,</span>
+<span id="cb38-23"><a href="#cb38-23" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">p_values_bar =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb38-24"><a href="#cb38-24" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">x_lab =</span> <span class="st">"pathway_name"</span>)</span>
+<span id="cb38-25"><a href="#cb38-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-26"><a href="#cb38-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Access the plot and results dataframe for the first DA method</span></span>
+<span id="cb38-27"><a href="#cb38-27" aria-hidden="true" tabindex="-1"></a>example_plot <span class="ot">&lt;-</span> results_file_input[[<span class="dv">1</span>]]<span class="sc">$</span>plot</span>
+<span id="cb38-28"><a href="#cb38-28" aria-hidden="true" tabindex="-1"></a>example_results <span class="ot">&lt;-</span> results_file_input[[<span class="dv">1</span>]]<span class="sc">$</span>results</span>
+<span id="cb38-29"><a href="#cb38-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-30"><a href="#cb38-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Use the example data in ggpicrust2 package</span></span>
+<span id="cb38-31"><a href="#cb38-31" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(ko_abundance)</span>
+<span id="cb38-32"><a href="#cb38-32" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(metadata)</span>
+<span id="cb38-33"><a href="#cb38-33" aria-hidden="true" tabindex="-1"></a>results_file_input <span class="ot">&lt;-</span> <span class="fu">ggpicrust2</span>(<span class="at">data =</span> ko_abundance,</span>
+<span id="cb38-34"><a href="#cb38-34" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">metadata =</span> metadata,</span>
+<span id="cb38-35"><a href="#cb38-35" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">group =</span> <span class="st">"Environment"</span>,</span>
+<span id="cb38-36"><a href="#cb38-36" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">pathway =</span> <span class="st">"KO"</span>,</span>
+<span id="cb38-37"><a href="#cb38-37" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">daa_method =</span> <span class="st">"LinDA"</span>,</span>
+<span id="cb38-38"><a href="#cb38-38" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">ko_to_kegg =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb38-39"><a href="#cb38-39" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">order =</span> <span class="st">"pathway_class"</span>,</span>
+<span id="cb38-40"><a href="#cb38-40" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">p_values_bar =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb38-41"><a href="#cb38-41" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">x_lab =</span> <span class="st">"pathway_name"</span>)</span>
+<span id="cb38-42"><a href="#cb38-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-43"><a href="#cb38-43" aria-hidden="true" tabindex="-1"></a><span class="co"># Analyze the EC or MetaCyc pathway</span></span>
+<span id="cb38-44"><a href="#cb38-44" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(metacyc_abundance)</span>
+<span id="cb38-45"><a href="#cb38-45" aria-hidden="true" tabindex="-1"></a>results_file_input <span class="ot">&lt;-</span> <span class="fu">ggpicrust2</span>(<span class="at">data =</span> metacyc_abundance,</span>
+<span id="cb38-46"><a href="#cb38-46" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">metadata =</span> metadata,</span>
+<span id="cb38-47"><a href="#cb38-47" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">group =</span> <span class="st">"Environment"</span>,</span>
+<span id="cb38-48"><a href="#cb38-48" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">pathway =</span> <span class="st">"MetaCyc"</span>,</span>
+<span id="cb38-49"><a href="#cb38-49" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">daa_method =</span> <span class="st">"LinDA"</span>,</span>
+<span id="cb38-50"><a href="#cb38-50" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">ko_to_kegg =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb38-51"><a href="#cb38-51" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">order =</span> <span class="st">"group"</span>,</span>
+<span id="cb38-52"><a href="#cb38-52" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">p_values_bar =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb38-53"><a href="#cb38-53" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">x_lab =</span> <span class="st">"description"</span>)</span>
+<span id="cb38-54"><a href="#cb38-54" aria-hidden="true" tabindex="-1"></a>results_file_input[[<span class="dv">1</span>]]<span class="sc">$</span>plot</span>
+<span id="cb38-55"><a href="#cb38-55" aria-hidden="true" tabindex="-1"></a>results_file_input[[<span class="dv">1</span>]]<span class="sc">$</span>results</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 
 </section>

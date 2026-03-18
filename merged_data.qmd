@@ -17,7 +17,7 @@ library(kableExtra)
 # 
 # ctd_selected %>% head(10)
 
-metadata <- read_csv("data/Metadata_Augmentum.csv")
+metadata <- read_csv("data/Metadata_Augmentum.csv") %>% select(01:24)
 ps_16s <- readRDS("data/ps_16s.rds")
 ps_18s <- readRDS("data/ps_18s.rds")
 
@@ -40,17 +40,11 @@ ggplot(meta_long, aes(y = Value)) +
 
 ```
 
-
-## Looking for associations
+### Combining datasets 
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
-
-# options(repos = c(
-#      bioc = "https://bioc.r-universe.dev",
-#      CRAN = "https://cloud.r-project.org"))
-# install.packages("SpiecEasi")
-
 library(phyloseq)
+library(vegan)
 
 # Collapse taxonomic rank
 ps16_genus <- tax_glom(ps_16s, taxrank = "Genus")
@@ -80,12 +74,273 @@ taxa_names(ps18_filt) <- paste0("Euk_", taxa_names(ps18_filt))
 mat16 <- as(otu_table(ps16_filt), "matrix")
 mat18 <- as(otu_table(ps18_filt), "matrix")
 
-if(!taxa_are_rows(ps16_filt)) mat16 <- t(mat16)
-if(!taxa_are_rows(ps18_filt)) mat18 <- t(mat18)
-
-combined_matrix <- rbind(mat16, mat18)
-combined_matrix <- t(combined_matrix)
+combined_matrix <- cbind(mat16, mat18)
 taxa_names_combined <- colnames(combined_matrix)
+
+# Create a matching column in metadata
+
+metadata <- metadata %>%
+  mutate(
+    ps_id = sprintf("%02d_St%d_D%d", row_number(), StationID, Depth)
+  )
+
+sd_16s <- sample_data(ps_16s) %>%
+  data.frame() %>%
+  rownames_to_column("ps_id")
+
+sd_16s_aug <- sd_16s %>%
+  left_join(
+    metadata %>%
+      select(-Cruise, -Date, -Area, -StationID, -Depth, -`Water mass`),
+    by = "ps_id"
+  )
+
+# Put rownames back
+sd_16s_aug <- sd_16s_aug %>%
+  column_to_rownames("ps_id")
+
+sample_data(ps_16s) <- sample_data(sd_16s_aug)
+sample_data(ps_18s) <- sample_data(sd_16s_aug)
+
+# Transform data using Hellinger transformation (best for PCA/RDA):
+
+otu_16s <- as.data.frame(otu_table(ps16_filt))
+otu_18s <- as.data.frame(otu_table(ps18_filt))
+
+otu_16s_hel <- decostand(otu_16s, method = "hellinger")
+otu_18s_hel <- decostand(otu_18s, method = "hellinger")
+
+# Prepare environmental matrix
+env <- metadata %>%
+  select(Depth, Salinity, Pot_temperature, NO3, PO4, SiO2, Chla_ugL) %>%
+  drop_na()
+
+# scale variables
+env_scaled <- scale(env)
+```
+
+### Taxonomy by water masses
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
+library(microbiome)
+my_colors <- c("#FF6666", "#8DD3C7", "#377EB8", "#4DAF4A", "#984EA3", "#A6D854", "#FFFF33",
+               "#FF7F00", "#F781BF", "#999999","#66C2A5", "#FC8D62", "#8DA0CB", "#E78AC3", "#FFD92F",
+               "#E5C494", "#B3B3B3", "#A65628","#FFFFB3", "#BEBADA", "#FB8072", "#80B1D3", "#FDB462")
+
+# Collapse + compositional
+ps_class <- tax_glom(ps_16s, taxrank = "Class")
+ps_rel   <- transform(ps_class, "compositional")
+
+# Top 10 taxa (OTU/ASV IDs after glomming)
+top10 <- top_taxa(ps_rel, n = 10)
+
+# Melt full object
+df <- psmelt(ps_rel)
+
+# Make Depth nice (adapt if your Depth column differs)
+df <- df %>%
+  mutate(
+    Depth = as.character(Depth),
+    Depth = if_else(Depth %in% c("1","01","surface","Surface"), "surface",
+             if_else(Depth %in% c("15","15m","15 m"), "15m",
+             if_else(Depth %in% c("45","45m","45 m"), "45m", Depth))),
+    Depth = factor(Depth, levels = c("surface", "15m", "45m")),
+    Fjord = as.factor(Fjord),
+    Station = factor(Station, levels = as.character(sort(unique(as.numeric(Station))))),
+    Water_mass = as.factor(Water_mass)
+  )
+
+# Top10 + Other
+df <- df %>%
+  mutate(
+    Class = as.character(Class),
+    Class = if_else(is.na(Class) | Class == "", "Unclassified", Class),
+    Class_plot = if_else(OTU %in% top10, Class, "Other")
+  ) %>%
+  group_by(Fjord, Depth, Sample, Number, Station, Class_plot, Water_mass) %>%
+  summarise(Abundance = sum(Abundance), .groups = "drop")
+
+# Legend order: Other last
+df$Class_plot <- factor(
+  df$Class_plot,
+  levels = c(setdiff(sort(unique(df$Class_plot)), "Other"), "Other")
+)
+
+# Colors: use your palette (first 10) + Other
+other_color <- "#C0C0C0"
+plot_colors <- c(my_colors[1:10], other_color)
+names(plot_colors) <- levels(df$Class_plot)
+
+plot_fjord <- function(df, fjord_name){
+  dff <- df %>% filter(Fjord == fjord_name)
+
+  ggplot(dff, aes(x = Station, y = Abundance, fill = Class_plot)) +
+    geom_col(width = 0.85) +
+    facet_wrap(~Depth, nrow = 1) +
+    scale_fill_manual(values = plot_colors) +
+    scale_y_continuous(labels = scales::percent) +
+    labs(
+      title = paste0(fjord_name, " — Top 10 Classes + Other"),
+      x = "Station Number",
+      y = "Relative abundance",
+      fill = "Class"
+    ) +
+    theme_classic() +
+    theme(
+      legend.position = "bottom",
+      axis.text.x = element_text(angle = 45, hjust = 1),
+      strip.background = element_rect(fill = "white"),
+      strip.text = element_text(face = "bold")
+    ) +
+    guides(fill = guide_legend(nrow = 2, byrow = TRUE))
+}
+
+fjords <- sort(unique(df$Fjord))
+
+plots <- lapply(fjords, function(fj) plot_fjord(df, fj))
+names(plots) <- as.character(fjords)
+
+# Print one (e.g., Sermilik)
+plots[["Sermilik"]]
+
+
+```
+
+
+### RDA
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+rda_16s <- rda(otu_16s_hel ~ Depth + Salinity + Pot_temperature + NO3 + PO4 + SiO2 + Chla_ugL, data = metadata)
+rda_18s <- rda(otu_18s_hel ~ Depth + Salinity + Pot_temperature + NO3 + PO4 + SiO2 + Chla_ugL, data = metadata)
+
+# Test significance
+
+anova(rda_16s)
+anova(rda_16s, by = "term")
+
+anova(rda_18s)
+anova(rda_18s, by = "term")
+
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# Extract scores
+
+scores_16s <- scores(rda_16s, display = "sites") %>% as.data.frame()
+scores_16s <- cbind(scores_16s, metadata)
+
+env_arrows <- scores(rda_16s, display = "bp") %>% as.data.frame()
+
+# Test significance
+
+scores_16s$Depth <- as.factor(scores_16s$Depth)
+
+ggplot(scores_16s, aes(RDA1, RDA2)) +
+  geom_point(aes(color = Depth), size = 3) +
+  geom_segment(
+    data = env_arrows,
+    inherit.aes = FALSE,
+    aes(x = 0, y = 0, xend = RDA1, yend = RDA2),
+    arrow = arrow(length = unit(0.2, "cm")),
+    color = "black"
+  ) +
+  geom_text(
+    data = env_arrows,
+    inherit.aes = FALSE,
+    aes(x = RDA1, y = RDA2, label = rownames(env_arrows)),
+    size = 4
+  ) +
+  theme_minimal() + ggtitle("RDA of 16S Bacterial Communities Along Environmental Gradients")
+
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# Extract scores
+
+scores_18s <- scores(rda_18s, display = "sites") %>% as.data.frame()
+scores_18s <- cbind(scores_18s, metadata)
+
+env_arrows <- scores(rda_18s, display = "bp") %>% as.data.frame()
+
+# Test significance
+
+scores_18s$Depth <- as.factor(scores_18s$Depth)
+
+ggplot(scores_18s, aes(RDA1, RDA2)) +
+  geom_point(aes(color = Depth), size = 3) +
+  geom_segment(
+    data = env_arrows,
+    inherit.aes = FALSE,
+    aes(x = 0, y = 0, xend = RDA1, yend = RDA2),
+    arrow = arrow(length = unit(0.2, "cm")),
+    color = "black"
+  ) +
+  geom_text(
+    data = env_arrows,
+    inherit.aes = FALSE,
+    aes(x = RDA1, y = RDA2, label = rownames(env_arrows)),
+    size = 4
+  ) +
+  theme_minimal() + ggtitle("RDA of 18S eukaryotic Communities Along Environmental Gradients")
+
+```
+
+**Note**: What is collinearity?
+definition: Two or more environmental variables are strongly correlated with each other.
+
+We can test it with vif.cca(). VIF = Variance Inflation Factor
+
+:::{.column width="50%"}
+
+| VIF value | Meaning                  |
+| --------- | ------------------------ |
+| < 5       | OK                       |
+| 5–10      | Moderate collinearity ⚠️ |
+| > 10      | Strong collinearity ❌    |
+:::
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+vif.cca(rda_16s)
+```
+
+:::{.column width="50%"}
+| Variable         | VIF  | Interpretation     |
+|------------------|------|--------------------|
+| Depth            | 3.7  | ✅ OK              |
+| Salinity         | 18.5 | ❌ Very high       |
+| Pot_temperature  | 2.3  | ✅ OK              |
+| NO3              | 5.9  | ⚠️ Borderline      |
+| PO4              | 13.8 | ❌ High            |
+| SiO2             | 8.3  | ⚠️ Moderate        |
+| Chla             | 2.0  | ✅ OK              |
+:::
+
+What to do? We could remove redundant variables
+
+For example: keeping these:
+  - Depth → physical structure
+  - Temperature → water mass
+  - NO3 → nutrients
+  - Chla → biology
+
+
+## PCA analysis with environmental conditions
+
+Note:
+To identify specific taxa (at the genus level) that are being driven by environmental conditions, I could use:
+1. Extract and Plot Loadings from dbRDA
+2. Correlation Analysis (Taxa vs. Environment)
+3. Differential Abundance Testing
+4. Machine Learning (Random Forest)
+
+## Looking for associations
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+
+# options(repos = c(
+#      bioc = "https://bioc.r-universe.dev",
+#      CRAN = "https://cloud.r-project.org"))
+# install.packages("SpiecEasi")
 
 library(SpiecEasi)
 

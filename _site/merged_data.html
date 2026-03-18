@@ -113,6 +113,145 @@ ul.task-list li input[type="checkbox"] {
 </div>
 </div>
 </div>
+<section id="combining-datasets" class="level3">
+<h3 class="anchored" data-anchor-id="combining-datasets">Combining datasets</h3>
+</section>
+<section id="taxonomy-by-water-masses" class="level3">
+<h3 class="anchored" data-anchor-id="taxonomy-by-water-masses">Taxonomy by water masses</h3>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="merged_data_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="rda" class="level3">
+<h3 class="anchored" data-anchor-id="rda">RDA</h3>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>Permutation test for rda under reduced model
+Permutation: free
+Number of permutations: 999
+
+Model: rda(formula = otu_16s_hel ~ Depth + Salinity + Pot_temperature + NO3 + PO4 + SiO2 + Chla_ugL, data = metadata)
+         Df Variance     F Pr(&gt;F)    
+Model     7 0.102344 10.85  0.001 ***
+Residual 56 0.075464                 
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Permutation test for rda under reduced model
+Terms added sequentially (first to last)
+Permutation: free
+Number of permutations: 999
+
+Model: rda(formula = otu_16s_hel ~ Depth + Salinity + Pot_temperature + NO3 + PO4 + SiO2 + Chla_ugL, data = metadata)
+                Df Variance       F Pr(&gt;F)    
+Depth            1 0.028179 20.9111  0.001 ***
+Salinity         1 0.030729 22.8034  0.001 ***
+Pot_temperature  1 0.014619 10.8486  0.001 ***
+NO3              1 0.005356  3.9744  0.003 ** 
+PO4              1 0.011067  8.2125  0.001 ***
+SiO2             1 0.009909  7.3529  0.001 ***
+Chla_ugL         1 0.002485  1.8443  0.113    
+Residual        56 0.075464                   
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Permutation test for rda under reduced model
+Permutation: free
+Number of permutations: 999
+
+Model: rda(formula = otu_18s_hel ~ Depth + Salinity + Pot_temperature + NO3 + PO4 + SiO2 + Chla_ugL, data = metadata)
+         Df Variance      F Pr(&gt;F)    
+Model     7  0.11493 4.5692  0.001 ***
+Residual 56  0.20123                  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Permutation test for rda under reduced model
+Terms added sequentially (first to last)
+Permutation: free
+Number of permutations: 999
+
+Model: rda(formula = otu_18s_hel ~ Depth + Salinity + Pot_temperature + NO3 + PO4 + SiO2 + Chla_ugL, data = metadata)
+                Df Variance       F Pr(&gt;F)    
+Depth            1 0.036858 10.2574  0.001 ***
+Salinity         1 0.027909  7.7668  0.001 ***
+Pot_temperature  1 0.018915  5.2638  0.001 ***
+NO3              1 0.007408  2.0615  0.025 *  
+PO4              1 0.010990  3.0585  0.003 ** 
+SiO2             1 0.006959  1.9367  0.037 *  
+Chla_ugL         1 0.005893  1.6400  0.085 .  
+Residual        56 0.201227                   
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="merged_data_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="merged_data_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Note</strong>: What is collinearity? definition: Two or more environmental variables are strongly correlated with each other.</p>
+<p>We can test it with vif.cca(). VIF = Variance Inflation Factor</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>VIF value</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>&lt; 5</td>
+<td>OK</td>
+</tr>
+<tr class="even">
+<td>5–10</td>
+<td>Moderate collinearity ⚠️</td>
+</tr>
+<tr class="odd">
+<td>&gt; 10</td>
+<td>Strong collinearity ❌</td>
+</tr>
+</tbody>
+</table>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>          Depth        Salinity Pot_temperature             NO3             PO4 
+       3.695469       18.464723        2.289334        5.885460       13.763544 
+           SiO2        Chla_ugL 
+       8.278162        1.983604 </code></pre>
+</div>
+</div>
+<p>Depth 3.7 ✅ OK Salinity 18.5 ❌ VERY high Pot_temperature 2.3 ✅ OK NO3 5.9 ⚠️ borderline PO4 13.8 ❌ high SiO2 8.3 ⚠️ moderate Chla 2.0 ✅ OK</p>
+<p>What to do? We could remove redundant variables</p>
+<p>For example: keeping these: - Depth → physical structure - Temperature → water mass - NO3 → nutrients - Chla → biology</p>
+</section>
+<section id="pca-analysis-with-environmental-conditions" class="level2">
+<h2 class="anchored" data-anchor-id="pca-analysis-with-environmental-conditions">PCA analysis with environmental conditions</h2>
+<p>Note: To identify specific taxa (at the genus level) that are being driven by environmental conditions, I could use: 1. Extract and Plot Loadings from dbRDA 2. Correlation Analysis (Taxa vs.&nbsp;Environment) 3. Differential Abundance Testing 4. Machine Learning (Random Forest)</p>
+</section>
 <section id="looking-for-associations" class="level2">
 <h2 class="anchored" data-anchor-id="looking-for-associations">Looking for associations</h2>
 <div class="cell">
@@ -376,7 +515,7 @@ Note
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="merged_data_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="merged_data_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -501,7 +640,7 @@ Note
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="merged_data_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="merged_data_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
