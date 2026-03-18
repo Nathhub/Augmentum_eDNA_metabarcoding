@@ -29,3 +29,6 @@ execute:
 
 ```{r, child="merged_data.qmd"}
 ```
+
+```{r, child="function_prediction.qmd"}
+```

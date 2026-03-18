@@ -5,3 +5,7 @@ project:
 website:
   title: "Augmentum_eDNA_metabarcoding"
   navbar: false
+
+execute:
+  freeze: auto
+  cache: true
