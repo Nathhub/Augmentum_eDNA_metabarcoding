@@ -5,3 +5,13 @@
 
 /.quarto/
 **/*.quarto_ipynb
+
+# Quarto / knitr cache
+*_cache/
+_freeze/
+
+# RStudio
+.Rproj.user/
+
+# Quarto intermediates
+*.markdown

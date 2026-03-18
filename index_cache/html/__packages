@@ -12,3 +12,14 @@ forcats
 lubridate
 phyloseq
 microbiome
+SpiecEasi
+igraph
+tidygraph
+ggraph
+visNetwork
+ggpicrust2
+ggprism
+patchwork
+permute
+vegan
+pheatmap
