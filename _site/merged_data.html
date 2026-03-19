@@ -100,11 +100,6 @@ ul.task-list li input[type="checkbox"] {
 <section id="combined-16s-18s-and-metadata" class="level1">
 <h1>Combined 16S, 18S and metadata</h1>
 <div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>systemfonts and textshaping have been compiled with different versions of Freetype. Because of this, textshaping will not use the font cache provided by systemfonts</code></pre>
-</div>
-</div>
-<div class="cell">
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -157,7 +152,7 @@ Pot_temperature  1 0.014619 10.8486  0.001 ***
 NO3              1 0.005356  3.9744  0.003 ** 
 PO4              1 0.011067  8.2125  0.001 ***
 SiO2             1 0.009909  7.3529  0.001 ***
-Chla_ugL         1 0.002485  1.8443  0.113    
+Chla_ugL         1 0.002485  1.8443  0.112    
 Residual        56 0.075464                   
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
@@ -185,10 +180,10 @@ Model: rda(formula = otu_18s_hel ~ Depth + Salinity + Pot_temperature + NO3 + PO
 Depth            1 0.036858 10.2574  0.001 ***
 Salinity         1 0.027909  7.7668  0.001 ***
 Pot_temperature  1 0.018915  5.2638  0.001 ***
-NO3              1 0.007408  2.0615  0.025 *  
-PO4              1 0.010990  3.0585  0.003 ** 
-SiO2             1 0.006959  1.9367  0.037 *  
-Chla_ugL         1 0.005893  1.6400  0.085 .  
+NO3              1 0.007408  2.0615  0.021 *  
+PO4              1 0.010990  3.0585  0.002 ** 
+SiO2             1 0.006959  1.9367  0.045 *  
+Chla_ugL         1 0.005893  1.6400  0.084 .  
 Residual        56 0.201227                   
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
@@ -214,6 +209,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
 <p><strong>Note</strong>: What is collinearity? definition: Two or more environmental variables are strongly correlated with each other.</p>
 <p>We can test it with vif.cca(). VIF = Variance Inflation Factor</p>
+<div class="column" style="width:50%;">
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -236,6 +232,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </tr>
 </tbody>
 </table>
+</div>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code>          Depth        Salinity Pot_temperature             NO3             PO4 
@@ -244,7 +241,54 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
        8.278162        1.983604 </code></pre>
 </div>
 </div>
-<p>Depth 3.7 ✅ OK Salinity 18.5 ❌ VERY high Pot_temperature 2.3 ✅ OK NO3 5.9 ⚠️ borderline PO4 13.8 ❌ high SiO2 8.3 ⚠️ moderate Chla 2.0 ✅ OK</p>
+<div class="column" style="width:50%;">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>VIF</th>
+<th>Interpretation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Depth</td>
+<td>3.7</td>
+<td>✅ OK</td>
+</tr>
+<tr class="even">
+<td>Salinity</td>
+<td>18.5</td>
+<td>❌ Very high</td>
+</tr>
+<tr class="odd">
+<td>Pot_temperature</td>
+<td>2.3</td>
+<td>✅ OK</td>
+</tr>
+<tr class="even">
+<td>NO3</td>
+<td>5.9</td>
+<td>⚠️ Borderline</td>
+</tr>
+<tr class="odd">
+<td>PO4</td>
+<td>13.8</td>
+<td>❌ High</td>
+</tr>
+<tr class="even">
+<td>SiO2</td>
+<td>8.3</td>
+<td>⚠️ Moderate</td>
+</tr>
+<tr class="odd">
+<td>Chla</td>
+<td>2.0</td>
+<td>✅ OK</td>
+</tr>
+</tbody>
+</table>
+</div>
 <p>What to do? We could remove redundant variables</p>
 <p>For example: keeping these: - Depth → physical structure - Temperature → water mass - NO3 → nutrients - Chla → biology</p>
 </section>

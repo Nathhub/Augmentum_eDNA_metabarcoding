@@ -12,6 +12,8 @@ forcats
 lubridate
 phyloseq
 microbiome
+permute
+vegan
 SpiecEasi
 igraph
 tidygraph
@@ -20,6 +22,4 @@ visNetwork
 ggpicrust2
 ggprism
 patchwork
-permute
-vegan
 pheatmap
