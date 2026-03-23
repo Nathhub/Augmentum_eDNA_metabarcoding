@@ -10,8 +10,6 @@
 *_cache/
 _freeze/
 
-# RStudio
-.Rproj.user/
-
 # Quarto intermediates
 *.markdown
+*.knit.md

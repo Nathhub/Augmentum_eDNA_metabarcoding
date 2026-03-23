@@ -100,6 +100,11 @@ ul.task-list li input[type="checkbox"] {
 <section id="combined-16s-18s-and-metadata" class="level1">
 <h1>Combined 16S, 18S and metadata</h1>
 <div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>systemfonts and textshaping have been compiled with different versions of Freetype. Because of this, textshaping will not use the font cache provided by systemfonts</code></pre>
+</div>
+</div>
+<div class="cell">
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -113,15 +118,6 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="taxonomy-by-water-masses" class="level3">
 <h3 class="anchored" data-anchor-id="taxonomy-by-water-masses">Taxonomy by water masses</h3>
-<div class="cell">
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="merged_data_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="960"></p>
-</figure>
-</div>
-</div>
-</div>
 </section>
 <section id="rda" class="level3">
 <h3 class="anchored" data-anchor-id="rda">RDA</h3>
@@ -149,10 +145,10 @@ Model: rda(formula = otu_16s_hel ~ Depth + Salinity + Pot_temperature + NO3 + PO
 Depth            1 0.028179 20.9111  0.001 ***
 Salinity         1 0.030729 22.8034  0.001 ***
 Pot_temperature  1 0.014619 10.8486  0.001 ***
-NO3              1 0.005356  3.9744  0.003 ** 
+NO3              1 0.005356  3.9744  0.008 ** 
 PO4              1 0.011067  8.2125  0.001 ***
 SiO2             1 0.009909  7.3529  0.001 ***
-Chla_ugL         1 0.002485  1.8443  0.112    
+Chla_ugL         1 0.002485  1.8443  0.108    
 Residual        56 0.075464                   
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
@@ -180,10 +176,10 @@ Model: rda(formula = otu_18s_hel ~ Depth + Salinity + Pot_temperature + NO3 + PO
 Depth            1 0.036858 10.2574  0.001 ***
 Salinity         1 0.027909  7.7668  0.001 ***
 Pot_temperature  1 0.018915  5.2638  0.001 ***
-NO3              1 0.007408  2.0615  0.021 *  
-PO4              1 0.010990  3.0585  0.002 ** 
-SiO2             1 0.006959  1.9367  0.045 *  
-Chla_ugL         1 0.005893  1.6400  0.084 .  
+NO3              1 0.007408  2.0615  0.023 *  
+PO4              1 0.010990  3.0585  0.001 ***
+SiO2             1 0.006959  1.9367  0.043 *  
+Chla_ugL         1 0.005893  1.6400  0.067 .  
 Residual        56 0.201227                   
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
@@ -233,12 +229,57 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </tbody>
 </table>
 </div>
+<section id="calculating-the-vif-of-the-variables-used" class="level4">
+<h4 class="anchored" data-anchor-id="calculating-the-vif-of-the-variables-used">Calculating the VIF of the variables used:</h4>
 <div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>          Depth        Salinity Pot_temperature             NO3             PO4 
-       3.695469       18.464723        2.289334        5.885460       13.763544 
-           SiO2        Chla_ugL 
-       8.278162        1.983604 </code></pre>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Variance Inflation Factors (VIF) for predictor variables</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: left;">Variable</th>
+<th style="text-align: right;">VIF</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Depth</td>
+<td style="text-align: left;">Depth</td>
+<td style="text-align: right;">3.70</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Salinity</td>
+<td style="text-align: left;">Salinity</td>
+<td style="text-align: right;">18.46</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Pot_temperature</td>
+<td style="text-align: left;">Pot_temperature</td>
+<td style="text-align: right;">2.29</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">NO3</td>
+<td style="text-align: left;">NO3</td>
+<td style="text-align: right;">5.89</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">PO4</td>
+<td style="text-align: left;">PO4</td>
+<td style="text-align: right;">13.76</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">SiO2</td>
+<td style="text-align: left;">SiO2</td>
+<td style="text-align: right;">8.28</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Chla_ugL</td>
+<td style="text-align: left;">Chla_ugL</td>
+<td style="text-align: right;">1.98</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 <div class="column" style="width:50%;">
@@ -290,11 +331,24 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </table>
 </div>
 <p>What to do? We could remove redundant variables</p>
-<p>For example: keeping these: - Depth → physical structure - Temperature → water mass - NO3 → nutrients - Chla → biology</p>
+<p>For example: keeping these:</p>
+<ul>
+<li>Depth → physical structure</li>
+<li>Temperature → water mass</li>
+<li>NO3 → nutrients</li>
+<li>Chla → biology</li>
+</ul>
+</section>
 </section>
 <section id="pca-analysis-with-environmental-conditions" class="level2">
 <h2 class="anchored" data-anchor-id="pca-analysis-with-environmental-conditions">PCA analysis with environmental conditions</h2>
-<p>Note: To identify specific taxa (at the genus level) that are being driven by environmental conditions, I could use: 1. Extract and Plot Loadings from dbRDA 2. Correlation Analysis (Taxa vs.&nbsp;Environment) 3. Differential Abundance Testing 4. Machine Learning (Random Forest)</p>
+<p>Note: To identify specific taxa (at the genus level) that are being driven by environmental conditions, I could use:</p>
+<ol type="1">
+<li>Extract and Plot Loadings from dbRDA</li>
+<li>Correlation Analysis (Taxa vs.&nbsp;Environment)</li>
+<li>Differential Abundance Testing</li>
+<li>Machine Learning (Random Forest)</li>
+</ol>
 </section>
 <section id="looking-for-associations" class="level2">
 <h2 class="anchored" data-anchor-id="looking-for-associations">Looking for associations</h2>

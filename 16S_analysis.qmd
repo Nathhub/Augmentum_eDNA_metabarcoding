@@ -40,7 +40,7 @@ ps_16s <- merge_phyloseq(ps_16s, dna)
 taxa_names(ps_16s) <- paste0("ASV", seq(ntaxa(ps_16s)))
 
 ```
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 # Print sample names, taxonomy ranks, and metadata fields — with explanations
 cat("🔹 These are the metadata variables:\n")
 print(sample_variables(ps_16s))
@@ -51,7 +51,7 @@ print(sample_variables(ps_16s))
 :::: {.columns}
 
 ::: {.column width="40%"}
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 library(knitr)
 library(kableExtra)
 
@@ -71,7 +71,7 @@ kable(sample_sums(ps_controls), caption = "Number of reads in the controls") %>%
 
 ::: {.column width="40%"}
 
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 
 kable(estimate_richness(ps_controls, measures = "Observed"), caption = "Observed richness") %>% kable_styling(full_width = FALSE, position = "center")
 
@@ -91,7 +91,7 @@ Excellent! Those control numbers are actually very reassuring:
   
 :::
 
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 
 df_controls <- psmelt(ps_controls)
 
@@ -122,7 +122,7 @@ From the Zymo standard, we are expecting 8 bacteria:
 
 :::
 
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 df_controls %>%
   group_by(Sample, Genus) %>%
   summarise(Abundance = sum(Abundance)) %>%
@@ -142,7 +142,7 @@ Overall, these results confirm the reliability of amplification, sequencing, and
 We can now remove the controls from the phyloseq object and move on with the ecological interpretation.
 :::
 
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 ps_16s <- subset_samples(
   ps_16s,
   !Name %in% c("65_zymo_positive", "66_Extraction_negative")
@@ -162,7 +162,7 @@ In this section, we explore the community structure of the RoCSI 16S dataset usi
 per sample, followed by basic taxonomic composition summaries.
 
 ### Read depth per sample
-```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
+```{r, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
 read_depth <- data.frame(
 Sample = sample_names(ps_16s),
 Reads = sample_sums(ps_16s),
@@ -186,7 +186,7 @@ y = "Number of non-chimeric reads"
 
 ### Alpha diversity
 
-```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
+```{r, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
 
 
 # Make sure Water_masses is a factor (optional, but useful for consistent plotting)
@@ -208,7 +208,7 @@ Observed richness (number of ASVs), Shannon and Simpson diversity are fairly sim
   
 :::
 
-```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
+```{r, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
 
 
 # Make sure Water_masses is a factor (optional, but useful for consistent plotting)
@@ -234,7 +234,7 @@ Observed richness (number of ASVs) tend to be increasing with depth.
 
 ### Ordination
 
-```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
+```{r, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
 ord <- ordinate(ps_16s, method = "PCoA", distance = "bray")
 
 # Create the ordination plot with ellipses
@@ -257,7 +257,7 @@ permutest(...)
 :::
 
 ::: {style="width:60%; margin:auto;"}
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 # Extract sample coordinates from the PCoA result
 site <- as.data.frame(ord$vectors)
 site$SampleID <- rownames(site)
@@ -275,7 +275,7 @@ The most divergent samples in the ordination correspond exclusively to surface s
 
 ### Phylum composition
 
-```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
+```{r, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
 my_colors <- c("#FF6666", "#8DD3C7", "#377EB8", "#4DAF4A",
                "#984EA3", "#A6D854", "#FFFF33", "#FF7F00", "#F781BF", "#999999",                  "#66C2A5", "#FC8D62", "#8DA0CB", "#E78AC3", "#FFD92F",
                "#E5C494", "#B3B3B3", "#A65628","#FFFFB3", "#BEBADA",
@@ -347,22 +347,22 @@ ggplot(df, aes(x = Number, y = Abundance, fill = Phylum_plot)) +
 The bacterial community across samples is dominated by **Pseudomonadota**, with consistent contributions from **Bacteroidota** and **Cyanobacteriota**. Minor but **detectable archaeal phyla** were present at low relative abundance. Overall community structure is broadly similar across samples.
 :::
 
-```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
+```{r, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
 
-# 1️⃣ Collapse to Class level
+# Collapse to Class level
 ps_class <- tax_glom(ps_16s, taxrank = "Class")
 
-# 2️⃣ Transform to relative abundance
+#  Transform to relative abundance
 ps_rel <- transform(ps_class, "compositional")
 
-# 3️⃣ Get top 10 classes (by mean relative abundance)
+#  Get top 10 classes (by mean relative abundance)
 top10 <- top_taxa(ps_rel, n = 10)
 
-# 4️⃣ Melt full dataset
+#  Melt full dataset
 df <- psmelt(ps_rel)
 df$Number <- as.factor(df$Number)
 
-# 5️⃣ Create Class_plot column (Top 10 + Other)
+# Create Class_plot column (Top 10 + Other)
 df <- df %>%
   mutate(
     Class = as.character(Class),
@@ -372,18 +372,18 @@ df <- df %>%
   group_by(Sample, Number, Class_plot) %>%
   summarise(Abundance = sum(Abundance), .groups = "drop")
 
-# 6️⃣ Put "Other" at the end of legend
+# Put "Other" at the end of legend
 df$Class_plot <- factor(
   df$Class_plot,
   levels = c(setdiff(sort(unique(df$Class_plot)), "Other"), "Other")
 )
 
-# 7️⃣ Use your my_colors (first 10) + grey for Other
-other_color <- "#C0C0C0"
-plot_colors <- c(my_colors[1:10], other_color)
+# Adding the "other" colour to the last 10 colours of me palette
+other_color <- "#3c3c3c"
+plot_colors <- c(my_colors[11:20], other_color)
 names(plot_colors) <- levels(df$Class_plot)
 
-# 8️⃣ Plot
+# Plot
 ggplot(df, aes(x = Number, y = Abundance, fill = Class_plot)) +
   geom_bar(stat = "identity", position = "stack") +
   scale_fill_manual(values = plot_colors) + 
@@ -405,7 +405,7 @@ ggplot(df, aes(x = Number, y = Abundance, fill = Class_plot)) +
 ### Plotting by fjords and depth
 #### Sermilik
 
-```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
+```{r, message=FALSE, warning=FALSE, fig.width=8, fig.height=10}
 
 # Collapse + compositional
 ps_class <- tax_glom(ps_16s, taxrank = "Class")
@@ -445,33 +445,42 @@ df$Class_plot <- factor(
   levels = c(setdiff(sort(unique(df$Class_plot)), "Other"), "Other")
 )
 
-# Colors: use your palette (first 10) + Other
-other_color <- "#C0C0C0"
-plot_colors <- c(my_colors[1:10], other_color)
+# Adding the "other" colour to the last 10 colours of me palette
+other_color <- "#3c3c3c"
+plot_colors <- c(my_colors[11:20], other_color)
 names(plot_colors) <- levels(df$Class_plot)
 
 plot_fjord <- function(df, fjord_name){
   dff <- df %>% filter(Fjord == fjord_name)
 
   ggplot(dff, aes(x = Station, y = Abundance, fill = Class_plot)) +
-    geom_col(width = 0.85) +
-    facet_wrap(~Depth, nrow = 1) +
+    geom_col(width = 0.9) +
+    facet_grid(rows = vars(Depth), switch = "y") +
     scale_fill_manual(values = plot_colors) +
-    scale_y_continuous(labels = scales::percent) +
+    scale_y_continuous(labels = scales::label_number(scale = 100, accuracy = 1),
+    breaks = c(0, 0.25, 0.5, 0.75, 1),
+    limits = c(0, 1),
+    expand = c(0, 0)
+    ) +
     labs(
       title = paste0(fjord_name, " — Top 10 Classes + Other"),
       x = "Station Number",
-      y = "Relative abundance",
+      y = "Relative abundance (%)",
       fill = "Class"
     ) +
     theme_classic() +
     theme(
-      legend.position = "bottom",
-      axis.text.x = element_text(angle = 45, hjust = 1),
-      strip.background = element_rect(fill = "white"),
-      strip.text = element_text(face = "bold")
+      strip.background = element_blank(),
+      strip.placement = "outside",
+      strip.text.y.left = element_text(angle = 0, face = "bold", size = 12),
+      panel.spacing.y = unit(1, "lines"),
+      axis.text.x = element_text(size = 11),
+      axis.text.y = element_text(size = 11),
+      axis.title.y = element_text(size = 14),
+      plot.title = element_text(hjust = 0.5, face = "bold", size = 16),
+      legend.position = "bottom"
     ) +
-    guides(fill = guide_legend(nrow = 2, byrow = TRUE))
+    guides(fill = guide_legend(nrow = 3, byrow = TRUE))
 }
 
 fjords <- sort(unique(df$Fjord))
@@ -486,15 +495,81 @@ plots[["Sermilik"]]
 
 #### Iterdalk
 
-```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
+```{r, message=FALSE, warning=FALSE, fig.width=8, fig.height=10}
 plots[["Iterdalk"]]
 
 ```
 
 #### Tunulliarfik
 
-```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
+```{r, message=FALSE, warning=FALSE, fig.width=8, fig.height=10}
 plots[["Tunulliarfik"]]
+
+```
+
+#### Combined
+
+```{r, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
+
+# Adding the "other" colour to the last 10 colours of me palette
+other_color <- "#3c3c3c"
+plot_colors <- c(my_colors[11:20], other_color)
+names(plot_colors) <- levels(df$Class_plot)
+
+plot_fjord <- function(df, fjord_name){
+  dff <- df %>% filter(Fjord == fjord_name)
+
+  ggplot(dff, aes(x = Station, y = Abundance, fill = Class_plot)) +
+    geom_col(width = 0.9) +
+    facet_grid(rows = vars(Depth), switch = "y") +
+    scale_fill_manual(values = plot_colors) +
+    scale_y_continuous(labels = scales::label_number(scale = 100, accuracy = 1),
+    breaks = c(0, 0.25, 0.5, 0.75, 1),
+    limits = c(0, 1),
+    expand = c(0, 0)
+    ) +
+    labs(
+      title = fjord_name,
+      fill = "Class"
+    ) +
+    theme_classic() +
+    theme(
+      strip.background = element_blank(),
+      strip.placement = "outside",
+      strip.text.y.left = element_text(angle = 0, face = "bold", size = 12),
+      panel.spacing.y = unit(1, "lines"),
+      axis.text.x = element_text(size = 11),
+      axis.text.y = element_text(size = 11),
+      axis.title.y = element_blank(),
+      plot.title = element_text(hjust = 0.5, face = "bold", size = 16),
+      legend.position = "none"
+    ) +
+    guides(fill = guide_legend(nrow = 2, byrow = TRUE))
+}
+
+fjords <- sort(unique(df$Fjord))
+
+plots <- lapply(fjords, function(fj) plot_fjord(df, fj))
+names(plots) <- as.character(fjords)
+
+plots[["Tunulliarfik"]] <- plots[["Tunulliarfik"]] +
+  theme(axis.text.y = element_blank(),
+        axis.ticks.y = element_blank()) +
+  theme(strip.text.y.left = element_blank())
+
+plots[["Iterdalk"]] <- plots[["Iterdalk"]] +
+  theme(axis.text.y = element_blank(),
+        axis.ticks.y = element_blank()) +
+  theme(strip.text.y.left = element_blank())
+
+library(patchwork)
+
+plots[["Sermilik"]] + 
+plots[["Tunulliarfik"]] + 
+plots[["Iterdalk"]] +
+plot_layout(ncol = 3, guides = "collect") & 
+  labs(x = "Station Number", y = "Relative abundance (%)") &
+  theme(legend.position = "bottom")
 
 ```
 
@@ -502,7 +577,7 @@ plots[["Tunulliarfik"]]
 
 #### Metling water
 
-```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
+```{r, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
 
 plot_water_mass <- function(df, water_mass){
   dff <- df %>% filter(Water_mass == water_mass)
@@ -539,28 +614,28 @@ plots[["MW"]]
 
 #### Atlantic Water
 
-```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
+```{r, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
 plots[["AW"]]
 
 ```
 
 #### West Greenland Shelf Water
 
-```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
+```{r, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
 plots[["WGSW"]]
 
 ```
 
 #### West Greenland Irminger Water
 
-```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
+```{r, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
 plots[["WGIW"]]
 
 ```
 
 ## Targeted ecological follow-up
 
-```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
+```{r, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
 
 taxa_interest <- c("Thermoplasmata", "Nitrososphaeria")
 
@@ -595,11 +670,11 @@ names(plots_interest) <- as.character(fjords)
 plots_interest[["Sermilik"]]
 
 ```
-```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
+```{r, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
 plots_interest[["Iterdalk"]]
 ```
 
-```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
+```{r, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
 plots_interest[["Tunulliarfik"]]
 ```
 

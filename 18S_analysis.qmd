@@ -48,7 +48,7 @@ ps_18s <- merge_phyloseq(ps_18s, dna)
 taxa_names(ps_18s) <- paste0("ASV", seq(ntaxa(ps_18s)))
 
 ```
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 # Print sample names, taxonomy ranks, and metadata fields — with explanations
 cat("🔹 These are the metadata variables:\n")
 print(sample_variables(ps_18s))
@@ -58,7 +58,7 @@ print(sample_variables(ps_18s))
 :::: {.columns}
 
 ::: {.column width="40%"}
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 library(knitr)
 library(kableExtra)
 
@@ -77,7 +77,7 @@ kable(sample_sums(ps_controls), caption = "Number of reads in the controls") %>%
 :::
 
 ::: {.column width="40%"}
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 
 kable(estimate_richness(ps_controls, measures = "Observed"), caption = "Observed richness") %>% kable_styling(full_width = FALSE, position = "center")
 ```
@@ -98,7 +98,7 @@ Let's dive into it!
 
 #### Negative control
 :::{.column width="80%"}
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 df_neg <- psmelt(ps_controls) %>%
   filter(Sample == "66_Extraction_negative") %>%
   group_by(Genus, Family, Phylum) %>%
@@ -119,7 +119,7 @@ The 18S extraction negative control contained 243 reads distributed across **two
 #### Positive control
 
 :::{.column width="60%"}
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 df_pos <- psmelt(ps_controls) %>%
   filter(Sample == "65_Positive_control")
 
@@ -149,7 +149,7 @@ However, several marine dinoflagellate ASVs were also detected at low relative a
 We can now remove the controls from the phyloseq object and move on with the ecological interpretation.
 :::
 
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 # Environmental samples only
 ps_18s <- subset_samples(
   ps_18s,
@@ -170,7 +170,7 @@ In this section, we explore the community structure of the RoCSI 18S dataset usi
 per sample, followed by basic taxonomic composition summaries.
 
 ### Read depth per sample
-```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
+```{r, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
 read_depth <- data.frame(
 Sample = sample_names(ps_18s),
 Reads = sample_sums(ps_18s),
@@ -195,7 +195,7 @@ y = "Number of non-chimeric reads"
 
 ### Alpha diversity
 
-```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
+```{r, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
 
 
 # Make sure Water_masses is a factor (optional, but useful for consistent plotting)
@@ -216,7 +216,7 @@ plot_richness(
 Alpha diversity of 18S eukaryotic communities varied among fjords, with Ocean and Tunulliarfik samples generally exhibiting higher richness compared to Sermilik. Shannon and Simpson indices indicate relatively high evenness across most samples, although occasional dominance events were observed (diversity drops), particularly in Sermilik and Tunulliarfik. Compared to 16S prokaryotic diversity, 18S communities displayed greater variability among fjords, suggesting that eukaryotic plankton communities may be more sensitive to local environmental gradients such as stratification and meltwater influence.  
 :::
 
-```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
+```{r, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
 
 
 # Make sure Water_masses is a factor (optional, but useful for consistent plotting)
@@ -240,7 +240,7 @@ No obvious trends with depth... Maybe surface water tend to exhibit lower divers
 
 ### Ordination
 
-```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
+```{r, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
 ord <- ordinate(ps_18s, method = "PCoA", distance = "bray")
 
 # Create the ordination plot with ellipses
@@ -257,7 +257,7 @@ The 18S ordination reveals partial clustering by fjord but with substantial over
 :::
 
 ::: {style="width:60%; margin:auto;"}
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 # Extract sample coordinates from the PCoA result
 site <- as.data.frame(ord$vectors)
 site$SampleID <- rownames(site)
@@ -275,7 +275,7 @@ Again, the most divergent samples in the ordination correspond exclusively to su
 
 ### Phylum composition
 
-```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
+```{r, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
 my_colors <- c("#FF6666", "#8DD3C7", "#377EB8", "#4DAF4A",
                "#984EA3", "#A6D854", "#FFFF33", "#FF7F00", "#F781BF", "#999999",                  "#66C2A5", "#FC8D62", "#8DA0CB", "#E78AC3", "#FFD92F",
                "#E5C494", "#B3B3B3", "#A65628","#FFFFB3", "#BEBADA",
@@ -346,7 +346,7 @@ ggplot(df, aes(x = Number, y = Abundance, fill = Phylum_plot)) +
 At the Phylum level, eukaryotic communities are strongly dominated by **Myzozoa**, likely **dinoflagellate lineages**, across most samples. **Bacillariophyta (diatoms)** and **Chlorophyta (green algae)** contribute variably among samples, reflecting potential shifts in primary producer composition.
 :::
 
-```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
+```{r, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
 
 # 1️⃣ Collapse to Class level
 ps_Class <- tax_glom(ps_18s, taxrank = "Class")
@@ -414,7 +414,7 @@ At the Class level, eukaryotic communities were strongly dominated by **Dinozoa 
 ### Plotting by fjords and depth
 #### Sermilik
 
-```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
+```{r, message=FALSE, warning=FALSE, fig.width=8.5, fig.height=10}
 
 # Collapse + compositional
 ps_Class <- tax_glom(ps_18s, taxrank = "Class")
@@ -463,23 +463,33 @@ plot_fjord <- function(df, fjord_name){
   dff <- df %>% filter(Fjord == fjord_name)
 
   ggplot(dff, aes(x = Station, y = Abundance, fill = Class_plot)) +
-    geom_col(width = 0.85) +
-    facet_wrap(~Depth, nrow = 1) +
+    geom_col(width = 0.9) +
+    facet_grid(rows = vars(Depth), switch = "y") +
     scale_fill_manual(values = plot_colors) +
-    scale_y_continuous(labels = scales::percent) +
+    scale_y_continuous(labels = scales::label_number(scale = 100, accuracy = 1),
+    breaks = c(0, 0.25, 0.5, 0.75, 1),
+    limits = c(0, 1),
+    expand = c(0, 0)
+    ) +
     labs(
       title = paste0(fjord_name, " — Top 10 Classes + Other"),
       x = "Station Number",
-      y = "Relative abundance",
+      y = "Relative abundance (%)",
       fill = "Class"
     ) +
     theme_classic() +
     theme(
-      legend.position = "bottom",
-      strip.background = element_rect(fill = "white"),
-      strip.text = element_text(face = "bold")
+      strip.background = element_blank(),
+      strip.placement = "outside",
+      strip.text.y.left = element_text(angle = 0, face = "bold", size = 12),
+      panel.spacing.y = unit(1, "lines"),
+      axis.text.x = element_text(size = 11),
+      axis.text.y = element_text(size = 11),
+      axis.title.y = element_text(size = 14),
+      plot.title = element_text(hjust = 0.5, face = "bold", size = 16),
+      legend.position = "bottom"
     ) +
-    guides(fill = guide_legend(nrow = 2, byrow = TRUE)) 
+    guides(fill = guide_legend(nrow = 3, byrow = TRUE))
 }
 
 fjords <- sort(unique(df$Fjord))
@@ -490,22 +500,96 @@ names(plots) <- as.character(fjords)
 # Print one (e.g., Sermilik)
 plots[["Sermilik"]]
 
-
 ```
 
 #### Iterdalk
 
-```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
+```{r, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
 plots[["Iterdalk"]]
 
 ```
 
 #### Tunulliarfik
 
-```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
+```{r, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
 plots[["Tunulliarfik"]]
 
 ```
 
+#### Combined
 
+```{r, message=FALSE, warning=FALSE, fig.width=11, fig.height=8}
+
+plot_colors <- c(
+  "Bacillariophyceae" = "#0b6e1a",   # diatoms -> dark green
+  "Dinophyceae"       = "#2B55DB",   # dinoflagellates -> blue
+  "Copepoda"          = "#FF4343",   # crustacea / copepods -> red
+  "Cryptophyceae"     = "#984EA3",   # flagellates -> purple
+  "Oligotrichea"      = "#f0e442",   # ciliates -> light grey
+
+  # no clear direct match in the reference, so choose distinct extras
+  "Choanoflagellatea" = "#8dd3c7",
+  "Chrysophyceae"     = "#FF7F00",
+  "Mamiellophyceae"   = "#d9d9d9",
+  "Pyramimonadophyceae" = "#A6D854",
+  "Protozoa_incertae_sedis_EXT" = "#e377c2",
+  "Other"             = "#3c3c3c"
+)
+
+plot_fjord <- function(df, fjord_name){
+  dff <- df %>% filter(Fjord == fjord_name)
+
+  ggplot(dff, aes(x = Station, y = Abundance, fill = Class_plot)) +
+    geom_col(width = 0.9) +
+    facet_grid(rows = vars(Depth), switch = "y") +
+    scale_fill_manual(values = plot_colors) +
+    scale_y_continuous(labels = scales::label_number(scale = 100, accuracy = 1),
+    breaks = c(0, 0.25, 0.5, 0.75, 1),
+    limits = c(0, 1),
+    expand = c(0, 0)
+    ) +
+    labs(
+      title = fjord_name,
+      fill = "Class"
+    ) +
+    theme_classic() +
+    theme(
+      strip.background = element_blank(),
+      strip.placement = "outside",
+      strip.text.y.left = element_text(angle = 0, face = "bold", size = 12),
+      panel.spacing.y = unit(1, "lines"),
+      axis.text.x = element_text(size = 11),
+      axis.text.y = element_text(size = 11),
+      axis.title.y = element_blank(),
+      plot.title = element_text(hjust = 0.5, face = "bold", size = 16),
+      legend.position = "none"
+    ) +
+    guides(fill = guide_legend(nrow = 2, byrow = TRUE))
+}
+
+fjords <- sort(unique(df$Fjord))
+
+plots <- lapply(fjords, function(fj) plot_fjord(df, fj))
+names(plots) <- as.character(fjords)
+
+plots[["Tunulliarfik"]] <- plots[["Tunulliarfik"]] +
+  theme(axis.text.y = element_blank(),
+        axis.ticks.y = element_blank()) +
+  theme(strip.text.y.left = element_blank())
+
+plots[["Iterdalk"]] <- plots[["Iterdalk"]] +
+  theme(axis.text.y = element_blank(),
+        axis.ticks.y = element_blank()) +
+  theme(strip.text.y.left = element_blank())
+
+library(patchwork)
+
+plots[["Sermilik"]] + 
+plots[["Tunulliarfik"]] + 
+plots[["Iterdalk"]] +
+plot_layout(ncol = 3, guides = "collect") & 
+  labs(x = "Station Number", y = "Relative abundance (%)") &
+  theme(legend.position = "bottom")
+
+```
 
