@@ -17,26 +17,9 @@ library(kableExtra)
 # 
 # ctd_selected %>% head(10)
 
-metadata <- read_csv("data/Metadata_Augmentum.csv") %>% select(01:24)
+metadata <- read_csv("data/Metadata_Augmentum.csv")
 ps_16s <- readRDS("data/ps_16s.rds")
 ps_18s <- readRDS("data/ps_18s.rds")
-
-```
-
-```{r, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
-
-meta_long <- metadata %>%
-  select(11:24) %>%
-  pivot_longer(
-    cols = everything(),
-    names_to = "Variable",
-    values_to = "Value"
-  )
-
-ggplot(meta_long, aes(y = Value)) +
-  geom_boxplot() +
-  facet_wrap(~Variable, scales = "free") +
-  theme_minimal()
 
 ```
 
@@ -90,7 +73,7 @@ sd_16s <- sample_data(ps_16s) %>%
 
 sd_16s_aug <- sd_16s %>%
   left_join(
-    metadata %>%
+    metadata %>% select(01:24,52) %>%
       select(-Cruise, -Date, -Area, -StationID, -Depth, -`Water mass`),
     by = "ps_id"
   )
@@ -225,7 +208,11 @@ scores_16s <- cbind(scores_16s, metadata)
 
 env_arrows <- scores(rda_16s, display = "bp") %>% as.data.frame()
 
-# Test significance
+eig <- rda_16s$CCA$eig
+pct <- round(100 * eig / sum(eig), 1)
+
+x_lab <- paste0("RDA1 (", pct[1], "%)")
+y_lab <- paste0("RDA2 (", pct[2], "%)")
 
 scores_16s$Depth <- as.factor(scores_16s$Depth)
 
@@ -245,7 +232,11 @@ ggplot(scores_16s, aes(RDA1, RDA2)) +
     aes(x = RDA1, y = RDA2, label = rownames(env_arrows)),
     size = 4
   ) +
-  theme_minimal() + ggtitle("RDA of 16S Bacterial Communities Along Environmental Gradients")
+  theme_minimal() + ggtitle("RDA of 16S Bacterial Communities Along Environmental Gradients") +
+  labs(
+    x = x_lab,
+    y = y_lab
+  )
 
 ```
 
@@ -257,7 +248,11 @@ scores_18s <- cbind(scores_18s, metadata)
 
 env_arrows <- scores(rda_18s, display = "bp") %>% as.data.frame()
 
-# Test significance
+eig <- rda_18s$CCA$eig
+pct <- round(100 * eig / sum(eig), 1)
+
+x_lab <- paste0("RDA1 (", pct[1], "%)")
+y_lab <- paste0("RDA2 (", pct[2], "%)")
 
 scores_18s$Depth <- as.factor(scores_18s$Depth)
 
@@ -277,14 +272,33 @@ ggplot(scores_18s, aes(RDA1, RDA2)) +
     aes(x = RDA1, y = RDA2, label = rownames(env_arrows)),
     size = 4
   ) +
-  theme_minimal() + ggtitle("RDA of 18S eukaryotic Communities Along Environmental Gradients")
+  theme_minimal() + ggtitle("RDA of 18S eukaryotic Communities Along Environmental Gradients")+
+  labs(
+    x = x_lab,
+    y = y_lab
+  )
 
 ```
 
 **Note**: What is collinearity?
 definition: Two or more environmental variables are strongly correlated with each other.
 
-We can test it with vif.cca(). VIF = Variance Inflation Factor
+As part of a collinearity diagnostics, we can investigate the correlations between variables and the Variance Inflation Factor (VIF).
+
+Let's start with the correlation:
+
+```{r, message=FALSE, warning=FALSE}
+env <- metadata %>%
+  select(Depth, Pot_temperature, Salinity, NO3,NO2, SiO2, PO4, DOC, Chla_ugL, a350, PARAFAC1, PARAFAC2, PARAFAC3) %>%
+  drop_na()
+
+library(corrplot)
+
+cor_mat <- cor(env, use = "complete.obs")
+corrplot(cor_mat, method = "color")
+```
+
+We can test VIF with vif.cca():
 
 :::{.column width="50%"}
 
@@ -339,7 +353,7 @@ For example: keeping these:
 
 ```{r, message=FALSE, warning=FALSE}
 rda_16s_clean <- rda(
-  otu_16s_hel ~ Depth + Pot_temperature + NO3 + NO2 + DOC + Chla_ugL,
+  otu_16s_hel ~ Depth + Pot_temperature + NO2 + PARAFAC1 + PARAFAC3,
   data = metadata, na.action = na.omit
 )
 
@@ -365,13 +379,18 @@ kable(
 # Extract scores
 
 scores_16s <- scores(rda_16s_clean, display = "sites") %>% as.data.frame()
-meta_used <- metadata %>%
-  drop_na(DOC)
+meta_used <- metadata 
+# %>%
+#   drop_na(DOC)
 scores_16s <- cbind(scores_16s, meta_used)
 
 env_arrows <- scores(rda_16s_clean, display = "bp") %>% as.data.frame()
 
-# Test significance
+eig <- rda_16s_clean$CCA$eig
+pct <- round(100 * eig / sum(eig), 1)
+
+x_lab <- paste0("RDA1 (", pct[1], "%)")
+y_lab <- paste0("RDA2 (", pct[2], "%)")
 
 scores_16s$Depth <- as.factor(scores_16s$Depth)
 
@@ -391,7 +410,11 @@ ggplot(scores_16s, aes(RDA1, RDA2)) +
     aes(x = RDA1, y = RDA2, label = rownames(env_arrows)),
     size = 4
   ) +
-  theme_minimal() + ggtitle("RDA of 16S Bacterial Communities Along Environmental Gradients")
+  theme_minimal() + ggtitle("RDA of 16S Bacterial Communities Along Environmental Gradients")+
+  labs(
+    x = x_lab,
+    y = y_lab
+  )
 
 ```
 
