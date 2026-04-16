@@ -637,7 +637,7 @@ plots[["WGIW"]]
 
 ```{r, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
 
-taxa_interest <- c("Thermoplasmata", "Nitrososphaeria")
+taxa_interest <- c("Thermoplasmata", "Nitrososphaeria","Actinobacteria")
 
 df_interest <- df %>%
   filter(Class_plot %in% taxa_interest)

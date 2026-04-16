@@ -310,6 +310,7 @@ We can test VIF with vif.cca():
 :::
 
 #### Calculating the VIF of the variables used:
+##### 16S
 
 :::{.column width="50%"}
 ```{r, message=FALSE, warning=FALSE}
@@ -417,6 +418,75 @@ ggplot(scores_16s, aes(RDA1, RDA2)) +
   )
 
 ```
+
+##### 18S
+
+```{r, message=FALSE, warning=FALSE}
+rda_18s_clean <- rda(
+  otu_18s_hel ~ Depth + Pot_temperature + NO2 + PARAFAC1 + PARAFAC3,
+  data = metadata, na.action = na.omit
+)
+
+anova(rda_18s_clean, by = "term")
+```
+
+:::{.column width="50%"}
+```{r, message=FALSE, warning=FALSE}
+vif_values <- vif.cca(rda_18s_clean)
+
+kable(
+  data.frame(
+    Variable = names(vif_values),
+    VIF = as.numeric(vif_values),
+    row.names = NULL
+  ),
+  digits = 2,
+  caption = "Variance Inflation Factors (VIF) for predictor variables"
+)
+```
+
+```{r, message=FALSE, warning=FALSE}
+# Extract scores
+
+scores_18s <- scores(rda_18s_clean, display = "sites") %>% as.data.frame()
+meta_used <- metadata 
+# %>%
+#   drop_na(DOC)
+scores_18s <- cbind(scores_18s, meta_used)
+
+env_arrows <- scores(rda_18s_clean, display = "bp") %>% as.data.frame()
+
+eig <- rda_18s_clean$CCA$eig
+pct <- round(100 * eig / sum(eig), 1)
+
+x_lab <- paste0("RDA1 (", pct[1], "%)")
+y_lab <- paste0("RDA2 (", pct[2], "%)")
+
+scores_18s$Depth <- as.factor(scores_18s$Depth)
+
+ggplot(scores_18s, aes(RDA1, RDA2)) +
+  geom_point(aes(color = Depth, shape = Area), size = 3) + 
+  ggrepel::geom_text_repel(aes(label = StationID), size = 3) +
+  geom_segment(
+    data = env_arrows,
+    inherit.aes = FALSE,
+    aes(x = 0, y = 0, xend = RDA1, yend = RDA2),
+    arrow = arrow(length = unit(0.2, "cm")),
+    color = "black"
+  ) +
+  geom_text(
+    data = env_arrows,
+    inherit.aes = FALSE,
+    aes(x = RDA1, y = RDA2, label = rownames(env_arrows)),
+    size = 4
+  ) +
+  theme_minimal() + ggtitle("RDA of 18S planktonic eukaryotic Communities Along Environmental Gradients")+
+  labs(
+    x = x_lab,
+    y = y_lab
+  )
+```
+
 
 ### Which taxa covariate with environmental gradients in our RDAs?
 
