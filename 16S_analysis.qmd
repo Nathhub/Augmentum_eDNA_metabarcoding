@@ -155,6 +155,109 @@ saveRDS(ps_16s, "data/ps_16s.rds")
 
 ```
 
+### Removal of cholorplast and mitochondria reads
+
+In 16S rRNA metabarcoding datasets, sequences originating from **chloroplasts** and **mitochondria** are commonly co-amplified due to the evolutionary origin of these organelles from bacteria. In marine surface waters, such as Greenland fjords, chloroplast-derived 16S sequences from phytoplankton can represent a substantial proportion of total reads, particularly when using universal primers targeting the V4 region (e.g. 515F–806R). While these sequences are biologically meaningful, they do not represent free-living prokaryotic communities, which are typically the focus of bacterial diversity analyses. If retained, chloroplast and mitochondrial reads can dominate sequencing libraries and obscure patterns in heterotrophic and autotrophic bacterial taxa, thereby reducing the resolution and interpretability of microbial community structure.
+
+For this reason, we will remove reads classified as chloroplast or mitochondrial prior to downstream analyses, ensuring that the resulting dataset more accurately reflects the composition and diversity of the target prokaryotic community.
+
+With dada2::assignTaxonomy() using SILVA v138.2, chloroplast and mitochondrial assignments are often found in these places:
+
+ - Order == "Chloroplast"
+ - Family == "Mitochondria"
+
+```{r, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
+
+tax_tab <- as.data.frame(tax_table(ps_16s))
+otu_tab <- as(otu_table(ps_16s), "matrix")
+
+# make sure taxa are rows
+if (!taxa_are_rows(ps_16s)) {
+  otu_tab <- t(otu_tab)
+}
+
+# identify chloroplast and mitochondria ASVs across all taxonomic ranks
+is_chloro <- apply(tax_tab, 1, function(x) any(grepl("Chloroplast", x, ignore.case = TRUE)))
+is_mito   <- apply(tax_tab, 1, function(x) any(grepl("Mitochondria", x, ignore.case = TRUE)))
+
+# total reads
+total_reads <- sum(otu_tab)
+
+# total reads assigned to each group
+chloro_reads <- sum(otu_tab[is_chloro, , drop = FALSE])
+mito_reads   <- sum(otu_tab[is_mito,   , drop = FALSE])
+
+# percentages
+chloro_pct <- 100 * chloro_reads / total_reads
+mito_pct   <- 100 * mito_reads   / total_reads
+
+cat("Total reads:", total_reads, "\n")
+cat("Chloroplast reads:", chloro_reads, sprintf("(%.2f%%)\n", chloro_pct))
+cat("Mitochondria reads:", mito_reads, sprintf("(%.2f%%)\n", mito_pct))
+```
+
+Overall, Chloroplast reads represent 18.5% of reads which is non negligible! But how are these reads distributed in our samples? Let's look at the amount of chloroplast and mitochondria reads per samples.
+
+```{r, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
+# per-sample read counts
+chloro_per_sample <- colSums(otu_tab[is_chloro, , drop = FALSE])
+mito_per_sample   <- colSums(otu_tab[is_mito,   , drop = FALSE])
+total_per_sample  <- colSums(otu_tab)
+
+summary_df <- data.frame(
+  Sample = colnames(otu_tab),
+  Total_reads = total_per_sample,
+  Chloroplast_reads = chloro_per_sample,
+  Chloroplast_pct = 100 * chloro_per_sample / total_per_sample,
+  Mitochondria_reads = mito_per_sample,
+  Mitochondria_pct = 100 * mito_per_sample / total_per_sample
+)
+
+rownames(summary_df) <- NULL
+
+kable(summary_df,
+      caption = "Chloroplast and mitochondrial read summary",
+      digits = 2) %>%
+  kable_styling(full_width = FALSE, bootstrap_options = c("striped", "hover")) %>%
+  scroll_box(height = "400px")
+```
+
+```{r, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
+
+# reshape to long format
+plot_df <- summary_df %>%
+  select(Sample, Chloroplast_pct, Mitochondria_pct) %>%
+  pivot_longer(cols = c(Chloroplast_pct, Mitochondria_pct),
+               names_to = "Type",
+               values_to = "Percentage")
+
+ggplot(plot_df, aes(x =Sample, y = Percentage, fill=Type)) +
+  geom_col() +
+  labs(x = "Sample",
+       y = "Percentage  (%)",
+       fill = "Read type",
+       title = "Chloroplast and mitochondrial read proportions across samples") +
+theme(axis.text.x = element_text(angle = 45, hjust = 1)) + # Rotate x-axis labels for better readability
+scale_x_discrete(
+    labels = function(x) substr(x, 1, 6), # Show only the first 5 characters of each label
+    breaks = function(x) x[seq(1, length(x), by = 4)] # Show every 4th label
+  )
+```
+
+The plot shows that chloroplast reads make up a substantial proportion of the dataset in many samples, in some cases approaching or exceeding roughly half of total reads, whereas mitochondrial reads remain consistently low across all samples. The marked variability among samples also suggests differences in phytoplankton biomass or composition across the samples. Chloroplasts are abundant mainly in surface and 15m samples.
+
+These organelle-derived reads are ecologically informative because they reflect the presence of planktonic eukaryotes, particularly phytoplankton, within the sampled communities. However, because this part of the analysis is focused on the prokaryotic community, we will remove the chloroplast and mitochondrial sequences. These reads may nevertheless prove useful later when we will be investigating relationships between planktonic eukaryotes and prokaryotic community structure.
+
+```{r, message=FALSE, warning=FALSE}
+ps_16s <- subset_taxa(
+  ps_16s,
+  !Kingdom %in% c("Eukaryota", "NA") &
+  !Order %in% c("Chloroplast") &
+  !Family %in% c("Mitochondria")
+)
+```
+
+
 ## 📊 Data visualisation
 
 In this section, we explore the community structure of the RoCSI 16S dataset using the
@@ -183,6 +286,28 @@ x = "Sample",
 y = "Number of non-chimeric reads"
 )
 ```
+
+### Rarefaction curve
+
+Let's check whether sampling (sequencing) effort was sufficient to capture most of the observed ASV richness.
+
+```{r, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
+library(phyloseq)
+library(vegan)
+
+otu_tab <- as(otu_table(ps_16s), "matrix")
+
+if (taxa_are_rows(ps_16s)) {
+  otu_tab <- t(otu_tab)
+}
+
+rarecurve(otu_tab, step = 1000, cex = 0.5, label = FALSE)
+```
+
+The rarefaction curves show that most samples approach an asymptote as sequencing depth increases, indicating that the majority of detectable prokaryotic diversity has been captured.
+
+The sample with **922 ASVs** (top curve) is sample **25_St9_D1**
+The following down with **584 ASVs** (2nd top curve) is sample **03_St1_D45**
 
 ### Alpha diversity
 
@@ -244,6 +369,18 @@ plot_ordination(ps_16s, ord, color = "Fjord") +
   stat_ellipse(aes(group = Fjord), type = "norm", linetype = "dashed", size = 1) +
   theme_minimal()
 ```
+
+```{r, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
+ord <- ordinate(ps_16s, method = "PCoA", distance = "bray")
+
+# Create the ordination plot with ellipses
+plot_ordination(ps_16s, ord, color = "Depth") +
+  geom_point(size = 3) +
+  ggtitle("Ordination – 16S") +
+  stat_ellipse(aes(group = Depth), type = "norm", linetype = "dashed", size = 1) +
+  theme_minimal()
+```
+
 ::: {.callout-note}
 ### 💬 Discussion — Beta diversity
 
@@ -263,8 +400,8 @@ site <- as.data.frame(ord$vectors)
 site$SampleID <- rownames(site)
 
 # Get the 5 lowest values on Axis.1 (side of plot)
-bottom5 <- site[order(site$Axis.1), ][1:5, c("SampleID", "Axis.1", "Axis.2")]
-kable(bottom5) %>% kable_styling(full_width = FALSE, position = "center")
+right5 <- site[order(site$Axis.1, decreasing = TRUE), ][1:5, c("SampleID", "Axis.1", "Axis.2")]
+kable(right5) %>% kable_styling(full_width = FALSE, position = "center")
 ```
 :::
 
@@ -344,7 +481,9 @@ ggplot(df, aes(x = Number, y = Abundance, fill = Phylum_plot)) +
 ::: {.callout-note}
 ### 💬 Discussion — Phyla composition
 
-The bacterial community across samples is dominated by **Pseudomonadota**, with consistent contributions from **Bacteroidota** and **Cyanobacteriota**. Minor but **detectable archaeal phyla** were present at low relative abundance. Overall community structure is broadly similar across samples.
+The bacterial community across samples is dominated by **Pseudomonadota** (Proteobacteria; which are fast-growing, opportunistic bacteria; copiotrophs), with consistent contributions from **Bacteroidota** and **Actinomycetota**. Minor but **detectable archaeal phyla** were present at low relative abundance. Overall community structure is broadly similar across samples.
+
+Note: Pseudomonadota + Bacteroidota dominance together is a classic signature of active carbon processing systems (refs)
 :::
 
 ```{r, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
@@ -691,5 +830,63 @@ The co-occurrence of both groups at depth across all fjords suggests a **tight c
 :::
 
 
+### Investigating Thermoplasmata and Nitrososphaeria relationship
 
+Thermoplasmata and Nitrososphaeria seem to increase and decrease together. At first glance, this could just be coincidence — or simply the result of both groups preferring the same environmental conditions, like deeper waters.
+
+let's test is this relationship is real:
+
+```{r, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
+# Transform to CLR
+ps_clr <- transform(ps_16s, "clr")
+
+df <- psmelt(ps_clr)
+
+df_sub <- df %>%
+  filter(Class %in% c("Thermoplasmata", "Nitrososphaeria")) %>%
+  group_by(Sample, Depth, Fjord, Class) %>%   # 👈 include metadata HERE
+  summarise(Abundance = sum(Abundance), .groups = "drop") %>%
+  pivot_wider(
+    names_from = Class,
+    values_from = Abundance,
+    values_fill = 0
+  )
+
+# Correlation
+cor.test(df_sub$Thermoplasmata, df_sub$Nitrososphaeria)
+
+# Regression
+lm(Thermoplasmata ~ Nitrososphaeria, data = df_sub)
+
+```
+
+With r = 0.72 → strong positive correlation and
+p ≈ 1.3 × 10⁻¹¹ → highly significant,
+we can say that :"When Nitrososphaeria increases, Thermoplasmata also tends to increase"
+
+The regression tells us that: Thermoplasmata = 10.31 + 1.24 × Nitrososphaeria
+For every unit increase in Nitrososphaeria, Thermoplasmata increases by ~1.24
+
+Is this a real biological relationship, or just a shared response to environment (e.g. depth)?
+Let's improve the model to include depth and fjord:
+
+```{r, message=FALSE, warning=FALSE}
+m2 <- lm(Thermoplasmata ~ Nitrososphaeria + Depth + Fjord, data = df_sub)
+summary(m2)
+```
+
+The relationship between Thermoplasmata and Nitrososphaeria is real, not just a depth effect!
+
+Thermoplasmata and Nitrososphaeria exhibited a strong positive relationship (p < 0.001), which remained significant after accounting for depth and fjord effects. This suggests potential coupling between archaeal organic matter processing and nitrification processes in glacier-influenced fjord waters.
+
+*Note*: the fjord effect is telling us that: Thermoplasmata is much lower in Sermilik and Tunulliarfik than in Iterdalik, suggesting environmental differences... it makes sense as Iterdalik is a land-termoianted fjord!
+
+There are a couple of possible explanations:
+
+- They may share a similar ecological niche, thriving under the same low-energy, deeper-water conditions.
+
+- Or they could be functionally connected. For example:
+
+  - Nitrososphaeria are known for their role in nitrification (oxidising ammonia)
+  - Thermoplasmata may be involved in organic matter degradation
 
