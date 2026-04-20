@@ -407,7 +407,14 @@ ggplot(df, aes(x = Number, y = Abundance, fill = Class_plot)) +
 ::: {.callout-note}
 ### 💬 Discussion — Class composition
 
-At the Class level, eukaryotic communities were strongly dominated by **Dinozoa (dinoflagellates)** across most samples, with episodic increases in **Bacillariophytina (diatoms) and Crustacea**. These patterns suggest that **dinoflagellates** and associated trophic interactions **play a central role** in structuring the planktonic community. Compared to bacterial communities, 18S profiles exhibit stronger dominance patterns and greater patchiness.
+At the Class level, eukaryotic communities were strongly dominated by **Dinophyceae (dinoflagellates)** across most samples, with episodic increases in **Bacillariophyceae (diatoms) and copepods**. These patterns suggest that **dinoflagellates** and associated trophic interactions **play a central role** in structuring the planktonic community. Compared to bacterial communities, 18S profiles exhibit stronger dominance patterns and greater patchiness.
+
+**NOTE**: Dinoflagellates can have extremely high numbers of 18S rRNA gene copies per cell (~ 1000 to ~ 10.000)!
+--> One dinoflagellate cell can produce the same number of reads as hundreds or thousands of other cells
+
+Better to say: likely dominant, but their relative abundance is exaggerated by molecular biases.
+
+**NOTE**: Mamiellophyceae are often the numerically dominant group but they have low 18S copy number tendency and are likely under-represented!
 :::
 
 
@@ -587,6 +594,70 @@ library(patchwork)
 plots[["Sermilik"]] + 
 plots[["Tunulliarfik"]] + 
 plots[["Iterdalk"]] +
+plot_layout(ncol = 3, guides = "collect") & 
+  labs(x = "Station Number", y = "Relative abundance (%)") &
+  theme(legend.position = "bottom")
+
+```
+
+::: {.callout-note}
+### 💬 Discussion — Class composition by depth and fjords
+
+**NOTE** We should probably use 18S gene copy number (GCN) correction factors for marine eukaryotes to correct this biases of 18S GCN!
+
+REf: Martin et al. (2022): "Towards quantitative metabarcoding of eukaryotic plankton: an approach to improve 18S rRNA gene copy number bias"
+https://doi.org/10.3897/mbmg.6.85794
+:::
+
+## Targeted ecological follow-up
+
+```{r, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
+
+taxa_interest <- c("Mamiellophyceae", "Oligotrichea","Choanoflagellatea")
+
+df_interest <- df %>%
+  filter(Class_plot %in% taxa_interest)
+
+plot_fjord_interest <- function(df, fjord_name){
+  dff <- df %>% filter(Fjord == fjord_name)
+
+  ggplot(dff, aes(x = Station, y = Abundance, fill = Class_plot)) +
+    geom_col(position = "stack", width = 0.85) +
+    facet_grid(rows = vars(Depth), switch = "y") +
+    scale_y_continuous(labels = scales::percent) +
+    labs(
+      title = fjord_name,
+      x = "Station Number",
+      y = "Relative abundance",
+      fill = "Class"
+    ) +
+    theme_classic() +
+    theme(
+      legend.position = "bottom",
+      axis.text.x = element_text(angle = 45, hjust = 1),
+      strip.background = element_rect(fill = "white"),
+      strip.text = element_text(face = "bold")
+    )
+}
+
+plots_interest <- lapply(fjords, function(fj) plot_fjord_interest(df_interest, fj))
+names(plots_interest) <- as.character(fjords)
+
+plots_interest[["Tunulliarfik"]] <- plots_interest[["Tunulliarfik"]] +
+  theme(axis.text.y = element_blank(),
+        axis.ticks.y = element_blank()) +
+  theme(strip.text.y.left = element_blank())
+
+plots_interest[["Iterdalk"]] <- plots_interest[["Iterdalk"]] +
+  theme(axis.text.y = element_blank(),
+        axis.ticks.y = element_blank()) +
+  theme(strip.text.y.left = element_blank())
+
+library(patchwork)
+
+plots_interest[["Sermilik"]] + 
+plots_interest[["Tunulliarfik"]] + 
+plots_interest[["Iterdalk"]] +
 plot_layout(ncol = 3, guides = "collect") & 
   labs(x = "Station Number", y = "Relative abundance (%)") &
   theme(legend.position = "bottom")

@@ -180,7 +180,57 @@ The relationship is depth-dependent. No relationship at depth 45!
 ```{r, message=FALSE, warning=FALSE}
 summary(lm(Nitrosopumilus_rel ~ NO2 * Depth, data = df))
 ```
-Candidatus Nitrosopumilus abundance is positively associated with NO₂ concentrations, but this relationship is strongly depth-dependent. The correlation is most pronounced at intermediate depth (15 m), suggesting a zone of active nitrification, while deeper waters show high Nitrosopumilus abundance independent of NO₂, possibly reflecting steady-state nitrogen cycling or different environmental controls.
+
+Candidatus Nitrosopumilus abundance is positively associated with NO₂ concentrations, but this relationship is depth-dependent. The correlation is most pronounced at intermediate depth (15 m), suggesting a zone of active ammonia-oxidation, while deeper waters show high Nitrosopumilus abundance independent of NO₂, possibly reflecting steady-state nitrogen cycling (coupling of nitrification reactions) or different environmental controls.
+
+#### Using counts instead of relative abundance (better approach)
+
+```{r, message=FALSE, warning=FALSE}
+# OTU table as sample x taxa
+otu <- as(otu_table(ps16_filt), "matrix")
+if (taxa_are_rows(ps16_filt)) {
+  otu <- t(otu)
+}
+otu <- as.data.frame(otu)
+
+# Nitrosopumilus taxa
+nitro_taxa <- taxa_names(ps16_filt)[tax_table(ps16_filt)[, "Genus"] == "Candidatus Nitrosopumilus"]
+
+# Counts
+nitro_abundance <- rowSums(otu[, nitro_taxa, drop = FALSE])
+
+# Total reads per sample
+total_reads <- rowSums(otu)
+
+# Metadata
+meta <- sample_data(ps16_filt) %>%
+  data.frame() %>%
+  rownames_to_column("SampleID")
+
+# Build clean dataframe
+df_counts <- data.frame(
+  SampleID = rownames(otu),
+  Nitrosopumilus_count = nitro_abundance,
+  total_reads = total_reads
+) %>%
+  left_join(meta %>% select(SampleID, NO2, Depth, NO3, DOC, Fjord, Pot_temperature), by = "SampleID") %>%
+  tidyr::drop_na()
+
+head(df_counts)
+nrow(df_counts)
+
+library(MASS)
+
+m_nb <- glm.nb(
+  Nitrosopumilus_count ~ NO2 * Depth + offset(log(total_reads)),
+  data = df_counts
+)
+
+summary(m_nb)
+```
+
+Using counts with a negative binomial model (and a library-size offset) gives you a more faithful representation of abundance than relative proportions. The negative binomial model didn’t change our conclusions — it strengthened them and made them more defensible.
+
 
 #### Do we have nitrite oxidizing bacteria?
 

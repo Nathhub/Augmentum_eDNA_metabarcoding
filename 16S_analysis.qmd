@@ -789,7 +789,7 @@ plot_fjord_interest <- function(df, fjord_name){
     facet_wrap(~Depth, nrow = 1) +
     scale_y_continuous(labels = scales::percent) +
     labs(
-      title = paste0(fjord_name, " — Relative abundance of selected classes"),
+      title = paste0(fjord_name, " 16S — Relative abundance of selected classes"),
       x = "Station Number",
       y = "Relative abundance",
       fill = "Class"
@@ -827,6 +827,11 @@ Archaeal communities showed a **consistent vertical structure** across all three
 **Thermoplasmata** (Marine Group II) were generally more abundant and displayed a broader vertical distribution, with pronounced peaks at depth. This pattern is consistent with their role as **heterotrophic archaea** involved in **organic matter degradation**. The particularly high abundance observed in Iterdalik suggests enhanced carbon processing in this fjord.
 
 The co-occurrence of both groups at depth across all fjords suggests a **tight coupling between carbon remineralization and nitrogen cycling**, whereby organic matter degradation by Thermoplasmata could be fueling ammonium production that is subsequently oxidized by Nitrososphaeria.
+
+**Actinobacteria**
+
+The Actinobacteria are dominated by **Micrococcales** which are typically **aerobic, heterotrophic, and metabolically versatile**. They are well known for their ability to utilise a wide range of organic compounds, including relatively **low concentrations of dissolved organic matter**, and are often considered oligotrophic or stress-tolerant generalists. Many members of this order are also **psychrotolerant**, allowing them to persist in cold environments, and are capable of coping with environmental stressors such as variable salinity, high turbidity, and oxidative stress. They were more abundant in surface waters of the inner regions of Sermilik and Tunulliarfik fjords, both influenced by marine-terminating glaciers. This pattern is consistent with strong glacier-driven environmental gradients.
+
 :::
 
 
