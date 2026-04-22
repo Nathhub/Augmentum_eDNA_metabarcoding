@@ -272,6 +272,185 @@ kable(bottom5) %>% kable_styling(full_width = FALSE, position = "center")
 Again, the most divergent samples in the ordination correspond exclusively to surface (D1) samples. Particularly they are the stations surrounded by icebergs (Fjord Sermilik and Tunulliarfik). These stations were influenced by meltwater and low salinity conditions, suggesting that surface stratification and freshwater input may exert a strong effect on eukaryotic community composition.
 :::
 
+### Proportion of unassigned ASVs
+
+```{r, message=FALSE, warning=FALSE}
+tax_df <- as.data.frame(tax_table(ps_18s))
+
+unclassified_summary <- tax_df %>%
+  summarise(across(
+    everything(),
+    ~ sum(
+      is.na(.) |
+      . == "" |
+      . == "Unclassified"
+    )
+  )) %>%
+  pivot_longer(
+    everything(),
+    names_to = "Rank",
+    values_to = "n_unclassified_ASVs"
+  ) %>%
+  mutate(
+    percent_unclassified = round(
+      100 * n_unclassified_ASVs / ntaxa(ps_18s),
+      1
+    )
+  )
+
+unclassified_summary
+```
+
+```{r, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
+
+unclassified_summary <- unclassified_summary %>%
+  mutate(
+    Rank = factor(Rank, levels = target_cols)
+  )
+
+ggplot(unclassified_summary,
+       aes(x = Rank, y = percent_unclassified)) +
+  geom_col() +
+  theme_classic() +
+  labs(
+    x = "Taxonomic rank",
+    y = "% unclassified ASVs"
+  )+
+  theme(
+    axis.text.x = element_text(
+      angle = 45,
+      hjust = 1
+    )
+  )
+```
+
+Maybe I should use a different database than MZG for assigning taxonomy...? Would the number of unassigned ASVs decrease?
+
+### Classifing with PR2
+
+```{r, message=FALSE, warning=FALSE}
+# library(dada2)
+# 
+# seqtab.nochim <- readRDS(file.path("data/18S", "seqtab_nochim.rds"))
+# 
+# taxa_pr2 <- assignTaxonomy(
+#   seqs = seqtab.nochim,
+#   refFasta = "../pr2_version_5.1.1_SSU_dada2.fasta.gz",
+#   multithread = TRUE,
+#   minBoot = 50,
+#   taxLevels = c(
+#     "Domain",
+#     "Supergroup",
+#     "Division",
+#     "Subdivision",
+#     "Class",
+#     "Order",
+#     "Family",
+#     "Genus",
+#     "Species"
+#   )
+# )
+
+taxa_pr2 <- readRDS("data/18S/taxa_pr2.rds")
+seqtab.nochim <- readRDS("data/18S/seqtab_nochim.rds")
+
+# Load metadata
+metadat <- readxl::read_xlsx("data/18S/metadata_18S.xlsx") %>%
+  mutate(
+    Date = as.Date(as.numeric(Date), origin = "1899-12-30"),
+    Time = as.POSIXct(as.numeric(Time) * 86400, origin = "1970-01-01", tz = "UTC"),
+    Time = format(Time, "%H:%M:%S")
+  ) %>% as.data.frame()
+
+rownames(metadat) <- rownames(seqtab.nochim)
+
+# Create a Phyloseq object
+
+ps_18s_pr2 <- phyloseq(otu_table(seqtab.nochim, taxa_are_rows = F), 
+               sample_data(metadat), 
+               tax_table(taxa_pr2))
+
+cat("🔹 A summary of the phyloseq object \n")
+ps_18s_pr2
+
+# storing the ASV sequences and assigning them with a name and then renaming the taxa object
+dna <- Biostrings::DNAStringSet(taxa_names(ps_18s_pr2))
+names(dna) <- taxa_names(ps_18s_pr2)
+ps_18s_pr2 <- merge_phyloseq(ps_18s_pr2, dna)
+taxa_names(ps_18s_pr2) <- paste0("ASV", seq(ntaxa(ps_18s_pr2)))
+```
+
+```{r, message=FALSE, warning=FALSE}
+# Environmental samples only
+ps_18s_pr2 <- subset_samples(
+  ps_18s_pr2,
+  !Name %in% c("65_Positive_control", "66_Extraction_negative")
+)
+
+# Remove zero taxa
+ps_18s_pr2 <- prune_taxa(taxa_sums(ps_18s_pr2) > 0, ps_18s_pr2)
+
+saveRDS(ps_18s_pr2, "data/ps_18s_pr2.rds")
+```
+
+```{r, message=FALSE, warning=FALSE}
+tax_df <- as.data.frame(tax_table(ps_18s_pr2))
+
+unclassified_summary <- tax_df %>%
+  summarise(across(
+    everything(),
+    ~ sum(
+      is.na(.) |
+      . == "" |
+      . == "Unclassified"
+    )
+  )) %>%
+  pivot_longer(
+    everything(),
+    names_to = "Rank",
+    values_to = "n_unclassified_ASVs"
+  ) %>%
+  mutate(
+    percent_unclassified = round(
+      100 * n_unclassified_ASVs / ntaxa(ps_18s),
+      1
+    )
+  )
+
+unclassified_summary
+```
+
+```{r, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
+
+taxLevels = c("Domain", "Supergroup","Division", "Subdivision","Class",
+              "Order","Family", "Genus","Species")
+  
+unclassified_summary <- unclassified_summary %>%
+  mutate(
+    Rank = factor(Rank, levels = taxLevels)
+  )
+
+ggplot(unclassified_summary,
+       aes(x = Rank, y = percent_unclassified)) +
+  geom_col() +
+  theme_classic() +
+  labs(
+    x = "Taxonomic rank",
+    y = "% unclassified ASVs"
+  )+
+  theme(
+    axis.text.x = element_text(
+      angle = 45,
+      hjust = 1
+    )
+  )
+```
+
+Ok so from now on, ps_18S is replaced by ps_18S_PR2 as it has far less unassigned ASVs! mabe later we can complement the assignment with the MZG database.
+
+```{r, message=FALSE, warning=FALSE}
+ps_18s <- ps_18s_pr2
+```
 
 ### Phylum composition
 
@@ -284,7 +463,7 @@ my_colors <- c("#FF6666", "#8DD3C7", "#377EB8", "#4DAF4A",
 library(microbiome)
 
 # 1) Agglomerate to Phylum
-ps_phylum <- tax_glom(ps_18s, taxrank = "Phylum")
+ps_phylum <- tax_glom(ps_18s, taxrank = "Subdivision")
 
 # 2) Transform to relative abundance (compositional)
 ps_rel <- microbiome::transform(ps_phylum, "compositional")
@@ -298,17 +477,17 @@ df <- psmelt(ps_rel)
 # Ensure Phylum label exists and is character (handles NAs)
 df <- df %>%
   mutate(
-    Phylum = as.character(Phylum),
-    Phylum = if_else(is.na(Phylum) | Phylum == "", "Unassigned", Phylum),
-    Phylum_plot = if_else(OTU %in% top20, Phylum, "Other")
+    Subdivision = as.character(Subdivision),
+    Subdivision = if_else(is.na(Subdivision) | Subdivision == "", "Unassigned", Subdivision),
+    Subdivision_plot = if_else(OTU %in% top20, Subdivision, "Other")
   ) %>%
-  group_by(Sample, Number, Phylum_plot) %>%
+  group_by(Sample, Number, Subdivision_plot) %>%
   summarise(Abundance = sum(Abundance), .groups = "drop")
 
 # Put "Other" at the end of the legend
-df$Phylum_plot <- factor(
-  df$Phylum_plot,
-  levels = c(setdiff(unique(df$Phylum_plot), "Other"), "Other")
+df$Subdivision_plot <- factor(
+  df$Subdivision_plot,
+  levels = c(setdiff(unique(df$Subdivision_plot), "Other"), "Other")
 )
 
 # 5) Colors: 20 phyla + Other
@@ -316,19 +495,19 @@ other_color <- "#C0C0C0"
 plot_colors <- c(my_colors[1:20], other_color)
 
 # Optional: make sure color vector matches factor levels exactly
-levels_phylum <- levels(df$Phylum_plot)
-names(plot_colors) <- levels_phylum  # map colors to labels
+levels_Subdivision <- levels(df$Subdivision_plot)
+names(plot_colors) <- levels_Subdivision  # map colors to labels
 
 # 6) Plot
-ggplot(df, aes(x = Number, y = Abundance, fill = Phylum_plot)) +
+ggplot(df, aes(x = Number, y = Abundance, fill = Subdivision_plot)) +
   geom_col(width = 0.8) +
   scale_fill_manual(values = plot_colors) +
   scale_y_continuous(labels = scales::percent) +
   labs(
-    title = "Eukaryote Phyla (Top 20 + Other)",
+    title = "Eukaryote Subdivision (Top 20 + Other)",
     x = "Sample Number",
     y = "Relative abundance (%)",
-    fill = "Phylum"
+    fill = "Subdivision"
   ) +
   theme_classic() +
   theme(
@@ -336,7 +515,7 @@ ggplot(df, aes(x = Number, y = Abundance, fill = Phylum_plot)) +
     legend.position = "bottom",
     legend.direction = "horizontal"
   ) +
-  guides(fill = guide_legend(nrow = 3))   # increase if still crowded
+  guides(fill = guide_legend(nrow = 4))   # increase if still crowded
 
 ```
 
@@ -609,6 +788,183 @@ REf: Martin et al. (2022): "Towards quantitative metabarcoding of eukaryotic pla
 https://doi.org/10.3897/mbmg.6.85794
 :::
 
+### GCN-adjusted compositional plot
+
+
+```{r, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
+
+# Make a class-level GCN table
+gcn_table <- tibble(
+  Class = c(
+    "Dinophyceae","Oligotrichea","Bacillariophyceae",
+    "Cryptophyceae","Mamiellophyceae","Pyramimonadophyceae",
+    "Chrysophyceae","Choanoflagellatea","Copepoda",
+    "Protozoa incertae sedis","Other / Unclassified"
+  ),
+    GCN = c(5000, 20000, 20, 300, 4, 10,  100, 50,
+    500, 1000, 1 ),
+    Evidence = c("High","High","High","Medium","High","Medium",
+    "Medium","Low","Low","Low","NA"),
+  
+  Reference = c("Gong & Marchetti 2019; Galluzzi et al. 2010",
+    "Lapeyra Martin et al. 2022","Gong & Marchetti 2019",
+    "Lapeyra Martin et al. 2022", "Gong & Marchetti 2019",
+    "Gong & Marchetti 2019 (proxy)","Lapeyra Martin et al. 2022 (proxy)",
+    "Proxy estimate", "Proxy estimate",
+    "Proxy estimate", "Not corrected"
+  )
+)
+
+library(gt)
+gcn_table %>%
+  gt() %>%
+  tab_header(
+    title = "Class-level 18S rRNA Gene Copy Number Corrections",
+  ) %>%
+  cols_label(
+    Class = "Taxonomic Class",
+    GCN = "GCN Value",
+    Evidence = "Confidence",
+    Reference = "Reference"
+  ) %>%
+  fmt_number(
+    columns = GCN,
+    decimals = 0
+  ) %>%
+  tab_style(
+    style = cell_text(weight = "bold"),
+    locations = cells_column_labels(everything())) %>% 
+      data_color(
+    columns = Evidence,
+    colors = c(
+      "High" = "darkgreen",
+      "Medium" = "orange",
+      "Low" = "red"
+    )
+  )
+
+```
+
+```{r, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
+# Create a GCN-corrected phyloseq object at Class level
+library(phyloseq)
+library(dplyr)
+library(forcats)
+
+# 1) Class-level counts
+df_gcn <- ps_18s %>%
+  tax_glom(taxrank = "Class", NArm = FALSE) %>%
+  psmelt() %>%
+  mutate(
+    Class = if_else(is.na(Class) | Class == "", "Unclassified", as.character(Class)),
+    Depth = case_when(
+      Depth %in% c("1","01","surface","Surface") ~ "surface",
+      Depth %in% c("15","15m","15 m")            ~ "15m",
+      Depth %in% c("45","45m","45 m")            ~ "45m",
+      TRUE ~ as.character(Depth)
+    ),
+    Depth = factor(Depth, levels = c("surface", "15m", "45m")),
+    Fjord = as.factor(Fjord),
+    Station = factor(Station, levels = as.character(sort(unique(as.numeric(as.character(Station))))))
+  ) %>%
+  left_join(gcn_table, by = "Class") %>%
+  mutate(
+    GCN = coalesce(GCN, 1),
+    Abundance = Abundance / GCN
+  )
+
+# 2) Top 10 classes after GCN correction
+top10_classes <- df_gcn %>%
+  group_by(Class) %>%
+  summarise(total = sum(Abundance), .groups = "drop") %>%
+  slice_max(total, n = 10) %>%
+  pull(Class)
+
+# 3) Top 10 + Other, then compositional within sample
+df_gcn <- df_gcn %>%
+  mutate(Class_plot = if_else(Class %in% top10_classes, Class, "Other")) %>%
+  group_by(Fjord, Depth, Sample, Number, Station, Class_plot) %>%
+  summarise(Abundance = sum(Abundance), .groups = "drop") %>%
+  group_by(Fjord, Depth, Sample, Number, Station) %>%
+  mutate(Abundance = Abundance / sum(Abundance)) %>%
+  ungroup()
+
+# 4) Legend order
+df_gcn$Class_plot <- factor(
+  df_gcn$Class_plot,
+  levels = c(setdiff(sort(unique(df_gcn$Class_plot)), "Other"), "Other")
+)
+
+plot_fjord <- function(df_gcn, fjord_name){
+  dff <- df_gcn %>% filter(Fjord == fjord_name)
+
+  ggplot(dff, aes(x = Station, y = Abundance, fill = Class_plot)) +
+    geom_col(width = 0.9) +
+    facet_grid(rows = vars(Depth), switch = "y") +
+    scale_fill_manual(values = plot_colors) +
+    scale_y_continuous(labels = scales::label_number(scale = 100, accuracy = 1),
+    breaks = c(0, 0.25, 0.5, 0.75, 1),
+    limits = c(0, 1),
+    expand = c(0, 0)
+    ) +
+    labs(
+      title = fjord_name,
+      fill = "Class"
+    ) +
+    theme_classic() +
+    theme(
+      strip.background = element_blank(),
+      strip.placement = "outside",
+      strip.text.y.left = element_text(angle = 0, face = "bold", size = 12),
+      panel.spacing.y = unit(1, "lines"),
+      axis.text.x = element_text(size = 11),
+      axis.text.y = element_text(size = 11),
+      axis.title.y = element_blank(),
+      plot.title = element_text(hjust = 0.5, face = "bold", size = 16),
+      legend.position = "none"
+    ) +
+    guides(fill = guide_legend(nrow = 2, byrow = TRUE))
+}
+
+fjords <- sort(unique(df_gcn$Fjord))
+
+plots <- lapply(fjords, function(fj) plot_fjord(df_gcn, fj))
+names(plots) <- as.character(fjords)
+
+plots[["Tunulliarfik"]] <- plots[["Tunulliarfik"]] +
+  theme(axis.text.y = element_blank(),
+        axis.ticks.y = element_blank()) +
+  theme(strip.text.y.left = element_blank())
+
+plots[["Iterdalk"]] <- plots[["Iterdalk"]] +
+  theme(axis.text.y = element_blank(),
+        axis.ticks.y = element_blank()) +
+  theme(strip.text.y.left = element_blank())
+
+library(patchwork)
+
+plots[["Sermilik"]] + 
+plots[["Tunulliarfik"]] + 
+plots[["Iterdalk"]] +
+plot_layout(ncol = 3, guides = "collect") & 
+  labs(x = "Station Number", y = "Relative abundance (%)") &
+  theme(legend.position = "bottom")
+
+```
+
+
+
+
+
+
+
+```{r, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
+```
+
+
+
+
+
 ## Targeted ecological follow-up
 
 ```{r, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
@@ -664,3 +1020,218 @@ plot_layout(ncol = 3, guides = "collect") &
 
 ```
 
+### Clustering based on environmental conditions
+
+```{r, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
+# Collapse + compositional
+ps_class <- tax_glom(ps_18s, taxrank = "Class")
+ps_rel   <- transform(ps_class, "compositional")
+
+# Top 10 taxa (OTU/ASV IDs after glomming)
+top10 <- top_taxa(ps_rel, n = 10)
+
+# Melt full object
+df <- psmelt(ps_rel)
+
+# Make Depth nice
+df <- df %>%
+  mutate(
+    Depth = as.character(Depth),
+    Depth = if_else(Depth %in% c("1","01","surface","Surface"), "surface",
+             if_else(Depth %in% c("15","15m","15 m"), "15m",
+             if_else(Depth %in% c("45","45m","45 m"), "45m", Depth))),
+    Depth = factor(Depth, levels = c("surface", "15m", "45m")),
+    Fjord = as.factor(Fjord),
+    Station = factor(Station, levels = as.character(sort(unique(as.numeric(as.character(Station))))))
+  )
+
+df <- df %>%
+  mutate(
+    Sample_cluster = gsub(".*_St([0-9]+)_D([0-9]+)$", "\\1_\\2", Sample)
+  )
+
+# Define clusters by Sample names
+cluster_list <- list(
+  Cluster4 = c("9_1", "10_1", "14_45"),
+
+  Cluster3 = c("1_45", "2_45", "3_45", "4_45", "5_45",
+               "8_45", "10_15", "10_45", "11_45", "12_45", "15_1",
+               "15_15", "15_45", "16_45", "17_15", "17_45", "18_15", "18_45",
+               "19_15", "19_45", "20_15", "20_45", "21_45", "22_45"),
+
+  Cluster2 = c("1_15", "2_15", "3_15", "4_15", "5_1", "5_15", "6_1", "6_15", "6_45",
+               "7_1", "7_15", "7_45", "8_1", "8_15", "11_1", "11_15", "12_1",
+               "12_15", "13_1", "13_15", "13_45", "14_1", "14_15", "16_1",
+               "16_15", "21_15", "22_15"),
+
+  Cluster1 = c("1_1", "2_1", "3_1", "4_1",
+               "17_1", "18_1", "19_1", "20_1", "21_1", "22_1")
+)
+
+# Add Cluster column using Sample_cluster
+df <- df %>%
+  mutate(
+    Cluster = case_when(
+      Sample_cluster  %in% cluster_list$Cluster1 ~ "Cluster1",
+      Sample_cluster %in% cluster_list$Cluster2 ~ "Cluster2",
+      Sample_cluster %in% cluster_list$Cluster3 ~ "Cluster3",
+      Sample_cluster %in% cluster_list$Cluster4 ~ "Cluster4",
+      TRUE ~ NA_character_
+    )
+  ) %>%
+  filter(!is.na(Cluster))
+
+# Top10 + Other
+df <- df %>%
+  mutate(
+    Class = as.character(Class),
+    Class = if_else(is.na(Class) | Class == "", "Unclassified", Class),
+    Class_plot = if_else(OTU %in% top10, Class, "Other")
+  ) %>%
+  group_by(Cluster, Sample_cluster, Depth, Sample, Number, Station, Class_plot) %>%
+  summarise(Abundance = sum(Abundance), .groups = "drop")
+
+# Legend order: Other last
+df$Class_plot <- factor(
+  df$Class_plot,
+  levels = c(setdiff(sort(unique(df$Class_plot)), "Other"), "Other")
+)
+
+# Adding the "other" colour to the last 10 colours of my palette
+other_color <- "#3c3c3c"
+plot_colors <- c(my_colors[11:20], other_color)
+names(plot_colors) <- levels(df$Class_plot)
+
+# Optional: order clusters
+df$Cluster <- factor(df$Cluster, levels = c("Cluster1", "Cluster2", "Cluster3", "Cluster4"))
+
+plot_cluster <- function(df, cluster_name){
+  dff <- df %>% filter(Cluster == cluster_name)
+
+  ggplot(dff, aes(x = Abundance, y = Sample_cluster, fill = Class_plot)) +
+    geom_col(width = 0.9) +
+    scale_fill_manual(values = plot_colors) +
+    scale_x_continuous(
+      labels = scales::label_number(scale = 100, accuracy = 1),
+      breaks = c(0, 0.25, 0.5, 0.75, 1),
+      limits = c(0, 1),
+      expand = c(0, 0)
+    ) +
+    labs(
+      title = paste0(cluster_name, " — Top 10 Classes + Other"),
+      y = "Sample name",
+      x = "Relative abundance (%)",
+      fill = "Class"
+    ) +
+    theme_classic() +
+    theme(
+      strip.background = element_blank(),
+      strip.placement = "outside",
+      strip.text.y.left = element_text(size = 12),
+      axis.text.x = element_text(size = 11),
+      axis.text.y = element_text(size = 11),
+      axis.title.y = element_text(size = 14),
+      plot.title = element_text(hjust = 0.5, face = "bold", size = 14),
+      legend.position = "bottom"
+    ) 
+}
+
+clusters <- levels(df$Cluster)
+
+plots <- lapply(clusters, function(cl) plot_cluster(df, cl))
+names(plots) <- as.character(clusters)
+
+# Print one
+plots[["Cluster1"]]
+```
+
+```{r, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
+library(patchwork)
+
+combined_plot <-
+  (plots[["Cluster1"]] + plots[["Cluster2"]]) /
+  (plots[["Cluster3"]] + plots[["Cluster4"]]) +
+  plot_layout(
+    guides = "collect",
+    widths = c(1, 1),
+    heights = c(0.75, 1.25)
+  ) &
+  theme(
+    legend.position = "bottom",
+    legend.title = element_text(size = 10),
+    legend.text = element_text(size = 8),
+    axis.text.y = element_text(size = 6.5),
+    axis.text.x = element_text(size = 9),
+    plot.title = element_text(size = 14, face = "bold"),
+    panel.spacing = unit(1.2, "lines")
+  )
+
+combined_plot
+```
+
+
+### Looking at Picozoa distribution
+
+```{r, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
+library(phyloseq)
+library(dplyr)
+library(ggplot2)
+
+# Melt full phyloseq object
+df_asv43 <- psmelt(ps_18s) %>%
+  filter(OTU == "ASV43") %>%
+  mutate(
+    Depth = case_when(
+      Depth %in% c("1","01","surface","Surface") ~ "surface",
+      Depth %in% c("15","15m","15 m") ~ "15m",
+      Depth %in% c("45","45m","45 m") ~ "45m",
+      TRUE ~ as.character(Depth)
+    ),
+    Depth = factor(Depth, levels = c("surface", "15m", "45m")),
+    Fjord = as.factor(Fjord)
+  )
+
+df_asv43_sum <- df_asv43 %>%
+  group_by(Fjord, Depth) %>%
+  summarise(
+    mean_reads = mean(Abundance, na.rm = TRUE),
+    sd_reads   = sd(Abundance, na.rm = TRUE),
+    n          = n(),
+    .groups = "drop"
+  )
+
+ggplot(df_asv43_sum, aes(x = Depth, y = mean_reads, fill = Fjord)) +
+  geom_col(position = position_dodge(width = 0.8), width = 0.7) +
+  geom_errorbar(
+    aes(ymin = mean_reads - sd_reads, ymax = mean_reads + sd_reads),
+    position = position_dodge(width = 0.8),
+    width = 0.2
+  ) +
+  theme_classic() +
+  labs(
+    title = "ASV43 distribution by fjord and depth",
+    x = "Depth",
+    y = "Mean read count"
+  )
+
+```
+
+```{r, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
+df_asv43_plot <- df_asv43 %>%
+  mutate(
+    Station = factor(
+      Station,
+      levels = as.character(sort(unique(as.numeric(as.character(Station)))))
+    )
+  )
+
+ggplot(df_asv43_plot, aes(x = Station, y = Abundance, fill = Fjord)) +
+  geom_col() +
+  facet_grid(rows = vars(Depth), cols = vars(Fjord), switch = "y") +
+  theme_classic() +
+  labs(
+    title = "ASV43 across samples",
+    x = "Station",
+    y = "Read count"
+  )
+```

@@ -300,7 +300,6 @@ ggplot(df_combined, aes(x = NO3, y = Nitrospina_rel, color = Depth)) +
 
 Nitrospinaceae abundance is strongly associated with NO₃ concentrations, consistent with its role as a nitrite oxidizer. This relationship is strongest at depth, suggesting that nitrite oxidation and nitrate accumulation occur primarily in deeper waters. In contrast, intermediate depths show stronger coupling between ammonia oxidizers and NO₂, indicating spatial separation between nitrification steps.
 
-
 ### RDA
 
 ```{r, message=FALSE, warning=FALSE}
