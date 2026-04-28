@@ -1,6 +1,6 @@
 # 18S Dataset
 
-## 📦 Build the phyloseq object (16S)
+## 📦 Build the phyloseq object (18S)
 
 ```{r, message=FALSE, warning=FALSE}
 library(tidyverse)
@@ -446,7 +446,7 @@ ggplot(unclassified_summary,
   )
 ```
 
-Ok so from now on, ps_18S is replaced by ps_18S_PR2 as it has far less unassigned ASVs! mabe later we can complement the assignment with the MZG database.
+Ok so from now on, ps_18S is replaced by ps_18S_PR2 as it has far less unassigned ASVs! Eventually, later we can complement the assignment with the MZG database.
 
 ```{r, message=FALSE, warning=FALSE}
 ps_18s <- ps_18s_pr2
@@ -709,7 +709,7 @@ plots[["Tunulliarfik"]]
 plot_colors <- c(
   "Bacillariophyceae" = "#0b6e1a",   # diatoms -> dark green
   "Dinophyceae"       = "#2B55DB",   # dinoflagellates -> blue
-  "Copepoda"          = "#FF4343",   # crustacea / copepods -> red
+  "Arthropoda"          = "#FF4343",   # crustacea / copepods -> red
   "Cryptophyceae"     = "#984EA3",   # flagellates -> purple
   "Oligotrichea"      = "#f0e442",   # ciliates -> light grey
 

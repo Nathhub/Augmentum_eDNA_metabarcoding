@@ -13,3 +13,4 @@ _freeze/
 # Quarto intermediates
 *.markdown
 *.knit.md
+.positai

@@ -85,11 +85,11 @@ pathway_abun <- read_tsv("data/16S/pathways_out/path_abun_unstrat_descrip.tsv.gz
                             show_col_types = FALSE)
 # keep pathway annotations separately
 pathway_info <- pathway_abun %>%
-  select(pathway, description)
+  dplyr::select(pathway, description)
 
 # keep only abundance columns and convert to matrix for downstream analysis
 path_mat <- pathway_abun %>%
-  select(-description) %>%
+  dplyr::select(-description) %>%
   column_to_rownames("pathway") %>%
   as.matrix()
 
@@ -155,7 +155,7 @@ rownames(top_mat) <- paste(top_labels$description)
 sample_annot <- metadata %>%
   filter(Name %in% colnames(top_mat)) %>%
   column_to_rownames("Name") %>%
-  select(Depth, Fjord, Water_mass)
+  dplyr::select(Depth, Fjord, Water_mass)
 
 ph <- pheatmap(
   top_mat,
@@ -189,7 +189,7 @@ ko <- read_tsv("data/16S/KO_metagenome_out/pred_metagenome_unstrat_descrip.tsv.g
                             show_col_types = FALSE) %>% rename(KO_ID = `function`)
 # keep pathway annotations separately
 ko_info <- ko %>%
-  select(KO_ID, description)
+  dplyr::select(KO_ID, description)
 
 nitrogen_kos <- c(
   # Nitrogen fixation
@@ -269,12 +269,12 @@ ko_n_core <- ko %>%
 
 # keep only abundance columns and convert to matrix for downstream analysis
 ko_n_mat <- ko_n %>%
-  select(-description, -KO) %>%
+  dplyr::select(-description, -KO) %>%
   column_to_rownames("KO_ID") %>%
   as.matrix()
 
 ko_n_core_mat <- ko_n_core %>%
-  select(-description, -KO) %>%
+  dplyr::select(-description, -KO) %>%
   column_to_rownames("KO_ID") %>%
   as.matrix()
 
@@ -303,7 +303,7 @@ rownames(top_mat) <- paste(top_labels$description)
 sample_annot <- metadata %>%
   filter(Name %in% colnames(top_mat)) %>%
   column_to_rownames("Name") %>%
-  select(Depth, Fjord, Water_mass)
+  dplyr::select(Depth, Fjord, Water_mass)
 
 ph <- pheatmap(
   top_mat,
@@ -352,7 +352,7 @@ rownames(top_mat) <- paste(top_labels$description)
 sample_annot <- metadata %>%
   filter(Name %in% colnames(top_mat)) %>%
   column_to_rownames("Name") %>%
-  select(Depth, Fjord, Water_mass)
+  dplyr::select(Depth, Fjord, Water_mass)
 
 ph <- pheatmap(
   top_mat,
