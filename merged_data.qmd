@@ -300,7 +300,6 @@ ggplot(df_combined, aes(x = NO3, y = Nitrospina_rel, color = Depth)) +
 
 Nitrospinaceae abundance is strongly associated with NO₃ concentrations, consistent with its role as a nitrite oxidizer. This relationship is strongest at depth, suggesting that nitrite oxidation and nitrate accumulation occur primarily in deeper waters. In contrast, intermediate depths show stronger coupling between ammonia oxidizers and NO₂, indicating spatial separation between nitrification steps.
 
-
 ### RDA
 
 ```{r, message=FALSE, warning=FALSE}
@@ -404,8 +403,7 @@ Let's start with the correlation:
 
 ```{r, message=FALSE, warning=FALSE}
 env <- metadata %>%
-  select(Depth, Pot_temperature, Salinity, NO3,NO2, SiO2, PO4, DOC, Chla_ugL, a350, PARAFAC1, PARAFAC2, PARAFAC3) %>%
-  drop_na()
+  dplyr::select(Depth, Pot_temperature, Salinity, NO3,NO2, SiO2, PO4, DOC, Chla_ugL, a350, PARAFAC1,PARAFAC2, PARAFAC3) %>% tidyr::drop_na()
 
 library(corrplot)
 
@@ -475,6 +473,7 @@ rda_16s_clean <- rda(
 
 anova(rda_16s_clean, by = "term")
 ```
+
 :::{.column width="50%"}
 ```{r, message=FALSE, warning=FALSE}
 vif_values <- vif.cca(rda_16s_clean)
@@ -559,6 +558,7 @@ kable(
   caption = "Variance Inflation Factors (VIF) for predictor variables"
 )
 ```
+:::
 
 ```{r, message=FALSE, warning=FALSE}
 # Extract scores
@@ -790,7 +790,7 @@ deg_tax <- deg_tax %>%
 # 4) View top hubs with taxonomy
 deg_tax %>%
   arrange(desc(degree)) %>%
-  select(taxon, domain, degree, Phylum, Order, Genus_final) %>%
+  dplyr::select(taxon, domain, degree, Phylum, Order, Genus_final) %>%
   head(20) %>% kable() %>% kable_styling(full_width = FALSE, position = "center")
 
 ```
@@ -832,7 +832,7 @@ deg_cross <- degree(graph_cross)
 
 # Create lookup table
 genus_lookup <- deg_tax %>%
-  select(taxon, Genus_final) %>%
+  dplyr::select(taxon, Genus_final) %>%
   distinct()
 
 # Convert to dataframe
@@ -994,7 +994,7 @@ nodes_df <- data.frame(
 ) %>%
   left_join(
     deg_tax %>%
-      select(taxon, Phylum, Class, Order, Family, Genus_final),
+      dplyr::select(taxon, Phylum, Class, Order, Family, Genus_final),
     by = "taxon"
   )
 
@@ -1009,7 +1009,7 @@ nodes_df <- nodes_df %>%
 # Prepare edge table and retain cross-domain edges only
 
 edges_df <- as_data_frame(graph, what = "edges") %>%
-  left_join(nodes_df %>% select(taxon, domain, Label, Phylum, Class, Order, Family),
+  left_join(nodes_df %>% dplyr::select(taxon, domain, Label, Phylum, Class, Order, Family),
             by = c("from" = "taxon")) %>%
   rename(domain_from = domain,
          label_from  = Label,
@@ -1017,7 +1017,7 @@ edges_df <- as_data_frame(graph, what = "edges") %>%
          class_from  = Class,
          order_from  = Order,
          family_from = Family) %>%
-  left_join(nodes_df %>% select(taxon, domain, Label, Phylum, Class, Order, Family),
+  left_join(nodes_df %>% dplyr::select(taxon, domain, Label, Phylum, Class, Order, Family),
             by = c("to" = "taxon")) %>%
   rename(domain_to = domain,
          label_to  = Label,

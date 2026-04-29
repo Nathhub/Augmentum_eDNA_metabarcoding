@@ -1777,7 +1777,7 @@ Note
 <span id="cb41-11"><a href="#cb41-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span>Depth, <span class="at">nrow =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
 <span id="cb41-12"><a href="#cb41-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span>percent) <span class="sc">+</span></span>
 <span id="cb41-13"><a href="#cb41-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
-<span id="cb41-14"><a href="#cb41-14" aria-hidden="true" tabindex="-1"></a>      <span class="at">title =</span> <span class="fu">paste0</span>(fjord_name, <span class="st">" — Relative abundance of selected classes"</span>),</span>
+<span id="cb41-14"><a href="#cb41-14" aria-hidden="true" tabindex="-1"></a>      <span class="at">title =</span> <span class="fu">paste0</span>(fjord_name, <span class="st">" 16S — Relative abundance of selected classes"</span>),</span>
 <span id="cb41-15"><a href="#cb41-15" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> <span class="st">"Station Number"</span>,</span>
 <span id="cb41-16"><a href="#cb41-16" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> <span class="st">"Relative abundance"</span>,</span>
 <span id="cb41-17"><a href="#cb41-17" aria-hidden="true" tabindex="-1"></a>      <span class="at">fill =</span> <span class="st">"Class"</span></span>
@@ -1837,6 +1837,8 @@ Note
 <p><strong>Nitrososphaeria</strong> (likely <strong>Candidatus Nitrosopumilus</strong>) exhibited a strong depth-associated increase, particularly at 45 m, consistent with their role as <strong>ammonia-oxidizing archaea</strong> involved in <strong>nitrification</strong>. Their distribution suggests that nitrification primarily occurs in deeper, low-light waters where regenerated ammonium becomes available. In Tunulliarfik, their presence at 15 m indicates a shallower nitrification zone compared to the other fjords.</p>
 <p><strong>Thermoplasmata</strong> (Marine Group II) were generally more abundant and displayed a broader vertical distribution, with pronounced peaks at depth. This pattern is consistent with their role as <strong>heterotrophic archaea</strong> involved in <strong>organic matter degradation</strong>. The particularly high abundance observed in Iterdalik suggests enhanced carbon processing in this fjord.</p>
 <p>The co-occurrence of both groups at depth across all fjords suggests a <strong>tight coupling between carbon remineralization and nitrogen cycling</strong>, whereby organic matter degradation by Thermoplasmata could be fueling ammonium production that is subsequently oxidized by Nitrososphaeria.</p>
+<p><strong>Actinobacteria</strong></p>
+<p>The Actinobacteria are dominated by <strong>Micrococcales</strong> which are typically <strong>aerobic, heterotrophic, and metabolically versatile</strong>. They are well known for their ability to utilise a wide range of organic compounds, including relatively <strong>low concentrations of dissolved organic matter</strong>, and are often considered oligotrophic or stress-tolerant generalists. Many members of this order are also <strong>psychrotolerant</strong>, allowing them to persist in cold environments, and are capable of coping with environmental stressors such as variable salinity, high turbidity, and oxidative stress. They were more abundant in surface waters of the inner regions of Sermilik and Tunulliarfik fjords, both influenced by marine-terminating glaciers. This pattern is consistent with strong glacier-driven environmental gradients.</p>
 </div>
 </div>
 <section id="investigating-thermoplasmata-and-nitrososphaeria-relationship" class="level3">
@@ -1930,6 +1932,196 @@ F-statistic: 69.22 on 5 and 58 DF,  p-value: &lt; 2.2e-16</code></pre>
 <li>Thermoplasmata may be involved in organic matter degradation</li>
 </ul></li>
 </ul>
+</section>
+<section id="clustering-based-on-environmental-conditions" class="level3">
+<h3 class="anchored" data-anchor-id="clustering-based-on-environmental-conditions">Clustering based on environmental conditions</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Collapse + compositional</span></span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>ps_class <span class="ot">&lt;-</span> <span class="fu">tax_glom</span>(ps_16s, <span class="at">taxrank =</span> <span class="st">"Class"</span>)</span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>ps_rel   <span class="ot">&lt;-</span> <span class="fu">transform</span>(ps_class, <span class="st">"compositional"</span>)</span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Top 10 taxa (OTU/ASV IDs after glomming)</span></span>
+<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a>top10 <span class="ot">&lt;-</span> <span class="fu">top_taxa</span>(ps_rel, <span class="at">n =</span> <span class="dv">10</span>)</span>
+<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-8"><a href="#cb50-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Melt full object</span></span>
+<span id="cb50-9"><a href="#cb50-9" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">psmelt</span>(ps_rel)</span>
+<span id="cb50-10"><a href="#cb50-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-11"><a href="#cb50-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Make Depth nice</span></span>
+<span id="cb50-12"><a href="#cb50-12" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
+<span id="cb50-13"><a href="#cb50-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb50-14"><a href="#cb50-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">Depth =</span> <span class="fu">as.character</span>(Depth),</span>
+<span id="cb50-15"><a href="#cb50-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">Depth =</span> <span class="fu">if_else</span>(Depth <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"1"</span>,<span class="st">"01"</span>,<span class="st">"surface"</span>,<span class="st">"Surface"</span>), <span class="st">"surface"</span>,</span>
+<span id="cb50-16"><a href="#cb50-16" aria-hidden="true" tabindex="-1"></a>             <span class="fu">if_else</span>(Depth <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"15"</span>,<span class="st">"15m"</span>,<span class="st">"15 m"</span>), <span class="st">"15m"</span>,</span>
+<span id="cb50-17"><a href="#cb50-17" aria-hidden="true" tabindex="-1"></a>             <span class="fu">if_else</span>(Depth <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"45"</span>,<span class="st">"45m"</span>,<span class="st">"45 m"</span>), <span class="st">"45m"</span>, Depth))),</span>
+<span id="cb50-18"><a href="#cb50-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">Depth =</span> <span class="fu">factor</span>(Depth, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"surface"</span>, <span class="st">"15m"</span>, <span class="st">"45m"</span>)),</span>
+<span id="cb50-19"><a href="#cb50-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">Fjord =</span> <span class="fu">as.factor</span>(Fjord),</span>
+<span id="cb50-20"><a href="#cb50-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">Station =</span> <span class="fu">factor</span>(Station, <span class="at">levels =</span> <span class="fu">as.character</span>(<span class="fu">sort</span>(<span class="fu">unique</span>(<span class="fu">as.numeric</span>(<span class="fu">as.character</span>(Station))))))</span>
+<span id="cb50-21"><a href="#cb50-21" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb50-22"><a href="#cb50-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-23"><a href="#cb50-23" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
+<span id="cb50-24"><a href="#cb50-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb50-25"><a href="#cb50-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">Sample_cluster =</span> <span class="fu">gsub</span>(<span class="st">".*_St([0-9]+)_D([0-9]+)$"</span>, <span class="st">"</span><span class="sc">\\</span><span class="st">1_</span><span class="sc">\\</span><span class="st">2"</span>, Sample)</span>
+<span id="cb50-26"><a href="#cb50-26" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb50-27"><a href="#cb50-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-28"><a href="#cb50-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Define clusters by Sample names</span></span>
+<span id="cb50-29"><a href="#cb50-29" aria-hidden="true" tabindex="-1"></a>cluster_list <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb50-30"><a href="#cb50-30" aria-hidden="true" tabindex="-1"></a>  <span class="at">Cluster4 =</span> <span class="fu">c</span>(<span class="st">"9_1"</span>, <span class="st">"10_1"</span>, <span class="st">"14_45"</span>),</span>
+<span id="cb50-31"><a href="#cb50-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-32"><a href="#cb50-32" aria-hidden="true" tabindex="-1"></a>  <span class="at">Cluster3 =</span> <span class="fu">c</span>(<span class="st">"1_45"</span>, <span class="st">"2_45"</span>, <span class="st">"3_45"</span>, <span class="st">"4_45"</span>, <span class="st">"5_45"</span>,</span>
+<span id="cb50-33"><a href="#cb50-33" aria-hidden="true" tabindex="-1"></a>               <span class="st">"8_45"</span>, <span class="st">"10_15"</span>, <span class="st">"10_45"</span>, <span class="st">"11_45"</span>, <span class="st">"12_45"</span>, <span class="st">"15_1"</span>,</span>
+<span id="cb50-34"><a href="#cb50-34" aria-hidden="true" tabindex="-1"></a>               <span class="st">"15_15"</span>, <span class="st">"15_45"</span>, <span class="st">"16_45"</span>, <span class="st">"17_15"</span>, <span class="st">"17_45"</span>, <span class="st">"18_15"</span>, <span class="st">"18_45"</span>,</span>
+<span id="cb50-35"><a href="#cb50-35" aria-hidden="true" tabindex="-1"></a>               <span class="st">"19_15"</span>, <span class="st">"19_45"</span>, <span class="st">"20_15"</span>, <span class="st">"20_45"</span>, <span class="st">"21_45"</span>, <span class="st">"22_45"</span>),</span>
+<span id="cb50-36"><a href="#cb50-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-37"><a href="#cb50-37" aria-hidden="true" tabindex="-1"></a>  <span class="at">Cluster2 =</span> <span class="fu">c</span>(<span class="st">"1_15"</span>, <span class="st">"2_15"</span>, <span class="st">"3_15"</span>, <span class="st">"4_15"</span>, <span class="st">"5_1"</span>, <span class="st">"5_15"</span>, <span class="st">"6_1"</span>, <span class="st">"6_15"</span>, <span class="st">"6_45"</span>,</span>
+<span id="cb50-38"><a href="#cb50-38" aria-hidden="true" tabindex="-1"></a>               <span class="st">"7_1"</span>, <span class="st">"7_15"</span>, <span class="st">"7_45"</span>, <span class="st">"8_1"</span>, <span class="st">"8_15"</span>, <span class="st">"11_1"</span>, <span class="st">"11_15"</span>, <span class="st">"12_1"</span>,</span>
+<span id="cb50-39"><a href="#cb50-39" aria-hidden="true" tabindex="-1"></a>               <span class="st">"12_15"</span>, <span class="st">"13_1"</span>, <span class="st">"13_15"</span>, <span class="st">"13_45"</span>, <span class="st">"14_1"</span>, <span class="st">"14_15"</span>, <span class="st">"16_1"</span>,</span>
+<span id="cb50-40"><a href="#cb50-40" aria-hidden="true" tabindex="-1"></a>               <span class="st">"16_15"</span>, <span class="st">"21_15"</span>, <span class="st">"22_15"</span>),</span>
+<span id="cb50-41"><a href="#cb50-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-42"><a href="#cb50-42" aria-hidden="true" tabindex="-1"></a>  <span class="at">Cluster1 =</span> <span class="fu">c</span>(<span class="st">"1_1"</span>, <span class="st">"2_1"</span>, <span class="st">"3_1"</span>, <span class="st">"4_1"</span>,</span>
+<span id="cb50-43"><a href="#cb50-43" aria-hidden="true" tabindex="-1"></a>               <span class="st">"17_1"</span>, <span class="st">"18_1"</span>, <span class="st">"19_1"</span>, <span class="st">"20_1"</span>, <span class="st">"21_1"</span>, <span class="st">"22_1"</span>)</span>
+<span id="cb50-44"><a href="#cb50-44" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb50-45"><a href="#cb50-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-46"><a href="#cb50-46" aria-hidden="true" tabindex="-1"></a><span class="co"># Add Cluster column using Sample_cluster</span></span>
+<span id="cb50-47"><a href="#cb50-47" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
+<span id="cb50-48"><a href="#cb50-48" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb50-49"><a href="#cb50-49" aria-hidden="true" tabindex="-1"></a>    <span class="at">Cluster =</span> <span class="fu">case_when</span>(</span>
+<span id="cb50-50"><a href="#cb50-50" aria-hidden="true" tabindex="-1"></a>      Sample_cluster  <span class="sc">%in%</span> cluster_list<span class="sc">$</span>Cluster1 <span class="sc">~</span> <span class="st">"Cluster1"</span>,</span>
+<span id="cb50-51"><a href="#cb50-51" aria-hidden="true" tabindex="-1"></a>      Sample_cluster <span class="sc">%in%</span> cluster_list<span class="sc">$</span>Cluster2 <span class="sc">~</span> <span class="st">"Cluster2"</span>,</span>
+<span id="cb50-52"><a href="#cb50-52" aria-hidden="true" tabindex="-1"></a>      Sample_cluster <span class="sc">%in%</span> cluster_list<span class="sc">$</span>Cluster3 <span class="sc">~</span> <span class="st">"Cluster3"</span>,</span>
+<span id="cb50-53"><a href="#cb50-53" aria-hidden="true" tabindex="-1"></a>      Sample_cluster <span class="sc">%in%</span> cluster_list<span class="sc">$</span>Cluster4 <span class="sc">~</span> <span class="st">"Cluster4"</span>,</span>
+<span id="cb50-54"><a href="#cb50-54" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="cn">NA_character_</span></span>
+<span id="cb50-55"><a href="#cb50-55" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb50-56"><a href="#cb50-56" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb50-57"><a href="#cb50-57" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(Cluster))</span>
+<span id="cb50-58"><a href="#cb50-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-59"><a href="#cb50-59" aria-hidden="true" tabindex="-1"></a><span class="co"># Top10 + Other</span></span>
+<span id="cb50-60"><a href="#cb50-60" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
+<span id="cb50-61"><a href="#cb50-61" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb50-62"><a href="#cb50-62" aria-hidden="true" tabindex="-1"></a>    <span class="at">Class =</span> <span class="fu">as.character</span>(Class),</span>
+<span id="cb50-63"><a href="#cb50-63" aria-hidden="true" tabindex="-1"></a>    <span class="at">Class =</span> <span class="fu">if_else</span>(<span class="fu">is.na</span>(Class) <span class="sc">|</span> Class <span class="sc">==</span> <span class="st">""</span>, <span class="st">"Unclassified"</span>, Class),</span>
+<span id="cb50-64"><a href="#cb50-64" aria-hidden="true" tabindex="-1"></a>    <span class="at">Class_plot =</span> <span class="fu">if_else</span>(OTU <span class="sc">%in%</span> top10, Class, <span class="st">"Other"</span>)</span>
+<span id="cb50-65"><a href="#cb50-65" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb50-66"><a href="#cb50-66" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Cluster, Sample_cluster, Depth, Sample, Number, Station, Class_plot, Water_mass) <span class="sc">%&gt;%</span></span>
+<span id="cb50-67"><a href="#cb50-67" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">Abundance =</span> <span class="fu">sum</span>(Abundance), <span class="at">.groups =</span> <span class="st">"drop"</span>)</span>
+<span id="cb50-68"><a href="#cb50-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-69"><a href="#cb50-69" aria-hidden="true" tabindex="-1"></a><span class="co"># Legend order: Other last</span></span>
+<span id="cb50-70"><a href="#cb50-70" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>Class_plot <span class="ot">&lt;-</span> <span class="fu">factor</span>(</span>
+<span id="cb50-71"><a href="#cb50-71" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>Class_plot,</span>
+<span id="cb50-72"><a href="#cb50-72" aria-hidden="true" tabindex="-1"></a>  <span class="at">levels =</span> <span class="fu">c</span>(<span class="fu">setdiff</span>(<span class="fu">sort</span>(<span class="fu">unique</span>(df<span class="sc">$</span>Class_plot)), <span class="st">"Other"</span>), <span class="st">"Other"</span>)</span>
+<span id="cb50-73"><a href="#cb50-73" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb50-74"><a href="#cb50-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-75"><a href="#cb50-75" aria-hidden="true" tabindex="-1"></a><span class="co"># Adding the "other" colour to the last 10 colours of my palette</span></span>
+<span id="cb50-76"><a href="#cb50-76" aria-hidden="true" tabindex="-1"></a>other_color <span class="ot">&lt;-</span> <span class="st">"#3c3c3c"</span></span>
+<span id="cb50-77"><a href="#cb50-77" aria-hidden="true" tabindex="-1"></a>plot_colors <span class="ot">&lt;-</span> <span class="fu">c</span>(my_colors[<span class="dv">11</span><span class="sc">:</span><span class="dv">20</span>], other_color)</span>
+<span id="cb50-78"><a href="#cb50-78" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(plot_colors) <span class="ot">&lt;-</span> <span class="fu">levels</span>(df<span class="sc">$</span>Class_plot)</span>
+<span id="cb50-79"><a href="#cb50-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-80"><a href="#cb50-80" aria-hidden="true" tabindex="-1"></a><span class="co"># Optional: order clusters</span></span>
+<span id="cb50-81"><a href="#cb50-81" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>Cluster <span class="ot">&lt;-</span> <span class="fu">factor</span>(df<span class="sc">$</span>Cluster, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Cluster1"</span>, <span class="st">"Cluster2"</span>, <span class="st">"Cluster3"</span>, <span class="st">"Cluster4"</span>))</span>
+<span id="cb50-82"><a href="#cb50-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-83"><a href="#cb50-83" aria-hidden="true" tabindex="-1"></a>plot_cluster <span class="ot">&lt;-</span> <span class="cf">function</span>(df, cluster_name){</span>
+<span id="cb50-84"><a href="#cb50-84" aria-hidden="true" tabindex="-1"></a>  dff <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> <span class="fu">filter</span>(Cluster <span class="sc">==</span> cluster_name)</span>
+<span id="cb50-85"><a href="#cb50-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-86"><a href="#cb50-86" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(dff, <span class="fu">aes</span>(<span class="at">x =</span> Abundance, <span class="at">y =</span> Sample_cluster, <span class="at">fill =</span> Class_plot)) <span class="sc">+</span></span>
+<span id="cb50-87"><a href="#cb50-87" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_col</span>(<span class="at">width =</span> <span class="fl">0.9</span>) <span class="sc">+</span></span>
+<span id="cb50-88"><a href="#cb50-88" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> plot_colors) <span class="sc">+</span></span>
+<span id="cb50-89"><a href="#cb50-89" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_x_continuous</span>(</span>
+<span id="cb50-90"><a href="#cb50-90" aria-hidden="true" tabindex="-1"></a>      <span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">label_number</span>(<span class="at">scale =</span> <span class="dv">100</span>, <span class="at">accuracy =</span> <span class="dv">1</span>),</span>
+<span id="cb50-91"><a href="#cb50-91" aria-hidden="true" tabindex="-1"></a>      <span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span>, <span class="dv">1</span>),</span>
+<span id="cb50-92"><a href="#cb50-92" aria-hidden="true" tabindex="-1"></a>      <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>),</span>
+<span id="cb50-93"><a href="#cb50-93" aria-hidden="true" tabindex="-1"></a>      <span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>)</span>
+<span id="cb50-94"><a href="#cb50-94" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span></span>
+<span id="cb50-95"><a href="#cb50-95" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
+<span id="cb50-96"><a href="#cb50-96" aria-hidden="true" tabindex="-1"></a>      <span class="at">title =</span> <span class="fu">paste0</span>(cluster_name, <span class="st">" — Top 10 Classes + Other"</span>),</span>
+<span id="cb50-97"><a href="#cb50-97" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> <span class="st">"Sample name"</span>,</span>
+<span id="cb50-98"><a href="#cb50-98" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> <span class="st">"Relative abundance (%)"</span>,</span>
+<span id="cb50-99"><a href="#cb50-99" aria-hidden="true" tabindex="-1"></a>      <span class="at">fill =</span> <span class="st">"Class"</span></span>
+<span id="cb50-100"><a href="#cb50-100" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span></span>
+<span id="cb50-101"><a href="#cb50-101" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_classic</span>() <span class="sc">+</span></span>
+<span id="cb50-102"><a href="#cb50-102" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(</span>
+<span id="cb50-103"><a href="#cb50-103" aria-hidden="true" tabindex="-1"></a>      <span class="at">strip.background =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb50-104"><a href="#cb50-104" aria-hidden="true" tabindex="-1"></a>      <span class="at">strip.placement =</span> <span class="st">"outside"</span>,</span>
+<span id="cb50-105"><a href="#cb50-105" aria-hidden="true" tabindex="-1"></a>      <span class="at">strip.text.y.left =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>),</span>
+<span id="cb50-106"><a href="#cb50-106" aria-hidden="true" tabindex="-1"></a>      <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">11</span>),</span>
+<span id="cb50-107"><a href="#cb50-107" aria-hidden="true" tabindex="-1"></a>      <span class="at">axis.text.y =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">11</span>),</span>
+<span id="cb50-108"><a href="#cb50-108" aria-hidden="true" tabindex="-1"></a>      <span class="at">axis.title.y =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">14</span>),</span>
+<span id="cb50-109"><a href="#cb50-109" aria-hidden="true" tabindex="-1"></a>      <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">size =</span> <span class="dv">14</span>),</span>
+<span id="cb50-110"><a href="#cb50-110" aria-hidden="true" tabindex="-1"></a>      <span class="at">legend.position =</span> <span class="st">"bottom"</span></span>
+<span id="cb50-111"><a href="#cb50-111" aria-hidden="true" tabindex="-1"></a>    ) </span>
+<span id="cb50-112"><a href="#cb50-112" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb50-113"><a href="#cb50-113" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-114"><a href="#cb50-114" aria-hidden="true" tabindex="-1"></a>clusters <span class="ot">&lt;-</span> <span class="fu">levels</span>(df<span class="sc">$</span>Cluster)</span>
+<span id="cb50-115"><a href="#cb50-115" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-116"><a href="#cb50-116" aria-hidden="true" tabindex="-1"></a>plots <span class="ot">&lt;-</span> <span class="fu">lapply</span>(clusters, <span class="cf">function</span>(cl) <span class="fu">plot_cluster</span>(df, cl))</span>
+<span id="cb50-117"><a href="#cb50-117" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(plots) <span class="ot">&lt;-</span> <span class="fu">as.character</span>(clusters)</span>
+<span id="cb50-118"><a href="#cb50-118" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-119"><a href="#cb50-119" aria-hidden="true" tabindex="-1"></a><span class="co"># Print one</span></span>
+<span id="cb50-120"><a href="#cb50-120" aria-hidden="true" tabindex="-1"></a>plots[[<span class="st">"Cluster1"</span>]]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="16S_analysis_files/figure-html/unnamed-chunk-34-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>plots[[<span class="st">"Cluster2"</span>]]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="16S_analysis_files/figure-html/unnamed-chunk-35-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>plots[[<span class="st">"Cluster3"</span>]]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="16S_analysis_files/figure-html/unnamed-chunk-36-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>plots[[<span class="st">"Cluster4"</span>]]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="16S_analysis_files/figure-html/unnamed-chunk-37-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>combined_plot <span class="ot">&lt;-</span></span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>  (plots[[<span class="st">"Cluster1"</span>]] <span class="sc">+</span> plots[[<span class="st">"Cluster2"</span>]]) <span class="sc">/</span></span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>  (plots[[<span class="st">"Cluster3"</span>]] <span class="sc">+</span> plots[[<span class="st">"Cluster4"</span>]]) <span class="sc">+</span></span>
+<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_layout</span>(</span>
+<span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">guides =</span> <span class="st">"collect"</span>,</span>
+<span id="cb54-6"><a href="#cb54-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">widths =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>),</span>
+<span id="cb54-7"><a href="#cb54-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">heights =</span> <span class="fu">c</span>(<span class="fl">0.75</span>, <span class="fl">1.25</span>)</span>
+<span id="cb54-8"><a href="#cb54-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">&amp;</span></span>
+<span id="cb54-9"><a href="#cb54-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb54-10"><a href="#cb54-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.position =</span> <span class="st">"bottom"</span>,</span>
+<span id="cb54-11"><a href="#cb54-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">10</span>),</span>
+<span id="cb54-12"><a href="#cb54-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">8</span>),</span>
+<span id="cb54-13"><a href="#cb54-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.y =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="fl">6.5</span>),</span>
+<span id="cb54-14"><a href="#cb54-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">9</span>),</span>
+<span id="cb54-15"><a href="#cb54-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">14</span>, <span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb54-16"><a href="#cb54-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">panel.spacing =</span> <span class="fu">unit</span>(<span class="fl">1.2</span>, <span class="st">"lines"</span>)</span>
+<span id="cb54-17"><a href="#cb54-17" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb54-18"><a href="#cb54-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-19"><a href="#cb54-19" aria-hidden="true" tabindex="-1"></a>combined_plot</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="16S_analysis_files/figure-html/unnamed-chunk-38-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
 
 
 </section>
