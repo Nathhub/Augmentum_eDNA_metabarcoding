@@ -1169,7 +1169,6 @@ combined_plot <-
 combined_plot
 ```
 
-
 ### Looking at Picozoa distribution
 
 ```{r, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
