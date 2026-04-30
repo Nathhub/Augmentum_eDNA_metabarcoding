@@ -1087,4 +1087,42 @@ combined_plot <-
 combined_plot
 ```
 
-
+```{r, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
+# df$Sample_cluster <- factor(df$Sample_cluster, levels = rev(c("1_1" , "2_1" , "3_1" , "4_1" ,
+#                                            "17_1", "18_1", "19_1", "20_1" ,"21_1", "22_1",
+#                                            "1_15" , "2_15" , "3_15",  "4_15" , "5_1"  , "5_15" , "6_1" ,  "6_15" , "6_45" ,
+#                                            "7_1"  , "7_15" , "7_45" , "8_1"  , "8_15" , "11_1",  "11_15", "12_1" ,
+#                                            "12_15", "13_1",  "13_15" , "13_45", "14_1" ,
+#                                            "14_15" , "16_1" , "16_15" , "21_15" ,"22_15", 
+#                                            "1_45" , "2_45" , "3_45"  ,"4_45",  "5_45"  , 
+#                                            "8_45" , "10_15", "10_45" ,"11_45", "12_45", "15_1" ,
+#                                            "15_15" , "15_45", "16_45" ,"17_15" ,"17_45" ,"18_15", "18_45",
+#                                            "19_15" ,"19_45" ,"20_15" ,"20_45",
+#                                            "21_45", "22_45", 
+#                                            "9_1" ,  "10_1" , "14_45")))
+# 
+# ggplot(df, aes(x = Abundance, y = Sample_cluster, fill = Class_plot)) +
+#     geom_col(width = 0.9) +
+#     scale_fill_manual(values = plot_colors) +
+#     scale_x_continuous(
+#       labels = scales::label_number(scale = 100, accuracy = 1),
+#       breaks = c(0, 0.25, 0.5, 0.75, 1),
+#       limits = c(0, 1),
+#       expand = expansion(mult = c(0, 0.02))
+#     ) +
+#     scale_y_discrete(drop = TRUE) +
+#     labs(
+#       title = "Top 10 Classes + Other",
+#       y = "Sample name",
+#       x = "Relative abundance (%)",
+#       fill = "Class"
+#     ) +
+#     theme_classic() +
+#     theme(
+#       axis.text.x = element_text(size = 11),
+#       axis.text.y = element_text(size = 11),
+#       axis.title.y = element_text(size = 14),
+#       plot.title = element_text(hjust = 0.5, face = "bold", size = 14),
+#       legend.position = "bottom"
+#     )
+```
