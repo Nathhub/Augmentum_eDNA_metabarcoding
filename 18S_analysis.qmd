@@ -952,20 +952,9 @@ plot_layout(ncol = 3, guides = "collect") &
 
 ```
 
-
-
-
-
-
-
-```{r, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
-```
-
-
-
-
-
 ## Targeted ecological follow-up
+
+### Looking at some taxa of interest
 
 ```{r, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
 
@@ -1014,6 +1003,147 @@ library(patchwork)
 plots_interest[["Sermilik"]] + 
 plots_interest[["Tunulliarfik"]] + 
 plots_interest[["Iterdalk"]] +
+plot_layout(ncol = 3, guides = "collect") & 
+  labs(x = "Station Number", y = "Relative abundance (%)") &
+  theme(legend.position = "bottom")
+
+```
+
+### Looking at the Dinoflagelates and Diatoms communities
+
+```{r, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
+
+library(phyloseq)
+library(dplyr)
+library(ggplot2)
+
+my_colors <- c("#FF6666", "#8DD3C7", "#377EB8", "#4DAF4A", "#984EA3", "#A6D854", "#FFFF33",
+               "#FF7F00", "#F781BF", "#999999", "#66C2A5", "#FC8D62", "#8DA0CB", "#E78AC3", 
+               "#FFD92F", "#E5C494", "#B3B3B3", "#A65628","#FFFFB3", "#BEBADA",
+               "#FB8072", "#80B1D3", "#FDB462")
+
+
+# Keep only Bacillariophyceae and Dinophyceae
+ps_bd <- subset_taxa(
+  ps_18s,
+  Class %in% c("Bacillariophyceae") # %in% c("Bacillariophyceae", "Dinophyceae")
+)
+
+# Collapse to species level
+ps_species <- tax_glom(ps_bd, taxrank = "Species", NArm = FALSE)
+
+# Convert to relative abundance
+# This makes abundances relative to the filtered community only:
+# Bacillariophyceae + Dinophyceae = 100%
+ps_rel <- transform_sample_counts(ps_species, function(x) x / sum(x))
+
+# Top 10 taxa/genus-level OTU IDs after glomming
+top10 <- top_taxa(ps_rel, n = 15)
+
+# Melt full object
+df <- psmelt(ps_rel)
+
+# Make Depth nice + clean species names
+df <- df %>%
+  mutate(
+    Depth = as.character(Depth),
+    Depth = if_else(Depth %in% c("1","01","surface","Surface"), "surface",
+             if_else(Depth %in% c("15","15m","15 m"), "15m",
+             if_else(Depth %in% c("45","45m","45 m"), "45m", Depth))),
+    Depth = factor(Depth, levels = c("surface", "15m", "45m")),
+
+    Fjord = as.factor(Fjord),
+    Station = factor(Station, levels = as.character(sort(unique(as.numeric(Station))))),
+
+    Class = as.character(Class),
+    Class = if_else(is.na(Class) | Class == "", "Unclassified class", Class),
+
+    Genus = as.character(Genus),
+    Genus = if_else(is.na(Genus) | Genus == "", "Unclassified genus", Genus),
+
+    Species = as.character(Species),
+    Species = if_else(is.na(Species) | Species == "", "Unclassified species", Species),
+
+    Species_label = paste(Class, Genus, Species, sep = " — ")
+  )
+
+# Top15 species + Other
+df <- df %>%
+  mutate(
+    Species_plot = if_else(OTU %in% top10, Species_label, "Other")
+  ) %>%
+  group_by(Fjord, Depth, Sample, Number, Station, Species_plot) %>%
+  summarise(Abundance = sum(Abundance), .groups = "drop")
+
+# Legend order: Other last
+df$Species_plot <- factor(
+  df$Species_plot,
+  levels = c(setdiff(sort(unique(df$Species_plot)), "Other"), "Other")
+)
+
+other_color <- "#C0C0C0"
+
+plot_colors <- c(
+  rep(my_colors, length.out = length(levels(df$Species_plot)) - 1),
+  other_color
+)
+
+names(plot_colors) <- levels(df$Species_plot)
+
+plot_fjord <- function(df, fjord_name){
+  dff <- df %>% filter(Fjord == fjord_name)
+
+  ggplot(dff, aes(x = Station, y = Abundance, fill = Species_plot)) +
+    geom_col(width = 0.9) +
+    facet_grid(rows = vars(Depth), switch = "y") +
+    scale_fill_manual(values = plot_colors) +
+    scale_y_continuous(
+      labels = scales::label_number(scale = 100, accuracy = 1),
+      breaks = c(0, 0.25, 0.5, 0.75, 1),
+      limits = c(0, 1),
+      expand = c(0, 0)
+    ) +
+    labs(
+      title = paste0(fjord_name, " — Species"),
+      x = "Station Number",
+      y = "Relative abundance (%)",
+      fill = "Species"
+    ) +
+    theme_classic() +
+    theme(
+      strip.background = element_blank(),
+      strip.placement = "outside",
+      strip.text.y.left = element_text(angle = 0, face = "bold", size = 12),
+      panel.spacing.y = unit(1, "lines"),
+      axis.text.x = element_text(size = 11),
+      axis.text.y = element_text(size = 11),
+      axis.title.y = element_text(size = 14),
+      plot.title = element_text(hjust = 0.5, face = "bold", size = 16),
+      legend.position = "bottom"
+    ) +
+    guides(fill = guide_legend(nrow = 6, byrow = TRUE))
+}
+
+fjords <- sort(unique(df$Fjord))
+
+plots <- lapply(fjords, function(fj) plot_fjord(df, fj))
+names(plots) <- as.character(fjords)
+
+plots[["Tunulliarfik"]] <- plots[["Tunulliarfik"]] +
+  theme(axis.text.y = element_blank(),
+        axis.ticks.y = element_blank()) +
+  theme(strip.text.y.left = element_blank())
+
+plots[["Iterdalk"]] <- plots[["Iterdalk"]] +
+  theme(axis.text.y = element_blank(),
+        axis.ticks.y = element_blank()) +
+  theme(strip.text.y.left = element_blank())
+
+library(patchwork)
+
+plots[["Sermilik"]] + 
+plots[["Tunulliarfik"]] + 
+plots[["Iterdalk"]] +
 plot_layout(ncol = 3, guides = "collect") & 
   labs(x = "Station Number", y = "Relative abundance (%)") &
   theme(legend.position = "bottom")

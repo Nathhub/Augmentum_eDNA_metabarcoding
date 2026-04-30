@@ -1200,3 +1200,5 @@ make_fjord_network("Iterdalk", degree_threshold = 10)
 ```{r, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
 make_fjord_network("Tunulliarfik", degree_threshold = 10)
 ```
+
+
