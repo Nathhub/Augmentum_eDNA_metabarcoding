@@ -17,10 +17,44 @@ library(kableExtra)
 # 
 # ctd_selected %>% head(10)
 
-metadata <- read_csv("data/Metadata_Augmentum.csv")
+metadata <- read_csv("data/Metadata_Augmentum_v2.csv")
 ps_16s <- readRDS("data/ps_16s.rds")
 ps_18s <- readRDS("data/ps_18s.rds")
 
+metadata <- metadata %>%
+  mutate(Sample_cluster = str_sub(ID_sample, 3))
+
+# Define clusters by sample names
+cluster_list <- list(
+  Cluster4 = c("9_1", "10_1", "14_45"),
+  
+  Cluster3 = c("1_45", "2_45", "3_45", "4_45", "8_45", "10_45", "11_45", "12_45",
+               "13_45", "15_1", "15_15", "15_45", "17_15", "17_45", "18_15", "18_45",
+               "19_15", "19_45", "20_15", "20_45", "21_45", "22_45"),
+  
+  Cluster2 = c("1_15", "2_15", "3_15", "4_15", "5_1", "5_15", "5_45", "6_1", 
+               "6_15", "6_45", "7_1", "7_15", "7_45", "8_1", "8_15", "10_15",
+               "11_1", "11_15", "12_1", "12_15", "13_1", "13_15", "14_1", "14_15",
+               "16_1", "16_15", "16_45", "21_15", "22_15"),
+  
+  Cluster1 = c("1_1", "2_1", "3_1", "4_1", "17_1", "18_1", "19_1", "20_1", "21_1", "22_1")
+)
+
+# Add Cluster to metadata
+metadata <- metadata %>%
+  mutate(
+    Cluster = case_when(
+      Sample_cluster %in% cluster_list$Cluster1 ~ "Cluster1",
+      Sample_cluster %in% cluster_list$Cluster2 ~ "Cluster2",
+      Sample_cluster %in% cluster_list$Cluster3 ~ "Cluster3",
+      Sample_cluster %in% cluster_list$Cluster4 ~ "Cluster4",
+      TRUE ~ NA_character_
+    )
+  ) %>%
+  filter(!is.na(Cluster))
+
+metadata$Cluster <- factor(metadata$Cluster,
+                           levels = c("Cluster1", "Cluster2", "Cluster3", "Cluster4"))
 ```
 
 ### Combining datasets 
@@ -73,8 +107,8 @@ sd_16s <- sample_data(ps_16s) %>%
 
 sd_16s_aug <- sd_16s %>%
   left_join(
-    metadata %>% select(01:24,52) %>%
-      select(-Cruise, -Date, -Area, -StationID, -Depth, -`Water mass`),
+    metadata %>% select(01:33,53:66) %>%
+      select(-Cruise, -Date, -Area, -StationID, -Depth, -`Water_mass`),
     by = "ps_id"
   )
 
@@ -100,7 +134,7 @@ otu_18s_hel <- decostand(otu_18s, method = "hellinger")
 
 # Prepare environmental matrix
 env <- metadata %>%
-  select(Depth, Salinity, Pot_temperature, NO3, PO4, SiO2, Chla_ugL) %>%
+  select(Depth, Salinity, Temp, NO3, PO4, SiO2, Fluorescence_Chla) %>%
   drop_na()
 
 # scale variables
@@ -134,7 +168,7 @@ df <- data.frame(
   SampleID = rownames(otu),
   Nitrosopumilus_count = nitro_abundance
 ) %>%
-  left_join(meta %>% select(SampleID, NO2, Depth, NO3, DOC, Fjord, Pot_temperature), by = "SampleID") %>%
+  left_join(meta %>% dplyr::select(SampleID, NO2, Depth, NO3, DOC, Fjord, Temp), by = "SampleID") %>%
   tidyr::drop_na()
 
 # Relative abundance transform
@@ -148,7 +182,7 @@ df <- data.frame(
   SampleID = rownames(otu_rel),
   Nitrosopumilus_rel = nitro_rel
 ) %>%
-  left_join(meta %>% select(SampleID, NO2, Depth, NO3, DOC, Fjord, Pot_temperature), by = "SampleID") %>%
+  left_join(meta %>% dplyr::select(SampleID, NO2, Depth, NO3, DOC, Fjord, Temp), by = "SampleID") %>%
   tidyr::drop_na()
 
 ggplot(df, aes(x = NO2, y = Nitrosopumilus_rel)) +
@@ -213,7 +247,7 @@ df_counts <- data.frame(
   Nitrosopumilus_count = nitro_abundance,
   total_reads = total_reads
 ) %>%
-  left_join(meta %>% select(SampleID, NO2, Depth, NO3, DOC, Fjord, Pot_temperature), by = "SampleID") %>%
+  left_join(meta %>% dplyr::select(SampleID, NO2, Depth, NO3, DOC, Fjord, Temp), by = "SampleID") %>%
   tidyr::drop_na()
 
 head(df_counts)
@@ -259,7 +293,7 @@ ggplot(df_combined, aes(x = NO2, y = Nitrospina_rel, color = Depth)) +
 
 ```
 
-```{r, message=FALSE, warning=FALSE}
+```{r, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
 ggplot(df_combined, aes(x = Nitrosopumilus_rel, y = Nitrospina_rel, color = Depth)) +
   geom_point(size = 3) +
   geom_smooth(method = "lm", se = FALSE) +
@@ -287,7 +321,7 @@ cor.test(df_combined$NO3, df_combined$Nitrospina_rel, method = "spearman")
 
 summary(lm(Nitrospina_rel ~ NO3 + Depth, data = df_combined))
 ```
-```{r, message=FALSE, warning=FALSE}
+```{r, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
 ggplot(df_combined, aes(x = NO3, y = Nitrospina_rel, color = Depth)) +
   geom_point(size = 3) +
   geom_smooth(method = "lm", se = FALSE) +
@@ -300,11 +334,169 @@ ggplot(df_combined, aes(x = NO3, y = Nitrospina_rel, color = Depth)) +
 
 Nitrospinaceae abundance is strongly associated with NO₃ concentrations, consistent with its role as a nitrite oxidizer. This relationship is strongest at depth, suggesting that nitrite oxidation and nitrate accumulation occur primarily in deeper waters. In contrast, intermediate depths show stronger coupling between ammonia oxidizers and NO₂, indicating spatial separation between nitrification steps.
 
+### ANOSIM
+
+ANOSIM is a non-parametric test that works on a distance matrix
+
+```{r, message=FALSE, warning=FALSE}
+# Distance matrix
+dist_16s <- vegdist(otu_16s_hel, method = "bray")
+
+# Fjord grouping variable from metadata
+meta_16s <- as.data.frame(sample_data(ps16_filt))
+
+anosim_16s <- anosim(dist_16s, grouping = meta_16s$Fjord, permutations = 999)
+
+summary(anosim_16s)
+```
+```{r, message=FALSE, warning=FALSE}
+plot(anosim_16s)
+```
+**Note**: The ANOSIM signal is partly driven by differences in dispersion, not just differences between fjords! 
+Tunulliarfik has huge internal variability and that inflates the rank differences → increases R
+
+Let's check whether the dispersion differences are significants:
+
+```{r, message=FALSE, warning=FALSE}
+bd_16s <- betadisper(dist_16s, meta_16s$Fjord)
+anova(bd_16s)
+```
+p = 0.22 (not significant) → No evidence of unequal spread
+
+ANOSIM revealed significant differences in community composition among fjords (R = 0.34, p = 0.001). Tests for homogeneity of multivariate dispersion were not significant (p = 0.22), indicating that the observed differences are not driven by differences in within-fjord variability.
+
+```{r, message=FALSE, warning=FALSE}
+meta_16s <- sample_data(ps16_filt)
+meta_16s <- data.frame(sample_data(ps16_filt))
+meta_16s$Fjord <- factor(meta_16s$Fjord)
+
+permanova_16s <- vegan::adonis2(
+  dist_16s ~ Fjord,
+  data = meta_16s,
+  permutations = 999
+)
+
+permanova_16s
+```
+Community composition differed significantly among fjords (PERMANOVA, F = 9.35, R² = 0.235, p = 0.001). ANOSIM supported this result, indicating moderate separation among fjords (R = 0.34, p = 0.001). Tests for homogeneity of multivariate dispersion were not significant (p = 0.22), confirming that observed differences were not driven by variation in within-fjord heterogeneity.
+
+```{r, message=FALSE, warning=FALSE}
+pairwise_anosim_dist <- function(dist_mat, groups, permutations = 999) {
+  
+  groups <- factor(groups)
+  levs <- levels(groups)
+  results <- data.frame()
+  
+  dist_matrix <- as.matrix(dist_mat)
+  
+  for (i in 1:(length(levs) - 1)) {
+    for (j in (i + 1):length(levs)) {
+      
+      pair <- c(levs[i], levs[j])
+      idx <- groups %in% pair
+      
+      sub_dist <- as.dist(dist_matrix[idx, idx])
+      sub_grp <- droplevels(groups[idx])
+      
+      anos <- vegan::anosim(
+        sub_dist,
+        sub_grp,
+        permutations = permutations
+      )
+      
+      results <- rbind(results, data.frame(
+        group1 = pair[1],
+        group2 = pair[2],
+        R = anos$statistic,
+        p = anos$signif
+      ))
+    }
+  }
+  
+  results$p_adj <- p.adjust(results$p, method = "BH")
+  results
+}
+
+groups <- factor(meta_16s$Fjord)
+
+pairwise_results <- pairwise_anosim_dist(
+  dist_mat = dist_16s,
+  groups = groups,
+  permutations = 999
+)
+
+pairwise_results
+```
+```{r, message=FALSE, warning=FALSE}
+# get all fjord names
+fjords <- sort(unique(c(pairwise_results$group1, pairwise_results$group2)))
+
+# create full pairwise grid
+heat_df <- expand.grid(group1 = fjords, group2 = fjords)
+
+# fill both upper and lower triangle with ANOSIM R and adjusted p-values
+heat_df <- heat_df %>%
+  left_join(pairwise_results, by = c("group1", "group2")) %>%
+  left_join(
+    pairwise_results,
+    by = c("group1" = "group2", "group2" = "group1"),
+    suffix = c("", "_rev")
+  ) %>%
+  mutate(
+    R = coalesce(R, R_rev),
+    p_adj = coalesce(p_adj, p_adj_rev)
+  ) %>%
+  dplyr::select(group1, group2, R, p_adj)
+
+# diagonal = self-comparison
+heat_df <- heat_df %>%
+  mutate(R = ifelse(group1 == group2, 1, R))
+
+# add significance stars
+heat_df <- heat_df %>%
+  mutate(
+    stars = case_when(
+      p_adj < 0.001 ~ "***",
+      p_adj < 0.01  ~ "**",
+      p_adj < 0.05  ~ "*",
+      TRUE ~ ""
+    )
+  )
+
+# plot upper triangle only
+anosim_heatmap_plot <- heat_df %>%
+  mutate(
+    group1 = factor(group1, levels = fjords),
+    group2 = factor(group2, levels = fjords)
+  ) %>%
+  filter(as.numeric(group1) <= as.numeric(group2)) %>%
+  ggplot(aes(group1, group2, fill = R)) +
+  geom_tile(color = "white") +
+  geom_text(aes(label = stars), size = 6) +
+  scale_fill_gradient2(
+    low = "lightblue",
+    mid = "white",
+    high = "brown",
+    midpoint = 0,
+    na.value = "grey90"
+  ) +
+  coord_fixed() +
+  theme_bw() +
+  labs(
+    x = NULL,
+    y = NULL,
+    fill = "ANOSIM R"
+  )
+
+anosim_heatmap_plot
+```
+
+
 ### RDA
 
 ```{r, message=FALSE, warning=FALSE}
-rda_16s <- rda(otu_16s_hel ~ Depth + Salinity + Pot_temperature + NO3 + PO4 + SiO2 + Chla_ugL, data = metadata)
-rda_18s <- rda(otu_18s_hel ~ Depth + Salinity + Pot_temperature + NO3 + PO4 + SiO2 + Chla_ugL, data = metadata)
+rda_16s <- rda(otu_16s_hel ~ Salinity + Temp + NO3 + PO4 + SiO2 + Chla + O2_sat , data = metadata)
+rda_18s <- rda(otu_18s_hel ~ Salinity + Temp + NO3 + PO4 + SiO2 + Chla + O2_sat , data = metadata)
 
 # Test significance
 
@@ -403,7 +595,7 @@ Let's start with the correlation:
 
 ```{r, message=FALSE, warning=FALSE}
 env <- metadata %>%
-  dplyr::select(Depth, Pot_temperature, Salinity, NO3,NO2, SiO2, PO4, DOC, Chla_ugL, a350, PARAFAC1,PARAFAC2, PARAFAC3) %>% tidyr::drop_na()
+  dplyr::select(Depth, Temp, Salinity, NO3,NO2, SiO2, PO4, DOC, Chla, O2_sat, a350, C1, C2, C3) %>% tidyr::drop_na()
 
 library(corrplot)
 
@@ -449,7 +641,7 @@ kable(
 |------------------|------|--------------------|
 | Depth            | 3.7  | ✅ OK              |
 | Salinity         | 18.5 | ❌ Very high       |
-| Pot_temperature  | 2.3  | ✅ OK              |
+| Temperature      | 2.3  | ✅ OK              |
 | NO3              | 5.9  | ⚠️ Borderline      |
 | PO4              | 13.8 | ❌ High            |
 | SiO2             | 8.3  | ⚠️ Moderate        |
@@ -467,12 +659,19 @@ For example: keeping these:
 
 ```{r, message=FALSE, warning=FALSE}
 rda_16s_clean <- rda(
-  otu_16s_hel ~ Depth + Pot_temperature + NO2 + PARAFAC1 + PARAFAC3,
+  otu_16s_hel ~ Temp + O2_sat +  NO3 + SiO2 + Chla + a350 + C1 + C2,
   data = metadata, na.action = na.omit
 )
 
 anova(rda_16s_clean, by = "term")
 ```
+Let's check if the model explain community variation using these set of environmental variables:
+
+```{r, message=FALSE, warning=FALSE}
+anova(rda_16s_clean, permutations = 999)
+```
+
+The answer is yes!
 
 :::{.column width="50%"}
 ```{r, message=FALSE, warning=FALSE}
@@ -497,6 +696,7 @@ scores_16s <- scores(rda_16s_clean, display = "sites") %>% as.data.frame()
 meta_used <- metadata 
 # %>%
 #   drop_na(DOC)
+
 scores_16s <- cbind(scores_16s, meta_used)
 
 env_arrows <- scores(rda_16s_clean, display = "bp") %>% as.data.frame()
@@ -510,7 +710,7 @@ y_lab <- paste0("RDA2 (", pct[2], "%)")
 scores_16s$Depth <- as.factor(scores_16s$Depth)
 
 ggplot(scores_16s, aes(RDA1, RDA2)) +
-  geom_point(aes(color = Depth, shape = Area), size = 3) + 
+  geom_point(aes(color = Cluster, shape = Area), size = 3) + 
   ggrepel::geom_text_repel(aes(label = StationID), size = 3) +
   geom_segment(
     data = env_arrows,
@@ -537,7 +737,7 @@ ggplot(scores_16s, aes(RDA1, RDA2)) +
 
 ```{r, message=FALSE, warning=FALSE}
 rda_18s_clean <- rda(
-  otu_18s_hel ~ Depth + Pot_temperature + NO2 + PARAFAC1 + PARAFAC3,
+  otu_18s_hel ~ Temp + O2_sat +  NO3 + SiO2 + Chla + a350 + C1 + C2,
   data = metadata, na.action = na.omit
 )
 
@@ -580,7 +780,7 @@ y_lab <- paste0("RDA2 (", pct[2], "%)")
 scores_18s$Depth <- as.factor(scores_18s$Depth)
 
 ggplot(scores_18s, aes(RDA1, RDA2)) +
-  geom_point(aes(color = Depth, shape = Area), size = 3) + 
+  geom_point(aes(color = Cluster, shape = Area), size = 3) + 
   ggrepel::geom_text_repel(aes(label = StationID), size = 3) +
   geom_segment(
     data = env_arrows,
@@ -601,6 +801,290 @@ ggplot(scores_18s, aes(RDA1, RDA2)) +
     y = y_lab
   )
 ```
+
+#### Forward selection for the RDAs
+
+#### 16S
+
+```{r, message=FALSE, warning=FALSE}
+# Keep only variables you want to test
+env_vars <- c(
+  "Temp",
+  "O2_sat",
+  "NO3",
+  "SiO2",
+  "Chla",
+  "a350",
+  "C1",
+  "C2"
+)
+
+metadata_rda <- metadata %>%
+  dplyr::select(Area, Depth, StationID, Sample_cluster, Cluster, all_of(env_vars)) %>%
+  drop_na()
+
+env_scaled <- metadata_rda %>%
+  dplyr::select(all_of(env_vars)) %>%
+  scale() %>%
+  as.data.frame()
+
+rownames(env_scaled) <- metadata_rda$SampleID
+
+rda_full <- rda(otu_16s_hel ~ ., data = env_scaled)
+
+vif_values <- vif.cca(rda_full)
+vif_values
+
+rda_null <- rda(otu_16s_hel ~ 1, data = env_scaled)
+
+rda_fwd <- ordiR2step(
+  rda_null,
+  scope = formula(rda_full),
+  direction = "forward",
+  permutations = 999
+)
+
+```
+```{r, message=FALSE, warning=FALSE}
+
+formula(rda_fwd)
+
+```
+
+```{r, message=FALSE, warning=FALSE}
+
+RsquareAdj(rda_fwd)
+```
+
+```{r, message=FALSE, warning=FALSE}
+anova(rda_fwd, permutations = 999)
+```
+
+```{r, message=FALSE, warning=FALSE}
+anova(rda_fwd, by = "terms", permutations = 999)
+```
+
+```{r, message=FALSE, warning=FALSE}
+anova(rda_fwd, by = "axis", permutations = 999)
+```
+
+Redundancy analysis (RDA) revealed that environmental variables significantly explained variation in bacterial community composition (F = 10.63, p = 0.001). Forward selection identified oxygen saturation, silicate, temperature, nitrate, and DOM components as significant predictors, explaining 51.7% of the total variance (adjusted R²). The first two canonical axes were significant (p = 0.001), indicating strong structuring of microbial communities along environmental gradients.
+
+```{r, message=FALSE, warning=FALSE}
+anova(rda_fwd, by = "margin")
+```
+
+Marginal permutation tests indicated that oxygen saturation, silicate, temperature, nitrate, and DOM components were significant independent predictors of bacterial community composition (p < 0.05). Oxygen saturation explained the largest proportion of variation, followed by silicate and temperature.
+
+
+```{r, message=FALSE, warning=FALSE, fig.width=8, fig.height=6}
+sites <- scores(rda_fwd, display = "sites", scaling = 2) %>%
+  as.data.frame()
+
+sites <- cbind(sites, metadata_rda)
+
+env_arrows <- scores(rda_fwd, display = "bp", scaling = 2) %>%
+  as.data.frame()
+
+env_arrows$Variable <- rownames(env_arrows)
+
+# Scale arrows for visibility
+arrow_multiplier <- 1.2
+env_arrows$RDA1 <- env_arrows$RDA1 * arrow_multiplier
+env_arrows$RDA2 <- env_arrows$RDA2 * arrow_multiplier
+
+var_exp <- summary(rda_fwd)$cont$importance[2, 1:2] * 100
+
+x_lab <- paste0("RDA1 (", round(var_exp[1], 1), "%)")
+y_lab <- paste0("RDA2 (", round(var_exp[2], 1), "%)")
+
+library(ggplot2)
+library(ggrepel)
+
+rda_plot <- ggplot() +
+  
+  # Points (samples)
+  geom_point(
+    data = sites,
+    aes(x = RDA1, y = RDA2, color = Cluster, shape = Area),
+    size = 3
+  ) +
+  
+  # Labels
+  geom_text_repel(
+    data = sites,
+    aes(x = RDA1, y = RDA2, label = Sample_cluster),
+    size = 3
+  ) +
+  
+  # Arrows (environment)
+  geom_segment(
+    data = env_arrows,
+    aes(x = 0, y = 0, xend = RDA1, yend = RDA2),
+    arrow = arrow(length = unit(0.25, "cm")),
+    color = "black"
+  ) +
+  
+  # Arrow labels
+  geom_text_repel(
+    data = env_arrows,
+    aes(x = RDA1, y = RDA2, label = Variable),
+    color = "black",
+    size = 4,
+    fontface = "bold"
+  ) +
+  
+  # Your colleague’s color scheme
+  scale_color_manual(values = c(
+    "Cluster1" = "lightblue3",
+    "Cluster2" = "deepskyblue3",
+    "Cluster3" = "blue3",
+    "Cluster4" = "sienna2"
+  )) +
+  
+  theme_bw() +
+  
+  labs(
+    title = "RDA of 16S Bacterial Communities",
+    x = x_lab,
+    y = y_lab,
+    color = "Cluster",
+    shape = "Fjord"
+  )
+
+rda_plot
+
+```
+
+#### 16S
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+# Keep only variables you want to test
+
+rda_full <- rda(otu_18s_hel ~ ., data = env_scaled)
+
+rda_null <- rda(otu_18s_hel ~ 1, data = env_scaled)
+
+rda_fwd <- ordiR2step(
+  rda_null,
+  scope = formula(rda_full),
+  direction = "forward",
+  permutations = 999
+)
+
+```
+
+```{r, message=FALSE, warning=FALSE}
+
+formula(rda_fwd)
+
+```
+
+```{r, message=FALSE, warning=FALSE}
+
+RsquareAdj(rda_fwd)
+```
+
+```{r, message=FALSE, warning=FALSE}
+anova(rda_fwd, permutations = 999)
+```
+
+```{r, message=FALSE, warning=FALSE}
+anova(rda_fwd, by = "terms", permutations = 999)
+```
+
+```{r, message=FALSE, warning=FALSE}
+anova(rda_fwd, by = "axis", permutations = 999)
+```
+
+Environmental variables explained a larger proportion of variation in bacterial (16S; adj. R² = 0.52) than eukaryotic (18S; adj. R² = 0.28) community composition. While both communities were significantly structured by oxygen, temperature, and nutrients, bacterial communities additionally showed stronger associations with DOM components, suggesting tighter coupling to biogeochemical processes.
+
+```{r, message=FALSE, warning=FALSE}
+anova(rda_fwd, by = "margin")
+```
+
+Environmental drivers differed between bacterial and eukaryotic communities. While bacterial community composition was primarily structured by oxygen saturation and DOM components, eukaryotic communities were more strongly associated with silicate, temperature, and chlorophyll-a. These differences suggest tighter coupling of bacterial communities to biogeochemical processes, whereas eukaryotic communities are more influenced by phytoplankton dynamics and broader ecological interactions.
+
+
+```{r, message=FALSE, warning=FALSE, fig.width=8, fig.height=6}
+sites <- scores(rda_fwd, display = "sites", scaling = 2) %>%
+  as.data.frame()
+
+sites <- cbind(sites, metadata_rda)
+
+env_arrows <- scores(rda_fwd, display = "bp", scaling = 2) %>%
+  as.data.frame()
+
+env_arrows$Variable <- rownames(env_arrows)
+
+# Scale arrows for visibility
+arrow_multiplier <- 1.2
+env_arrows$RDA1 <- env_arrows$RDA1 * arrow_multiplier
+env_arrows$RDA2 <- env_arrows$RDA2 * arrow_multiplier
+
+var_exp <- summary(rda_fwd)$cont$importance[2, 1:2] * 100
+
+x_lab <- paste0("RDA1 (", round(var_exp[1], 1), "%)")
+y_lab <- paste0("RDA2 (", round(var_exp[2], 1), "%)")
+
+library(ggplot2)
+library(ggrepel)
+
+rda_plot <- ggplot() +
+  
+  # Points (samples)
+  geom_point(
+    data = sites,
+    aes(x = RDA1, y = RDA2, color = Cluster, shape = Area),
+    size = 3
+  ) +
+  
+  # Labels
+  geom_text_repel(
+    data = sites,
+    aes(x = RDA1, y = RDA2, label = Sample_cluster),
+    size = 3
+  ) +
+  
+  # Arrows (environment)
+  geom_segment(
+    data = env_arrows,
+    aes(x = 0, y = 0, xend = RDA1, yend = RDA2),
+    arrow = arrow(length = unit(0.25, "cm")),
+    color = "black"
+  ) +
+  
+  # Arrow labels
+  geom_text_repel(
+    data = env_arrows,
+    aes(x = RDA1, y = RDA2, label = Variable),
+    color = "black",
+    size = 4,
+    fontface = "bold"
+  ) +
+  
+  # Your colleague’s color scheme
+  scale_color_manual(values = c(
+    "Cluster1" = "lightblue3",
+    "Cluster2" = "deepskyblue3",
+    "Cluster3" = "blue3",
+    "Cluster4" = "sienna2"
+  )) +
+  
+  theme_bw() +
+  
+  labs(
+    title = "RDA of 18S Bacterial Communities",
+    x = x_lab,
+    y = y_lab,
+    color = "Cluster",
+    shape = "Fjord"
+  )
+
+rda_plot
+
+```
+
 
 
 ### Which taxa covariate with environmental gradients in our RDAs?
