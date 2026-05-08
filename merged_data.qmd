@@ -94,6 +94,8 @@ mat18 <- as(otu_table(ps18_filt), "matrix")
 combined_matrix <- cbind(mat16, mat18)
 taxa_names_combined <- colnames(combined_matrix)
 
+saveRDS(combined_matrix, "combined_matrix.rds")
+
 # Create a matching column in metadata
 
 metadata <- metadata %>%

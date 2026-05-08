@@ -3,6 +3,145 @@ title: "Network_analysis"
 format: html
 ---
 
-# Selected figures
+## Looking for associations
 
-{{< merged_data.qmd >}}
+```{r, message=FALSE, warning=FALSE}
+
+# options(repos = c(
+#      bioc = "https://bioc.r-universe.dev",
+#      CRAN = "https://cloud.r-project.org"))
+# install.packages("SpiecEasi")
+
+library(SpiecEasi)
+
+se <- spiec.easi(
+  combined_matrix,
+  method = "mb",
+  lambda.min.ratio = 1e-2,
+  nlambda = 20,
+  sel.criterion = "stars",
+  pulsar.params = list(rep.num = 50)
+)
+
+cat("Number of edges:\n")
+
+adj <- getRefit(se)
+sum(adj) / 2   # number of edges
+rownames(adj) <- taxa_names_combined
+colnames(adj) <- taxa_names_combined
+
+```
+
+### Plotting the Network graph (iGraph)
+
+```{r, message=FALSE, warning=FALSE}
+
+library(igraph)
+
+graph <- graph_from_adjacency_matrix(
+  adj,
+  mode = "undirected",
+  diag = FALSE
+)
+
+# Label nodes by domain
+
+V(graph)$domain <- ifelse(
+  grepl("^Bac_", V(graph)$name),
+  "Bacteria",
+  "Eukaryote"
+)
+
+table(V(graph)$domain)
+
+# Get cross-domain edges
+
+edges <- as_data_frame(graph, what = "edges")
+
+nodes <- tibble(
+  name = V(graph)$name,
+  domain = V(graph)$domain
+)
+
+edges2 <- edges %>%
+  left_join(nodes, by = c("from" = "name")) %>%
+  rename(domain_from = domain) %>%
+  left_join(nodes, by = c("to" = "name")) %>%
+  rename(domain_to = domain)
+
+cross_edges <- edges2 %>% filter(domain_from != domain_to)
+
+nrow(edges2)        # total edges (should match ~725)
+nrow(cross_edges)   # cross-domain edges
+
+```
+
+::: {.callout-note}
+💬 Note — Cross-domain associations
+
+A total of **278 cross-domain edges** were identified out of **725 total inferred associations**, representing approximately **38%** of all network connections.
+
+This substantial proportion indicates that **bacterial and eukaryotic communities are not structured independently**. Instead, the network reveals meaningful cross-domain covariance patterns, suggesting coordinated ecological dynamics. These associations may reflect bloom-driven bacterial responses, shared environmental filtering, or potential trophic and metabolic interactions between microbial eukaryotes and prokaryotes.
+:::
+
+```{r, message=FALSE, warning=FALSE}
+deg <- degree(graph)
+cat("🔹 Overall degre of connectivity:\n")
+summary(deg)
+cat("🔹 Bacteria degre of connectivity:\n")
+deg_cross <- degree(graph, v = V(graph)[V(graph)$domain == "Bacteria"])
+summary(deg_cross)
+cat("🔹 Eukaryote degre of connectivity:\n")
+deg_cross <- degree(graph, v = V(graph)[V(graph)$domain == "Eukaryote"])
+summary(deg_cross)
+
+```
+
+::: {.callout-note title="Network connectivity structure"}
+The inferred cross-domain network comprised 238 taxa connected by 725 edges, with a median node degree of 6. Bacterial genera exhibited slightly higher connectivity (mean degree ≈ 7, maximum = 19) compared to eukaryotic genera (mean degree ≈ 5.3, maximum = 12). This pattern indicates a moderately connected but sparse network structure, without dominance by a few extreme hubs. The higher connectivity observed among bacteria suggests that prokaryotic taxa may act as integrators within the microbial community, associating with multiple eukaryotic groups. Overall, the degree distribution supports the presence of structured cross-domain coupling rather than random co-occurrence.
+:::
+
+```{r, message=FALSE, warning=FALSE}
+# Which taxa are the hubs?
+deg_df <- data.frame(
+  taxon = V(graph)$name,
+  domain = V(graph)$domain,
+  degree = degree(graph)
+)
+
+```
+
+:::{.column width="100%"}
+```{r, message=FALSE, warning=FALSE}
+
+# 1) Extract taxonomy with correct keys (rownames are the taxa_names)
+tax16 <- as.data.frame(tax_table(ps16_filt))
+tax16$taxon <- rownames(tax16)
+
+tax18 <- as.data.frame(tax_table(ps18_filt))
+tax18$taxon <- rownames(tax18)
+
+tax_all <- bind_rows(tax16, tax18)
+
+# 2) Join taxonomy onto your degree table by 'taxon'
+deg_tax <- deg_df %>%
+  left_join(tax_all, by = "taxon")
+
+# 3) Fallback if Genus is missing
+deg_tax <- deg_tax %>%
+  mutate(
+    Genus_final = case_when(
+      !is.na(Genus) & Genus != "" ~ Genus,
+      !is.na(Family) & Family != "" ~ paste0("Unclassified_", Family),
+      !is.na(Order) & Order != "" ~ paste0("Unclassified_", Order),
+      TRUE ~ "Unclassified"
+    )
+  )
+
+# 4) View top hubs with taxonomy
+deg_tax %>%
+  arrange(desc(degree)) %>%
+  dplyr::select(taxon, domain, degree, Phylum, Order, Genus_final) %>%
+  head(20) %>% kable() %>% kable_styling(full_width = FALSE, position = "center")
+
+```
