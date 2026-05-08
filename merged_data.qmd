@@ -1672,7 +1672,7 @@ make_fjord_network <- function(fjord_name,
 
 ##### Sermilik
 ```{r, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
-make_fjord_network("Sermilik", degree_threshold = 10)
+make_fjord_network("Sermilik", degree_threshold = 7)
 ```
 
 ##### Iterdalk

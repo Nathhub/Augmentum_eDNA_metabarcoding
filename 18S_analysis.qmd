@@ -1020,9 +1020,9 @@ library(dplyr)
 library(ggplot2)
 library(microbiome)
 
-my_colors <- c("#FF6666", "#8DD3C7", "#377EB8", "#4DAF4A", "#984EA3", "#A6D854", "#FFFF33",
-               "#FF7F00", "#F781BF", "#999999", "#66C2A5", "#FC8D62", "#8DA0CB", "#E78AC3", 
-               "#FFD92F", "#E5C494", "#B3B3B3", "#A65628","#FFFFB3", "#BEBADA",
+my_colors <- c("#FF6666", "#8DD3C7", "#377EB8","#5DA5A4" , "#984EA3", "#A6D854", "#FFFF33",
+               "#FF7F00", "#F781BF", "#66C2A5","#4DAF4A", "#FC8D62", "#999999", "#8DA0CB", "#E78AC3", 
+               "#FFD92F", "#E5C494", "#B3B3B3", "#A65628", "#BEBADA",
                "#FB8072", "#80B1D3", "#FDB462")
 
 
@@ -1033,7 +1033,7 @@ ps_bd <- subset_taxa(
 )
 
 # Collapse to species level
-ps_species <- tax_glom(ps_bd, taxrank = "Species", NArm = FALSE)
+ps_species <- tax_glom(ps_bd, taxrank = "Genus", NArm = FALSE)
 
 # Convert to relative abundance
 # This makes abundances relative to the filtered community only:
@@ -1056,7 +1056,7 @@ df <- df %>%
     Depth = factor(Depth, levels = c("surface", "15m", "45m")),
 
     Fjord = as.factor(Fjord),
-    Station = factor(Station, levels = as.character(sort(unique(as.numeric(Station))))),
+    Station = factor(Station, levels = rev(as.character(sort(unique(as.numeric(Station)))))),
 
     Class = as.character(Class),
     Class = if_else(is.na(Class) | Class == "", "Unclassified class", Class),
@@ -1064,39 +1064,36 @@ df <- df %>%
     Genus = as.character(Genus),
     Genus = if_else(is.na(Genus) | Genus == "", "Unclassified genus", Genus),
 
-    Species = as.character(Species),
-    Species = if_else(is.na(Species) | Species == "", "Unclassified species", Species),
-
-    Species_label = paste(Class, Genus, Species, sep = " — ")
+    Genus_label =  Genus
   )
 
 # Top15 species + Other
 df <- df %>%
   mutate(
-    Species_plot = if_else(OTU %in% top10, Species_label, "Other")
+    Genus_plot = if_else(OTU %in% top10, Genus_label, "Other")
   ) %>%
-  group_by(Fjord, Depth, Sample, Number, Station, Species_plot) %>%
+  group_by(Fjord, Depth, Sample, Number, Station, Genus_plot) %>%
   summarise(Abundance = sum(Abundance), .groups = "drop")
 
 # Legend order: Other last
-df$Species_plot <- factor(
-  df$Species_plot,
-  levels = c(setdiff(sort(unique(df$Species_plot)), "Other"), "Other")
+df$Genus_plot <- factor(
+  df$Genus_plot,
+  levels = c(setdiff(sort(unique(df$Genus_plot)), "Other"), "Other")
 )
 
-other_color <- "#C0C0C0"
+other_color <- "black"
 
 plot_colors <- c(
-  rep(my_colors, length.out = length(levels(df$Species_plot)) - 1),
+  rep(my_colors, length.out = length(levels(df$Genus_plot)) - 1),
   other_color
 )
 
-names(plot_colors) <- levels(df$Species_plot)
+names(plot_colors) <- levels(df$Genus_plot)
 
 plot_fjord <- function(df, fjord_name){
   dff <- df %>% filter(Fjord == fjord_name)
 
-  ggplot(dff, aes(x = Station, y = Abundance, fill = Species_plot)) +
+  ggplot(dff, aes(x = Station, y = Abundance, fill = Genus_plot)) +
     geom_col(width = 0.9) +
     facet_grid(rows = vars(Depth), switch = "y") +
     scale_fill_manual(values = plot_colors) +
@@ -1107,10 +1104,10 @@ plot_fjord <- function(df, fjord_name){
       expand = c(0, 0)
     ) +
     labs(
-      title = paste0(fjord_name, " — Species"),
+      title = fjord_name,
       x = "Station Number",
       y = "Relative abundance (%)",
-      fill = "Species"
+      fill = "Genus"
     ) +
     theme_classic() +
     theme(
@@ -1124,7 +1121,7 @@ plot_fjord <- function(df, fjord_name){
       plot.title = element_text(hjust = 0.5, face = "bold", size = 16),
       legend.position = "bottom"
     ) +
-    guides(fill = guide_legend(nrow = 6, byrow = TRUE))
+    guides(fill = guide_legend(nrow = 3, byrow = TRUE))
 }
 
 fjords <- sort(unique(df$Fjord))
@@ -1444,9 +1441,9 @@ library(ggplot2)
 library(microbiome)
 
 my_colors <- c("#FF6666", "#8DD3C7", "#377EB8", "#4DAF4A", "#984EA3", "#A6D854", "#FFFF33",
-               "#FF7F00", "#F781BF", "#999999", "#66C2A5", "#FC8D62", "#8DA0CB", "#E78AC3", 
+               "#FF7F00", "#F781BF", "#FDB462", "#66C2A5", "#C05A5A", "#8DA0CB", "#999999", 
                "#FFD92F", "#E5C494", "#B3B3B3", "#A65628","#FFFFB3", "#BEBADA",
-               "#FB8072", "#80B1D3", "#FDB462")
+               "#FB8072", "#80B1D3" )
 
 
 # Keep only Bacillariophyceae and Dinophyceae
@@ -1477,7 +1474,7 @@ df <- df %>%
     Depth = factor(Depth, levels = c("surface", "15m", "45m")),
 
     Fjord = as.factor(Fjord),
-    Station = factor(Station, levels = as.character(sort(unique(as.numeric(Station))))),
+    Station = factor(Station, levels = rev(as.character(sort(unique(as.numeric(Station)))))),
 
     Class = as.character(Class),
     Class = if_else(is.na(Class) | Class == "", "Unclassified class", Class),
@@ -1485,7 +1482,7 @@ df <- df %>%
     Genus = as.character(Genus),
     Genus = if_else(is.na(Genus) | Genus == "", "Unclassified genus", Genus),
 
-    Genus_label = paste(Class, Genus, sep = " — ")
+    Genus_label =  Genus
   )
 
 # Top15 species + Other
@@ -1502,7 +1499,7 @@ df$Genus_plot <- factor(
   levels = c(setdiff(sort(unique(df$Genus_plot)), "Other"), "Other")
 )
 
-other_color <- "#C0C0C0"
+other_color <- "black"
 
 plot_colors <- c(
   rep(my_colors, length.out = length(levels(df$Genus_plot)) - 1),
@@ -1525,7 +1522,7 @@ plot_fjord <- function(df, fjord_name){
       expand = c(0, 0)
     ) +
     labs(
-      title = paste0(fjord_name, " — Genus"),
+      title = fjord_name,
       x = "Station Number",
       y = "Relative abundance (%)",
       fill = "Genus"
@@ -1542,7 +1539,7 @@ plot_fjord <- function(df, fjord_name){
       plot.title = element_text(hjust = 0.5, face = "bold", size = 16),
       legend.position = "bottom"
     ) +
-    guides(fill = guide_legend(nrow = 6, byrow = TRUE))
+    guides(fill = guide_legend(nrow = 3, byrow = TRUE))
 }
 
 fjords <- sort(unique(df$Fjord))

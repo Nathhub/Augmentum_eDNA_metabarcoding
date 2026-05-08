@@ -3,3 +3,6 @@ title: "Network_analysis"
 format: html
 ---
 
+# Selected figures
+
+{{< merged_data.qmd >}}

@@ -1,6 +1,9 @@
 project:
   type: website
   output-dir: _site
+  render:
+    - index.qmd
+    - Network_analysis.qmd
 
 website:
   title: "Augmentum_eDNA_metabarcoding"

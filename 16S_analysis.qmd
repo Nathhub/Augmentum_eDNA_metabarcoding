@@ -1088,8 +1088,22 @@ combined_plot
 ```
 
 ```{r, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
+
+my_colors2 <- c(
+  "#1B9E77",  # teal-green
+  "#D95F02",  # orange
+  "#7570B3",  # purple-blue
+  "#E7298A",  # magenta
+  "#E6AB02",  # mustard
+  "#A6761D",  # brown-gold
+  "#7F7F7F",  # darker grey
+  "#A65628",  # brown
+  "#F0E442",  # yellow
+  "#6A3D9A"   # stronger lavender/purple
+)
+
 # Collapse + compositional
-ps_class <- tax_glom(ps_16s, taxrank = "Order")
+ps_class <- tax_glom(ps_16s, taxrank = "Class")
 ps_rel   <- transform(ps_class, "compositional")
 
 # Top 10 taxa (OTU/ASV IDs after glomming)
@@ -1157,23 +1171,23 @@ sample_order <- c(
 # Top10 + Other
 df <- df %>%
   mutate(
-    Order = as.character(Order),
-    Order = if_else(is.na(Order) | Order == "", "Unclassified", Order),
-    Order_plot = if_else(OTU %in% top10, Order, "Other")
+    Class = as.character(Class),
+    Class = if_else(is.na(Class) | Class == "", "Unclassified", Class),
+    Class_plot = if_else(OTU %in% top10, Class, "Other")
   ) %>%
-  group_by(Cluster, Sample_cluster, Depth, Sample, Number, Station, Order_plot, Water_mass) %>%
+  group_by(Cluster, Sample_cluster, Depth, Sample, Number, Station, Class_plot, Water_mass) %>%
   summarise(Abundance = sum(Abundance), .groups = "drop")
 
 # Legend order: Other last
-df$Order_plot <- factor(
-  df$Order_plot,
-  levels = c(setdiff(sort(unique(df$Order_plot)), "Other"), "Other")
+df$Class_plot <- factor(
+  df$Class_plot,
+  levels = c(setdiff(sort(unique(df$Class_plot)), "Other"), "Other")
 )
 
 # Adding the "other" colour to the last 10 colours of my palette
 other_color <- "#3c3c3c"
-plot_colors <- c(my_colors[11:20], other_color)
-names(plot_colors) <- levels(df$Order_plot)
+plot_colors <- c(my_colors2, other_color)
+names(plot_colors) <- levels(df$Class_plot)
 
 # Optional: order clusters
 df$Cluster <- factor(df$Cluster, levels = c("Cluster1", "Cluster2", "Cluster3", "Cluster4"))
@@ -1191,7 +1205,7 @@ df$Sample_cluster <- factor(df$Sample_cluster, levels = rev(c("1_1" , "2_1" , "3
                                            "21_45", "22_45",
                                            "9_1" ,  "10_1" , "14_45")))
 
-ggplot(df, aes(x = Abundance, y = Sample_cluster, fill = Order_plot)) +
+ggplot(df, aes(x = Abundance, y = Sample_cluster, fill = Class_plot)) +
     geom_col(width = 0.9) +
     scale_fill_manual(values = plot_colors) +
     scale_x_continuous(
@@ -1202,10 +1216,10 @@ ggplot(df, aes(x = Abundance, y = Sample_cluster, fill = Order_plot)) +
     ) +
     scale_y_discrete(drop = TRUE) +
     labs(
-      title = "Top 10 Order + Other",
+      title = "Top 10 Class + Other",
       y = "Sample name",
       x = "Relative abundance (%)",
-      fill = "Order"
+      fill = "Class"
     ) +
     theme_classic() +
     theme(
@@ -1216,3 +1230,24 @@ ggplot(df, aes(x = Abundance, y = Sample_cluster, fill = Order_plot)) +
       legend.position = "bottom"
     )
 ```
+
+
+```{r, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
+
+my_colors <- c("#66C2A5", "#FC8D62", "#8DA0CB", "#E78AC3", "#FFD92F",
+               "#E5C494", "#B3B3B3", "#A65628","#FFFFB3", "#BEBADA")
+
+my_colors2 <- c(
+  "#1B9E77",  # teal-green
+  "#D95F02",  # orange
+  "#7570B3",  # purple-blue
+  "#E7298A",  # magenta
+  "#E6AB02",  # mustard
+  "#A6761D",  # brown-gold
+  "#7F7F7F",  # darker grey
+  "#A65628",  # brown
+  "#F0E442",  # yellow
+  "#6A3D9A"   # stronger lavender/purple
+)
+```
+
