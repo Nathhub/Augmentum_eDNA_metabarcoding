@@ -929,18 +929,16 @@ df <- df %>%
 cluster_list <- list(
   Cluster4 = c("9_1", "10_1", "14_45"),
 
-  Cluster3 = c("1_45", "2_45", "3_45", "4_45", "5_45",
-               "8_45", "10_15", "10_45", "11_45", "12_45", "15_1",
-               "15_15", "15_45", "16_45", "17_15", "17_45", "18_15", "18_45",
-               "19_15", "19_45", "20_15", "20_45", "21_45", "22_45"),
+  Cluster3 = c("1_45" , "2_45" , "3_45"  ,"4_45","8_45" , "10_45" ,"11_45", "12_45",
+               "13_45", "15_1" , "15_15" , "15_45", "17_15" ,"17_45" ,"18_15", "18_45",
+               "19_15" ,"19_45" ,"20_15" ,"20_45", "21_45", "22_45"),
 
-  Cluster2 = c("1_15", "2_15", "3_15", "4_15", "5_1", "5_15", "6_1", "6_15", "6_45",
-               "7_1", "7_15", "7_45", "8_1", "8_15", "11_1", "11_15", "12_1",
-               "12_15", "13_1", "13_15", "13_45", "14_1", "14_15", "16_1",
-               "16_15", "21_15", "22_15"),
+  Cluster2 = c("1_15" , "2_15" , "3_15",  "4_15" , "5_1"  , "5_15" , "5_45", "6_1" , 
+               "6_15" , "6_45" , "7_1" , "7_15" , "7_45" , "8_1"  , "8_15" , "10_15",
+               "11_1",  "11_15", "12_1" , "12_15", "13_1",  "13_15" , "14_1" , "14_15" ,
+               "16_1" , "16_15" ,"16_45",  "21_15" ,"22_15"),
 
-  Cluster1 = c("1_1", "2_1", "3_1", "4_1",
-               "17_1", "18_1", "19_1", "20_1", "21_1", "22_1")
+  Cluster1 = c("1_1", "2_1", "3_1", "4_1", "17_1", "18_1", "19_1", "20_1", "21_1", "22_1")
 )
 
 # Add Cluster column using Sample_cluster
@@ -955,6 +953,16 @@ df <- df %>%
     )
   ) %>%
   filter(!is.na(Cluster))
+
+sample_order <- c(
+  "22_1", "21_1", "20_1", "19_1", "18_1", "17_1", "4_1", "3_1", "2_1", "1_1",
+  "22_15", "21_15", "16_45", "16_15", "16_1", "14_15", "14_1", "13_15", "13_1",
+  "12_15", "12_1", "11_15", "11_1", "10_15", "8_15", "8_1", "7_45", "7_15",
+  "7_1", "6_45", "6_15", "6_1", "5_45", "5_15", "5_1", "4_15", "3_15", "2_15", "1_15",
+  "22_45", "21_45", "20_45", "20_15", "19_45", "19_15", "18_45", "18_15",
+  "17_45", "15_45", "15_15", "15_1", "13_45", "12_45", "11_45", "10_45",
+  "8_45", "4_45", "3_45", "1_45","14_45", "10_1", "9_1"
+)
 
 # Top10 + Other
 df <- df %>%
@@ -981,8 +989,36 @@ names(plot_colors) <- levels(df$Class_plot)
 df$Cluster <- factor(df$Cluster, levels = c("Cluster1", "Cluster2", "Cluster3", "Cluster4"))
 
 plot_cluster <- function(df, cluster_name){
-  dff <- df %>% filter(Cluster == cluster_name)
-
+  
+  dff <- df %>% 
+    filter(Cluster == cluster_name) %>%
+    mutate(
+      Sample_cluster = as.character(Sample_cluster)
+    )
+  
+  # Samples present in this cluster, in the order of your reference figure
+  cluster_sample_order <- sample_order[
+    sample_order %in% unique(dff$Sample_cluster)
+  ]
+  
+  # Optional diagnostic message
+  missing_from_order <- setdiff(unique(dff$Sample_cluster), sample_order)
+  if(length(missing_from_order) > 0) {
+    message(
+      "Samples in ", cluster_name, " not found in sample_order: ",
+      paste(missing_from_order, collapse = ", ")
+    )
+  }
+  
+  dff <- dff %>%
+    filter(Sample_cluster %in% cluster_sample_order) %>%
+    mutate(
+      Sample_cluster = factor(
+        Sample_cluster,
+        levels = rev(cluster_sample_order)
+      )
+    )
+  
   ggplot(dff, aes(x = Abundance, y = Sample_cluster, fill = Class_plot)) +
     geom_col(width = 0.9) +
     scale_fill_manual(values = plot_colors) +
@@ -990,8 +1026,9 @@ plot_cluster <- function(df, cluster_name){
       labels = scales::label_number(scale = 100, accuracy = 1),
       breaks = c(0, 0.25, 0.5, 0.75, 1),
       limits = c(0, 1),
-      expand = c(0, 0)
+      expand = expansion(mult = c(0, 0.02))
     ) +
+    scale_y_discrete(drop = TRUE) +
     labs(
       title = paste0(cluster_name, " — Top 10 Classes + Other"),
       y = "Sample name",
@@ -1000,15 +1037,12 @@ plot_cluster <- function(df, cluster_name){
     ) +
     theme_classic() +
     theme(
-      strip.background = element_blank(),
-      strip.placement = "outside",
-      strip.text.y.left = element_text(size = 12),
       axis.text.x = element_text(size = 11),
       axis.text.y = element_text(size = 11),
       axis.title.y = element_text(size = 14),
       plot.title = element_text(hjust = 0.5, face = "bold", size = 14),
       legend.position = "bottom"
-    ) 
+    )
 }
 
 clusters <- levels(df$Cluster)
@@ -1054,5 +1088,131 @@ combined_plot
 ```
 
 ```{r, message=FALSE, warning=FALSE, fig.width=10, fig.height=8}
+# Collapse + compositional
+ps_class <- tax_glom(ps_16s, taxrank = "Order")
+ps_rel   <- transform(ps_class, "compositional")
 
+# Top 10 taxa (OTU/ASV IDs after glomming)
+top10 <- top_taxa(ps_rel, n = 10)
+
+# Melt full object
+df <- psmelt(ps_rel)
+
+# Make Depth nice
+df <- df %>%
+  mutate(
+    Depth = as.character(Depth),
+    Depth = if_else(Depth %in% c("1","01","surface","Surface"), "surface",
+             if_else(Depth %in% c("15","15m","15 m"), "15m",
+             if_else(Depth %in% c("45","45m","45 m"), "45m", Depth))),
+    Depth = factor(Depth, levels = c("surface", "15m", "45m")),
+    Fjord = as.factor(Fjord),
+    Station = factor(Station, levels = as.character(sort(unique(as.numeric(as.character(Station))))))
+  )
+
+df <- df %>%
+  mutate(
+    Sample_cluster = gsub(".*_St([0-9]+)_D([0-9]+)$", "\\1_\\2", Sample)
+  )
+
+# Define clusters by Sample names
+cluster_list <- list(
+  Cluster4 = c("9_1", "10_1", "14_45"),
+
+  Cluster3 = c("1_45" , "2_45" , "3_45"  ,"4_45","8_45" , "10_45" ,"11_45", "12_45",
+               "13_45", "15_1" , "15_15" , "15_45", "17_15" ,"17_45" ,"18_15", "18_45",
+               "19_15" ,"19_45" ,"20_15" ,"20_45", "21_45", "22_45"),
+
+  Cluster2 = c("1_15" , "2_15" , "3_15",  "4_15" , "5_1"  , "5_15" , "5_45", "6_1" , 
+               "6_15" , "6_45" , "7_1" , "7_15" , "7_45" , "8_1"  , "8_15" , "10_15",
+               "11_1",  "11_15", "12_1" , "12_15", "13_1",  "13_15" , "14_1" , "14_15" ,
+               "16_1" , "16_15" ,"16_45",  "21_15" ,"22_15"),
+
+  Cluster1 = c("1_1", "2_1", "3_1", "4_1", "17_1", "18_1", "19_1", "20_1", "21_1", "22_1")
+)
+
+# Add Cluster column using Sample_cluster
+df <- df %>%
+  mutate(
+    Cluster = case_when(
+      Sample_cluster  %in% cluster_list$Cluster1 ~ "Cluster1",
+      Sample_cluster %in% cluster_list$Cluster2 ~ "Cluster2",
+      Sample_cluster %in% cluster_list$Cluster3 ~ "Cluster3",
+      Sample_cluster %in% cluster_list$Cluster4 ~ "Cluster4",
+      TRUE ~ NA_character_
+    )
+  ) %>%
+  filter(!is.na(Cluster))
+
+sample_order <- c(
+  "22_1", "21_1", "20_1", "19_1", "18_1", "17_1", "4_1", "3_1", "2_1", "1_1",
+  "22_15", "21_15", "16_45", "16_15", "16_1", "14_15", "14_1", "13_15", "13_1",
+  "12_15", "12_1", "11_15", "11_1", "10_15", "8_15", "8_1", "7_45", "7_15",
+  "7_1", "6_45", "6_15", "6_1", "5_45", "5_15", "5_1", "4_15", "3_15", "2_15", "1_15",
+  "22_45", "21_45", "20_45", "20_15", "19_45", "19_15", "18_45", "18_15",
+  "17_45", "15_45", "15_15", "15_1", "13_45", "12_45", "11_45", "10_45",
+  "8_45", "4_45", "3_45", "1_45","14_45", "10_1", "9_1"
+)
+
+# Top10 + Other
+df <- df %>%
+  mutate(
+    Order = as.character(Order),
+    Order = if_else(is.na(Order) | Order == "", "Unclassified", Order),
+    Order_plot = if_else(OTU %in% top10, Order, "Other")
+  ) %>%
+  group_by(Cluster, Sample_cluster, Depth, Sample, Number, Station, Order_plot, Water_mass) %>%
+  summarise(Abundance = sum(Abundance), .groups = "drop")
+
+# Legend order: Other last
+df$Order_plot <- factor(
+  df$Order_plot,
+  levels = c(setdiff(sort(unique(df$Order_plot)), "Other"), "Other")
+)
+
+# Adding the "other" colour to the last 10 colours of my palette
+other_color <- "#3c3c3c"
+plot_colors <- c(my_colors[11:20], other_color)
+names(plot_colors) <- levels(df$Order_plot)
+
+# Optional: order clusters
+df$Cluster <- factor(df$Cluster, levels = c("Cluster1", "Cluster2", "Cluster3", "Cluster4"))
+
+df$Sample_cluster <- factor(df$Sample_cluster, levels = rev(c("1_1" , "2_1" , "3_1" , "4_1" ,
+                                           "17_1", "18_1", "19_1", "20_1" ,"21_1", "22_1",
+                                           "1_15" , "2_15" , "3_15",  "4_15" , "5_1"  , "5_15" , "6_1" ,  "6_15" , "6_45" ,
+                                           "7_1"  , "7_15" , "7_45" , "8_1"  , "8_15" , "11_1",  "11_15", "12_1" ,
+                                           "12_15", "13_1",  "13_15" , "13_45", "14_1" ,
+                                           "14_15" , "16_1" , "16_15" , "21_15" ,"22_15",
+                                           "1_45" , "2_45" , "3_45"  ,"4_45",  "5_45"  ,
+                                           "8_45" , "10_15", "10_45" ,"11_45", "12_45", "15_1" ,
+                                           "15_15" , "15_45", "16_45" ,"17_15" ,"17_45" ,"18_15", "18_45",
+                                           "19_15" ,"19_45" ,"20_15" ,"20_45",
+                                           "21_45", "22_45",
+                                           "9_1" ,  "10_1" , "14_45")))
+
+ggplot(df, aes(x = Abundance, y = Sample_cluster, fill = Order_plot)) +
+    geom_col(width = 0.9) +
+    scale_fill_manual(values = plot_colors) +
+    scale_x_continuous(
+      labels = scales::label_number(scale = 100, accuracy = 1),
+      breaks = c(0, 0.25, 0.5, 0.75, 1),
+      limits = c(0, 1),
+      expand = expansion(mult = c(0, 0.02))
+    ) +
+    scale_y_discrete(drop = TRUE) +
+    labs(
+      title = "Top 10 Order + Other",
+      y = "Sample name",
+      x = "Relative abundance (%)",
+      fill = "Order"
+    ) +
+    theme_classic() +
+    theme(
+      axis.text.x = element_text(size = 11),
+      axis.text.y = element_text(size = 11),
+      axis.title.y = element_text(size = 14),
+      plot.title = element_text(hjust = 0.5, face = "bold", size = 14),
+      legend.position = "bottom"
+    )
 ```
