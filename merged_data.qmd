@@ -17,44 +17,47 @@ library(kableExtra)
 # 
 # ctd_selected %>% head(10)
 
-metadata <- read_csv("data/Metadata_Augmentum_v2.csv")
+metadata <- read_csv("data/Metadata_Augmentum.csv")
 ps_16s <- readRDS("data/ps_16s.rds")
 ps_18s <- readRDS("data/ps_18s.rds")
 
 metadata <- metadata %>%
   mutate(Sample_cluster = str_sub(ID_sample, 3))
 
-# Define clusters by sample names
-cluster_list <- list(
-  Cluster4 = c("9_1", "10_1", "14_45"),
-  
-  Cluster3 = c("1_45", "2_45", "3_45", "4_45", "8_45", "10_45", "11_45", "12_45",
-               "13_45", "15_1", "15_15", "15_45", "17_15", "17_45", "18_15", "18_45",
-               "19_15", "19_45", "20_15", "20_45", "21_45", "22_45"),
-  
-  Cluster2 = c("1_15", "2_15", "3_15", "4_15", "5_1", "5_15", "5_45", "6_1", 
-               "6_15", "6_45", "7_1", "7_15", "7_45", "8_1", "8_15", "10_15",
-               "11_1", "11_15", "12_1", "12_15", "13_1", "13_15", "14_1", "14_15",
-               "16_1", "16_15", "16_45", "21_15", "22_15"),
-  
-  Cluster1 = c("1_1", "2_1", "3_1", "4_1", "17_1", "18_1", "19_1", "20_1", "21_1", "22_1")
-)
+# # Define clusters by sample names
+# cluster_list <- list(
+#   Cluster4 = c("9_1", "10_1", "14_45"),
+#   
+#   Cluster3 = c("1_45", "2_45", "3_45", "4_45", "8_45", "10_45", "11_45", "12_45",
+#                "13_45", "15_1", "15_15", "15_45", "17_15", "17_45", "18_15", "18_45",
+#                "19_15", "19_45", "20_15", "20_45", "21_45", "22_45"),
+#   
+#   Cluster2 = c("1_15", "2_15", "3_15", "4_15", "5_1", "5_15", "5_45", "6_1", 
+#                "6_15", "6_45", "7_1", "7_15", "7_45", "8_1", "8_15", "10_15",
+#                "11_1", "11_15", "12_1", "12_15", "13_1", "13_15", "14_1", "14_15",
+#                "16_1", "16_15", "16_45", "21_15", "22_15"),
+#   
+#   Cluster1 = c("1_1", "2_1", "3_1", "4_1", "17_1", "18_1", "19_1", "20_1", "21_1", "22_1")
+# )
+# 
+# # Add Cluster to metadata
+# metadata <- metadata %>%
+#   mutate(
+#     Cluster = case_when(
+#       Sample_cluster %in% cluster_list$Cluster1 ~ "Cluster1",
+#       Sample_cluster %in% cluster_list$Cluster2 ~ "Cluster2",
+#       Sample_cluster %in% cluster_list$Cluster3 ~ "Cluster3",
+#       Sample_cluster %in% cluster_list$Cluster4 ~ "Cluster4",
+#       TRUE ~ NA_character_
+#     )
+#   ) %>%
+#   filter(!is.na(Cluster))
 
-# Add Cluster to metadata
 metadata <- metadata %>%
-  mutate(
-    Cluster = case_when(
-      Sample_cluster %in% cluster_list$Cluster1 ~ "Cluster1",
-      Sample_cluster %in% cluster_list$Cluster2 ~ "Cluster2",
-      Sample_cluster %in% cluster_list$Cluster3 ~ "Cluster3",
-      Sample_cluster %in% cluster_list$Cluster4 ~ "Cluster4",
-      TRUE ~ NA_character_
-    )
-  ) %>%
-  filter(!is.na(Cluster))
+  rename(Cluster = cluster)
 
 metadata$Cluster <- factor(metadata$Cluster,
-                           levels = c("Cluster1", "Cluster2", "Cluster3", "Cluster4"))
+                           levels = c(1, 2, 3, 4))
 ```
 
 ### Combining datasets 
@@ -109,8 +112,8 @@ sd_16s <- sample_data(ps_16s) %>%
 
 sd_16s_aug <- sd_16s %>%
   left_join(
-    metadata %>% select(01:33,53:66) %>%
-      select(-Cruise, -Date, -Area, -StationID, -Depth, -`Water_mass`),
+    metadata %>% dplyr::select(01:33,40:68) %>%
+      dplyr::select(-Cruise, -Date, -Area, -StationID, -Depth, -Water_mass),
     by = "ps_id"
   )
 
@@ -136,7 +139,7 @@ otu_18s_hel <- decostand(otu_18s, method = "hellinger")
 
 # Prepare environmental matrix
 env <- metadata %>%
-  select(Depth, Salinity, Temp, NO3, PO4, SiO2, Fluorescence_Chla) %>%
+  dplyr::select(Depth, Salinity, Temp, NO3, PO4, SiO2, Fluorescence_Chla) %>%
   drop_na()
 
 # scale variables
@@ -597,7 +600,7 @@ Let's start with the correlation:
 
 ```{r, message=FALSE, warning=FALSE}
 env <- metadata %>%
-  dplyr::select(Depth, Temp, Salinity, NO3,NO2, SiO2, PO4, DOC, Chla, O2_sat, a350, C1, C2, C3) %>% tidyr::drop_na()
+  dplyr::select(Depth, Temp, Salinity, NO3,NO2, SiO2, PO4, DOC, Chla, O2_sat, a350, C1, C2, C3,C4,C5) %>% tidyr::drop_na()
 
 library(corrplot)
 
@@ -818,7 +821,9 @@ env_vars <- c(
   "Chla",
   "a350",
   "C1",
-  "C2"
+  "C2", 
+  "C3", 
+  "C5"
 )
 
 metadata_rda <- metadata %>%
@@ -938,10 +943,10 @@ rda_plot <- ggplot() +
   
   # Your colleague’s color scheme
   scale_color_manual(values = c(
-    "Cluster1" = "lightblue3",
-    "Cluster2" = "deepskyblue3",
-    "Cluster3" = "blue3",
-    "Cluster4" = "sienna2"
+    "1" = "lightblue3",
+    "2" = "deepskyblue3",
+    "3" = "blue3",
+    "4" = "sienna2"
   )) +
   
   theme_bw() +
@@ -1067,10 +1072,10 @@ rda_plot <- ggplot() +
   
   # Your colleague’s color scheme
   scale_color_manual(values = c(
-    "Cluster1" = "lightblue3",
-    "Cluster2" = "deepskyblue3",
-    "Cluster3" = "blue3",
-    "Cluster4" = "sienna2"
+    "1" = "lightblue3",
+    "2" = "deepskyblue3",
+    "3" = "blue3",
+    "4" = "sienna2"
   )) +
   
   theme_bw() +
